@@ -15,7 +15,7 @@ export default function Footer() {
           r&eacute;serv&eacute;s.
           <br />
           Mentions l&eacute;gales &middot; Politique de
-          confidentialit&eacute; &middot; D&eacute;ploiement auto OK
+          confidentialit&eacute;
         </p>
       </div>
     </footer>
