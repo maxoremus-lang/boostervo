@@ -38,24 +38,15 @@ export default function Hero() {
         <div className="animate-fade-up delay-500 lg:w-1/2 mt-12 lg:mt-0 flex items-center">
           <div className="relative w-full rounded-xl overflow-hidden shadow-2xl bg-black/30 border border-white/10"
                style={{ aspectRatio: '16/9' }}>
-            {/* Remplacez src par l'URL de votre vidéo YouTube ou Vimeo */}
-            <iframe
-              src=""
-              title="Présentation BoosterVO"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full"
-            />
-            {/* Placeholder affiché quand src est vide */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white/60">
-              <svg className="w-16 h-16 mb-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              <p className="text-sm font-semibold text-center leading-relaxed">
-                Ce que 90&nbsp;% des n&eacute;gociants<br />
-                ne voient jamais sur leurs appels
-              </p>
-            </div>
+            <video
+              src="https://boostervo.com/simulateur/Vsl_BoosterVo.mp4"
+              controls
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              Votre navigateur ne supporte pas la lecture vid&eacute;o.
+            </video>
           </div>
         </div>
       </div>
