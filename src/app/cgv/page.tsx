@@ -3,7 +3,7 @@ export default function CGV() {
     <main className="bg-white min-h-screen">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
         <h1 className="text-3xl font-bold text-bleu-dark mb-8">
-          Conditions G&eacute;n&eacute;rales de Vente &ndash; MERCURE SAS
+          Conditions G&eacute;n&eacute;rales de Vente &ndash; <span className="font-extrabold">BOOSTERVO</span>
         </h1>
 
         <section className="mb-8">
