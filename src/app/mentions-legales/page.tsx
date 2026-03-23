@@ -6,6 +6,9 @@ export default function MentionsLegales() {
           Mentions L&eacute;gales &ndash; <span className="font-extrabold">BOOSTERVO</span>
         </h1>
 
+        <p className="text-gray-700 leading-relaxed mb-4">
+          BoosterVO est une marque exploit&eacute;e par la soci&eacute;t&eacute; MERCURE SAS, Soci&eacute;t&eacute; par Actions Simplifi&eacute;e au capital de 2&nbsp;000 euros, immatricul&eacute;e au Registre du Commerce et des Soci&eacute;t&eacute;s de Paris sous le num&eacute;ro B 941 519 613, dont le si&egrave;ge social est situ&eacute; 60 rue Fran&ccedil;ois 1er, 75008 Paris.
+        </p>
         <p className="text-gray-700 leading-relaxed mb-6">
           Conform&eacute;ment aux dispositions des articles 6-III et 19 de la Loi n&deg; 2004-575 du 21 juin 2004 pour la Confiance dans l&apos;&eacute;conomie num&eacute;rique, dite L.C.E.N., nous portons &agrave; la connaissance des utilisateurs et visiteurs du site boostervo.fr les informations suivantes :
         </p>
