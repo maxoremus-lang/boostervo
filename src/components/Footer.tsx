@@ -14,7 +14,7 @@ export default function Footer() {
           &copy; {new Date().getFullYear()} BoosterVO. Tous droits
           r&eacute;serv&eacute;s.
           <br />
-          <a href="/cgv" className="hover:text-white underline">CGV</a> &middot; Mentions l&eacute;gales &middot; Politique de
+          <a href="/cgv" className="hover:text-white underline">CGV</a> &middot; <a href="/mentions-legales" className="hover:text-white underline">Mentions l&eacute;gales</a> &middot; Politique de
           confidentialit&eacute;
         </p>
       </div>
