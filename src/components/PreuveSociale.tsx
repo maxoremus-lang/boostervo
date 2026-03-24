@@ -1,30 +1,30 @@
 export default function PreuveSociale() {
   return (
-    <section id="temoignages" className="bg-white py-16 sm:py-24 px-4 sm:px-6">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="font-nunito font-extrabold text-2xl sm:text-3xl text-center text-bleu mb-12">
+    <section className="bg-fond py-14 sm:py-20 px-4 sm:px-6">
+      <div className="max-w-3xl mx-auto">
+        <h2 className="font-nunito font-extrabold text-2xl sm:text-3xl text-center text-bleu mb-10">
           Ils l&apos;ont test&eacute;
         </h2>
 
         {/* Testimonial */}
-        <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-sm border border-gray-100 p-8 sm:p-10 mb-8">
+        <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-8 mb-8">
           <div className="flex items-start gap-4">
-            <span className="text-orange text-6xl font-serif leading-none shrink-0 -mt-2">
+            <span className="text-orange text-5xl font-serif leading-none shrink-0">
               &ldquo;
             </span>
             <div>
-              <p className="text-gray-700 text-base sm:text-lg leading-relaxed italic mb-6">
+              <p className="text-gray-700 text-base sm:text-lg leading-relaxed italic mb-4">
                 On pensait que nos annonces tournaient bien. Apr&egrave;s 15
                 jours de tracking, on a r&eacute;alis&eacute; qu&apos;on ratait
                 en moyenne 4 appels par semaine &mdash; soit potentiellement 2
                 ventes par mois qu&apos;on ne voyait m&ecirc;me pas.
               </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-bleu to-bleu-dark text-white font-nunito font-bold text-sm flex items-center justify-center">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-bleu text-white font-nunito font-bold text-sm flex items-center justify-center">
                   NV
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-gray-900">
+                  <p className="text-sm font-semibold text-gray-800">
                     N&eacute;gociant VO ind&eacute;pendant
                   </p>
                   <p className="text-xs text-gray-500">
@@ -38,7 +38,7 @@ export default function PreuveSociale() {
         </div>
 
         {/* Micro-preuve */}
-        <div className="bg-gradient-to-r from-orange/5 to-orange/10 border border-orange/20 rounded-2xl p-6 text-center">
+        <div className="border border-orange/30 bg-orange/5 rounded-xl p-5 text-center">
           <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
             Un n&eacute;gociant VO g&eacute;n&egrave;re en moyenne entre{" "}
             <strong className="text-orange">80 et 150 appels par mois</strong>{" "}

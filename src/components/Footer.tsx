@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <footer className="bg-bleu-dark border-t-[3px] border-orange py-10 px-4 sm:px-6">
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/logo.svg"
