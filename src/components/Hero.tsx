@@ -11,9 +11,8 @@ export default function Hero() {
                 Combien d&apos;argent perdez-vous chaque mois&hellip; sans le savoir ?
               </h1>
               <p className="animate-fade-up delay-200 text-white/80 text-base sm:text-lg leading-relaxed mb-8">
-                Vos annonces Leboncoin g&eacute;n&egrave;rent d&eacute;j&agrave; des appels. Mais une
-                partie de ces opportunit&eacute;s dispara&icirc;t avant m&ecirc;me
-                d&apos;&ecirc;tre trait&eacute;e.
+                Vos annonces leboncoin g&eacute;n&egrave;rent des contacts. Mais une partie de
+                ces appels disparaissent ou ne sont pas correctement trait&eacute;s.
               </p>
             </div>
             <div className="animate-fade-up delay-300 border-l-4 border-orange bg-white/10 rounded-r-lg p-5 text-left">
