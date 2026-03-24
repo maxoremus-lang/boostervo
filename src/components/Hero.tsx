@@ -7,10 +7,7 @@ export default function Hero() {
           {/* Colonne gauche — Texte (même hauteur que la vidéo) */}
           <div className="flex flex-col justify-between lg:w-1/2 text-center lg:text-left text-white">
             <div>
-              <p className="animate-fade-up text-sm uppercase tracking-widest text-orange font-semibold mb-4">
-                BoosterVO &mdash; Performance VO
-              </p>
-              <h1 className="animate-fade-up delay-100 font-nunito font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-tight mb-6">
+              <h1 className="animate-fade-up font-nunito font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-tight mb-6">
                 Combien d&apos;argent perdez-vous chaque mois&hellip; sans le savoir ?
               </h1>
               <p className="animate-fade-up delay-200 text-white/80 text-base sm:text-lg leading-relaxed mb-8">
