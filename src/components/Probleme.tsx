@@ -128,8 +128,8 @@ export default function Probleme() {
           </div>
         </div>
 
-        {/* Bandeau Résultat — pleine largeur */}
-        <div className="mt-12 bg-bleu-dark rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
+        {/* Bandeau Résultat — fond gris clair */}
+        <div className="mt-12 bg-gray-100 border border-gray-200 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
           {/* Icône alerte */}
           <div className="w-12 h-12 rounded-full bg-orange/20 flex items-center justify-center shrink-0">
             <svg className="w-7 h-7 text-orange" fill="currentColor" viewBox="0 0 24 24">
@@ -139,10 +139,10 @@ export default function Probleme() {
 
           {/* Texte */}
           <div className="flex-1 text-center sm:text-left">
-            <p className="text-white font-bold text-lg sm:text-xl mb-1">
+            <p className="text-bleu-dark font-bold text-lg sm:text-xl mb-1">
               R&eacute;sultat&nbsp;: &#128073; une partie de vos appels ne sont jamais trait&eacute;s ou rappel&eacute;s trop tard.
             </p>
-            <p className="text-gray-300 text-sm sm:text-base">
+            <p className="text-gray-600 text-sm sm:text-base">
               Et chaque appel manqu&eacute; = une opportunit&eacute; qui part chez un concurrent.
             </p>
           </div>
@@ -150,7 +150,7 @@ export default function Probleme() {
           {/* Bouton CTA */}
           <a
             href="#offre"
-            className="inline-block bg-orange hover:bg-orange-dark text-white font-bold px-6 py-3 rounded-lg transition-colors whitespace-nowrap text-sm sm:text-base"
+            className="inline-block bg-bleu-dark hover:bg-blue-900 text-white font-bold px-6 py-3 rounded-lg transition-colors whitespace-nowrap text-sm sm:text-base"
           >
             Inverser la tendance
           </a>
