@@ -67,8 +67,8 @@ export default function LeboncoinAppels() {
         </div>
 
         {/* Phrase d'accroche */}
-        <p className="text-center font-nunito font-extrabold text-sm sm:text-base md:text-lg">
-          <span className="text-bleu">Avec des appels manqu&eacute;s ou rappel&eacute;s trop tard</span>{" "}
+        <p className="text-center font-nunito font-extrabold text-lg sm:text-xl md:text-2xl">
+          <span className="text-bleu">Avec des appels manqu&eacute;s ou rappel&eacute;s trop tard,</span><br />
           <span className="text-orange font-extrabold italic">votre marge dispara&icirc;t sans faire de bruit&hellip;</span>
         </p>
       </div>
