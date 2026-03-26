@@ -12,55 +12,55 @@ export default function LeboncoinAppels() {
         <div className="grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden shadow-xl mb-12">
           {/* Côté gauche — Statistiques leboncoin */}
           <div className="bg-gray-50 p-8 sm:p-10 border-l-4 border-gray-300">
-            <p className="font-nunito font-bold text-lg sm:text-xl text-gray-500 mb-6">Statistiques d&apos;appels leboncoin</p>
+            <p className="font-nunito font-bold text-xl sm:text-2xl text-gray-500 mb-6">Statistiques d&apos;appels leboncoin</p>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span className="text-xl">&#x1F4DE;</span>
-                <span className="text-base text-gray-600">Nombre total d&apos;appels</span>
+                <span className="text-2xl">&#x1F4DE;</span>
+                <span className="text-xl text-gray-600">Nombre total d&apos;appels</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xl">&#x2705;</span>
-                <span className="text-base text-gray-600">Appels d&eacute;croch&eacute;s</span>
+                <span className="text-2xl">&#x2705;</span>
+                <span className="text-xl text-gray-600">Appels d&eacute;croch&eacute;s</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xl">&#x274C;</span>
-                <span className="text-base text-gray-600">Appels manqu&eacute;s</span>
+                <span className="text-2xl">&#x274C;</span>
+                <span className="text-xl text-gray-600">Appels manqu&eacute;s</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xl">&#x23F1;&#xFE0F;</span>
-                <span className="text-base text-gray-600">Dur&eacute;e des appels</span>
+                <span className="text-2xl">&#x23F1;&#xFE0F;</span>
+                <span className="text-xl text-gray-600">Dur&eacute;e des appels</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xl">&#x1F4C5;</span>
-                <span className="text-base text-gray-600">R&eacute;partition par jour / cr&eacute;neau horaire</span>
+                <span className="text-2xl">&#x1F4C5;</span>
+                <span className="text-xl text-gray-600">R&eacute;partition par jour / cr&eacute;neau horaire</span>
               </div>
             </div>
           </div>
 
           {/* Côté droit — Indicateurs BoosterVO */}
           <div className="bg-bleu p-8 sm:p-10">
-            <p className="font-nunito font-bold text-lg sm:text-xl text-orange mb-4">Indicateurs de performance BoosterVO</p>
-            <p className="text-white/80 text-base font-bold italic mb-5">Les donn&eacute;es Leboncoin&hellip; enrichies et exploit&eacute;es +</p>
+            <p className="font-nunito font-bold text-xl sm:text-2xl text-orange mb-4">Indicateurs de performance BoosterVO</p>
+            <p className="text-white/80 text-xl font-bold italic mb-5">Les donn&eacute;es Leboncoin&hellip; enrichies et exploit&eacute;es +</p>
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <span className="text-orange mt-1">-</span>
-                <span className="text-base text-white">Le nb d&apos;appels manqu&eacute;s rappel&eacute;s</span>
+                <span className="text-xl text-white">Le nb d&apos;appels manqu&eacute;s rappel&eacute;s</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-orange mt-1">-</span>
-                <span className="text-base text-white">Le d&eacute;lai moyen de rappel</span>
+                <span className="text-xl text-white">Le d&eacute;lai moyen de rappel</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-orange mt-1">-</span>
-                <span className="text-base text-white">Le r&eacute;sultat r&eacute;el des appels (docs, RDV, ventes)</span>
+                <span className="text-xl text-white">Le r&eacute;sultat r&eacute;el des appels (docs, RDV, ventes)</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-orange mt-1">-</span>
-                <span className="text-base text-white">Le taux de transformation des appels</span>
+                <span className="text-xl text-white">Le taux de transformation des appels</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-orange mt-1">-</span>
-                <span className="text-base text-white">La marge perdue que vous pouvez r&eacute;cup&eacute;rer</span>
+                <span className="text-xl text-white">La marge perdue que vous pouvez r&eacute;cup&eacute;rer</span>
               </li>
             </ul>
           </div>
