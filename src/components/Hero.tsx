@@ -29,10 +29,7 @@ export default function Hero() {
           {/* Colonne droite — Vidéo (même hauteur que le texte) */}
           <div className="animate-fade-up delay-500 lg:w-1/2 mt-12 lg:mt-0 flex items-stretch">
             <div className="relative w-full rounded-xl overflow-hidden shadow-2xl bg-black/30 border border-white/10 aspect-video lg:aspect-auto">
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-white/60 z-10 pointer-events-none">
-                <svg className="w-16 h-16 mb-3" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
+              <div className="absolute inset-0 flex items-center justify-center text-white/60 z-10 pointer-events-none">
                 <p className="text-sm font-semibold text-center leading-relaxed">
                   Ce que 90&nbsp;% des n&eacute;gociants<br />
                   ne voient jamais sur leurs appels
