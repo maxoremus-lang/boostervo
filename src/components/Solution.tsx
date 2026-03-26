@@ -23,7 +23,7 @@ export default function Solution() {
         <h2 className="font-nunito font-extrabold text-2xl sm:text-3xl md:text-4xl text-center text-bleu mb-2">
           Avec l&apos;Audit BVO, mesurez la marge<br />invisible que vous perdez chaque mois
         </h2>
-        <p className="text-center text-gray-500 text-xl sm:text-2xl md:text-[26px] mb-12">
+        <p className="text-center text-gray-500 text-xl sm:text-2xl md:text-[20px] mb-12">
           Pendant 15 jours, vous voyez ce qui se passe vraiment sur vos appels.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
