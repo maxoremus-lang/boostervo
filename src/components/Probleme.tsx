@@ -37,7 +37,7 @@ export default function Probleme() {
   return (
     <section className="bg-gradient-to-b from-white to-gray-50 py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
-        <h2 className="font-nunito font-extrabold text-2xl sm:text-3xl text-center text-bleu mb-14">
+        <h2 className="font-nunito font-extrabold text-2xl sm:text-3xl md:text-4xl text-center text-bleu mb-14">
           Le probl&egrave;me n&apos;est pas vos annonces,
           <br />
           c&apos;est ce qui se passe apr&egrave;s leur publication
