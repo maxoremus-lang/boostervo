@@ -14,7 +14,7 @@ export default function ChiffreChoc() {
       </div>
 
       {/* Bloc info tracking */}
-      <div className="bg-white py-10 px-4 sm:px-6">
+      <div className="bg-bleu py-10 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-xl px-6 py-5 sm:px-8 sm:py-6 text-center shadow-lg relative border border-gray-200">
             {/* Flèche vers le haut */}
