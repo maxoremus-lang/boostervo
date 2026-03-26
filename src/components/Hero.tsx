@@ -31,8 +31,8 @@ export default function Hero() {
             <div className="relative w-full rounded-xl overflow-hidden shadow-2xl bg-black/30 border border-white/10 aspect-video lg:aspect-auto">
               <div className="absolute inset-0 flex items-center justify-center text-white/60 z-10 pointer-events-none">
                 <p className="text-sm font-semibold text-center leading-relaxed">
-                  Ce que 90&nbsp;% des n&eacute;gociants<br />
-                  ne voient jamais sur leurs appels
+                  Ce que 90&nbsp;% des n&eacute;gociants ne voient pas<br />
+                  le profit cach&eacute; derri&egrave;re les appels manqu&eacute;s ou mal exploit&eacute;s
                 </p>
               </div>
               <video
