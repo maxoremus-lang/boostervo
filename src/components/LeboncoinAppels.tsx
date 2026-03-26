@@ -40,7 +40,7 @@ export default function LeboncoinAppels() {
           {/* Côté droit — Indicateurs BoosterVO */}
           <div className="bg-bleu p-8 sm:p-10">
             <p className="font-nunito font-bold text-lg sm:text-xl text-orange mb-4">Indicateurs de performance BoosterVO</p>
-            <p className="text-white/80 text-sm italic mb-5">Les donn&eacute;es Leboncoin&hellip; enrichies et exploit&eacute;es +</p>
+            <p className="text-white/80 text-base font-bold italic mb-5">Les donn&eacute;es Leboncoin&hellip; enrichies et exploit&eacute;es +</p>
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <span className="text-orange mt-1">-</span>
