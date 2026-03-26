@@ -1,7 +1,7 @@
 export default function LeboncoinAppels() {
   return (
     <section className="bg-white py-16 sm:py-20 px-4 sm:px-6 overflow-hidden">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Titre centré */}
         <h2 className="font-nunito font-extrabold text-2xl sm:text-3xl md:text-4xl text-bleu text-center leading-tight mb-14">
           Leboncoin vous montre les appels.<br />
