@@ -9,7 +9,7 @@ export default function ChiffreChoc() {
           sont perdus ou rappel&eacute;s trop tard
         </p>
         <p className="text-white/60 text-sm sm:text-base italic">
-          (&Eacute;tude Leboncoin &mdash; janvier 2025)
+          (<a href="https://journalauto.com/services/leboncoin-des-nouveautes-pour-booster-les-annonces-automobiles/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80 transition-colors">&Eacute;tude Leboncoin</a> &mdash; janvier 2025)
         </p>
       </div>
     </section>
