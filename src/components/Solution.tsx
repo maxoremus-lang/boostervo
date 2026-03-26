@@ -21,7 +21,7 @@ export default function Solution() {
     <section className="bg-fond py-14 sm:py-20 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
         <h2 className="font-nunito font-extrabold text-xl sm:text-2xl md:text-3xl text-center text-bleu mb-2">
-          Avec l&apos;Audit BVO, r&eacute;v&eacute;lez la marge invisible que vous perdez chaque mois
+          Avec l&apos;Audit BVO, r&eacute;v&eacute;lez la marge<br />invisible que vous perdez chaque mois
         </h2>
         <p className="text-center text-gray-500 text-sm sm:text-base mb-12">
           Pendant 15 jours, vous voyez ce qui se passe vraiment sur vos appels.
