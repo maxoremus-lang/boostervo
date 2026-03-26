@@ -16,10 +16,10 @@ export default function ChiffreChoc() {
       {/* Bloc info tracking */}
       <div className="bg-white py-10 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-bleu-dark rounded-xl px-6 py-5 sm:px-8 sm:py-6 text-center shadow-lg relative">
+          <div className="bg-white rounded-xl px-6 py-5 sm:px-8 sm:py-6 text-center shadow-lg relative border border-gray-200">
             {/* Flèche vers le haut */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-bleu-dark rotate-45" />
-            <p className="text-white/80 text-sm sm:text-base leading-relaxed relative z-10">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-white rotate-45 border-l border-t border-gray-200" />
+            <p className="text-gray-500 text-sm sm:text-base leading-relaxed relative z-10">
               Si vous publiez en automatique vos annonces sur Leboncoin, avec votre
               abonnement vous avez acc&egrave;s &agrave; vos statistiques de tracking o&ugrave; vous
               verrez{" "}
