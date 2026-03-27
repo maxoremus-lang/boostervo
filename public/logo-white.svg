@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="145.99789mm"
+   height="22.058645mm"
+   viewBox="0 0 145.99789 22.058645"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1"><clipPath
+       id="clip0-7-2-6"><rect
+         x="37"
+         y="742"
+         width="20"
+         height="21"
+         id="rect1-6-4-3" /></clipPath></defs><g
+     id="layer1"
+     transform="translate(-30.128559,-124.16163)"><g
+       clip-path="url(#clip0-7-2-6)"
+       transform="matrix(1.0504118,0,0,1.0504118,-8.7366748,-655.24394)"
+       id="g8-4-8"
+       style="fill:#ffffff;fill-opacity:1"><path
+         d="m 38.2491,742 c -1.6813,0 -1.5843,6.61 -0.194,10.109 1.3903,3.499 5.5289,11.103 8.5359,10.887 3.007,-0.216 7.9862,-8.813 9.5059,-12.183 1.5196,-3.37 0.9376,-8.251 -0.3881,-8.035 -1.3256,0.216 -4.6235,9.504 -7.5658,9.331 C 45.2007,751.936 39.9304,742 38.2491,742 Z"
+         fill="#004386"
+         fill-rule="evenodd"
+         id="path7-2-2"
+         style="fill:#ffffff;fill-opacity:1" /></g><g
+       id="g6"
+       transform="translate(-3.3792668,-51.815424)"><text
+         x="54.429226"
+         y="194.54926"
+         class="text-base"
+         id="text2-7"
+         style="font-weight:900;font-size:21.4434px;font-family:Montserrat, 'Helvetica Neue', 'Arial Black', Arial, sans-serif;letter-spacing:-0.415035px;fill:#ffffff;stroke-width:0.138345"><tspan
+           class="blue"
+           id="tspan1-6"
+           style="fill:#ffffff;fill-opacity:1;stroke-width:0.138345">Booster</tspan></text><text
+         x="142.72086"
+         y="194.63264"
+         class="text-base"
+         id="text6-1"
+         style="font-weight:900;font-size:23.5703px;font-family:Montserrat, 'Helvetica Neue', 'Arial Black', Arial, sans-serif;letter-spacing:-0.456201px;stroke-width:0.152067"><tspan
+           class="orange"
+           id="tspan6-8"
+           style="fill:#ff6600;stroke-width:0.152067">VO</tspan></text><ellipse
+         style="fill:#ff6600;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-dasharray:none"
+         id="path5-9"
+         cx="45.054859"
+         cy="180.64177"
+         rx="2.5887949"
+         ry="2.5224156" /></g></g></svg>

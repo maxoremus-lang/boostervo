@@ -4,11 +4,11 @@ export default function Footer() {
       <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/logo.svg"
+          src="/logo-white.svg"
           alt="BoosterVO"
           width={130}
           height={34}
-          className="h-8 w-auto brightness-0 invert"
+          className="h-8 w-auto"
         />
         <p className="text-white/50 text-xs text-center sm:text-right">
           &copy; {new Date().getFullYear()} BoosterVO. Tous droits
