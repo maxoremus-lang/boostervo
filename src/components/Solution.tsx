@@ -29,7 +29,7 @@ export default function Solution() {
         {/* En-tête aligné à gauche */}
         <div className="max-w-3xl mb-20">
           <h2 className="font-nunito text-[36px] font-extrabold text-bleu leading-[1.1] tracking-tight mb-8">
-            Avec l&apos;Audit BVO, mesurez la marge invisible que vous perdez chaque mois
+            Avec l&apos;Audit BVO, mesurez la marge<br />invisible que vous perdez chaque mois
           </h2>
           <p className="font-opensans text-lg sm:text-xl text-gray-500 leading-relaxed">
             Pendant 15 jours, vous voyez ce qui se passe vraiment sur vos appels.
