@@ -23,7 +23,7 @@ export default function ChiffreChoc() {
               Si vous publiez en automatique vos annonces sur Leboncoin, avec votre
               abonnement vous avez acc&egrave;s &agrave; vos statistiques de tracking o&ugrave; vous
               verrez{" "}
-              <span className="text-orange font-semibold">qu&apos;une partie de vos appels ne vous rapporte rien.</span>
+              <span className="text-orange font-semibold">votre taux d&apos;appels manqu&eacute;s qui ne vous rapporte rien.</span>
             </p>
           </div>
         </div>
