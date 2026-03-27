@@ -3,20 +3,20 @@ export default function Solution() {
     {
       num: "1",
       icon: "settings_input_antenna",
-      titre: "On installe un numéro de tracking sur toutes les annonces que vous publiez",
-      desc: "Un numéro de suivi dédié capte chaque appel entrant, sans changer vos habitudes.",
+      titre: "On installe un numéro de tracking sur toutes vos annonces Lbc",
+      desc: "Ce numéro transfère automatiquement les appels sur votre mobile ou votre Fixe. De plus chaque appel est capté, classifié et analysé,",
     },
     {
       num: "2",
       icon: "query_stats",
       titre: "On mesure tout pendant 15 jours",
-      desc: "Volume d\u2019appels, appels manqués, heures creuses, annonces les plus performantes.",
+      desc: "Volume d\u2019appels, appels décrochés, appels manqués, délais de rappels, opportunités définitivement perdues, heures creuses.",
     },
     {
       num: "3",
       icon: "assignment_turned_in",
       titre: "On vous livre un diagnostic chiffré",
-      desc: "Vous savez exactement où vous perdez de l\u2019argent et comment le récupérer.",
+      desc: "Vous voyez enfin comment vos appels sont réellement gérés et combien ils vous coûtent en chiffre d\u2019affaires et en marge.",
     },
   ];
 
