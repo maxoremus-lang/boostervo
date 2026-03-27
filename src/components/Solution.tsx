@@ -9,7 +9,7 @@ export default function Solution() {
     {
       num: "2",
       icon: "query_stats",
-      titre: "On mesure tous les appels de vos Annonces sur une durée de 15 jours",
+      titre: "On mesure tous les appels de vos annonces pendant 15 jours",
       desc: "Volume d\u2019appels, appels décrochés, appels manqués, délais de rappels, opportunités définitivement perdues, heures creuses.",
     },
     {
