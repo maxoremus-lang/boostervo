@@ -1,4 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="320" height="80" viewBox="0 0 320 80">
-  <rect width="320" height="80" fill="#1B4F9B" rx="8"/>
-  <text x="160" y="50" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">BoosterVO</text>
-</svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="145.99786mm"
+   height="22.058651mm"
+   viewBox="0 0 145.99786 22.058651"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1"><clipPath
+       id="clip0-7-2-6-5"><rect
+         x="37"
+         y="742"
+         width="20"
+         height="21"
+         id="rect1-6-4-3-9" /></clipPath></defs><g
+     id="layer1"
+     transform="translate(-31.138183,-125.91243)"><text
+       x="52.059578"
+       y="144.48465"
+       class="text-base"
+       id="text2-7-4"
+       style="font-weight:900;font-size:21.4434px;font-family:Montserrat, 'Helvetica Neue', 'Arial Black', Arial, sans-serif;letter-spacing:-0.415035px;stroke-width:0.138345"><tspan
+         class="blue"
+         id="tspan1-6-0"
+         style="fill:#1b4f9b;fill-opacity:1;stroke-width:0.138345">Booster</tspan></text><text
+       x="140.35121"
+       y="144.56804"
+       class="text-base"
+       id="text6-1-7"
+       style="font-weight:900;font-size:23.5703px;font-family:Montserrat, 'Helvetica Neue', 'Arial Black', Arial, sans-serif;letter-spacing:-0.456201px;stroke-width:0.152067"><tspan
+         class="orange"
+         id="tspan6-8-6"
+         style="fill:#ff6600;stroke-width:0.152067">VO</tspan></text><g
+       id="g6-3"
+       transform="translate(-27.714145,-32.229581)"><g
+         clip-path="url(#clip0-7-2-6-5)"
+         transform="matrix(1.0504118,0,0,1.0504118,19.987093,-621.26354)"
+         id="g8-4-8-6"
+         style="fill:#1b4f9b;fill-opacity:1"><path
+           d="m 38.2491,742 c -1.6813,0 -1.5843,6.61 -0.194,10.109 1.3903,3.499 5.5289,11.103 8.5359,10.887 3.007,-0.216 7.9862,-8.813 9.5059,-12.183 1.5196,-3.37 0.9376,-8.251 -0.3881,-8.035 -1.3256,0.216 -4.6235,9.504 -7.5658,9.331 C 45.2007,751.936 39.9304,742 38.2491,742 Z"
+           fill="#004386"
+           fill-rule="evenodd"
+           id="path7-2-2-1"
+           style="fill:#1b4f9b;fill-opacity:1" /></g><ellipse
+         style="fill:#ff6600;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-dasharray:none"
+         id="path5-9-5"
+         cx="70.399361"
+         cy="162.80675"
+         rx="2.5887949"
+         ry="2.5224156" /></g></g></svg>
