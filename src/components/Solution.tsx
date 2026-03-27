@@ -15,7 +15,7 @@ export default function Solution() {
     {
       num: "3",
       icon: "assignment_turned_in",
-      titre: "On vous livre un diagnostic complet pour une prise de décision claire",
+      titre: "On vous livre un rapport complet pour une prise de décision claire",
       desc: "Vous voyez enfin comment vos appels sont réellement gérés et combien ils vous coûtent en chiffre d\u2019affaires et en marge.",
     },
   ];
