@@ -6,9 +6,9 @@ export default function Footer() {
         <img
           src="/logo-white.svg"
           alt="BoosterVO"
-          width={130}
-          height={34}
-          className="h-8 w-auto"
+          width={91}
+          height={24}
+          className="h-[22px] w-auto"
         />
         <p className="text-white/50 text-xs text-center sm:text-right">
           &copy; {new Date().getFullYear()} BoosterVO. Tous droits

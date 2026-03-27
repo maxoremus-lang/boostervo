@@ -12,9 +12,9 @@ export default function Navbar() {
         <img
           src="/logo.svg"
           alt="BoosterVO"
-          width={160}
-          height={40}
-          className="h-9 w-auto"
+          width={112}
+          height={28}
+          className="h-[25px] w-auto"
         />
         <a
           href="#audit"
