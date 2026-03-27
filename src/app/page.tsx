@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Probleme from "@/components/Probleme";
 import ChiffreChoc from "@/components/ChiffreChoc";
 import LeboncoinAppels from "@/components/LeboncoinAppels";
+import FAQLeboncoin from "@/components/FAQLeboncoin";
 import Solution from "@/components/Solution";
 import Resultats from "@/components/Resultats";
 import Pourquoi from "@/components/Pourquoi";
@@ -20,6 +21,7 @@ export default function Home() {
         <Probleme />
         <ChiffreChoc />
         <LeboncoinAppels />
+        <FAQLeboncoin />
         <Solution />
         <Resultats />
         <Pourquoi />
