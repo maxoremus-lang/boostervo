@@ -3,19 +3,19 @@ export default function Solution() {
     {
       num: "1",
       icon: "settings_input_antenna",
-      titre: "On installe un numéro de tracking sur toutes vos annonces Lbc",
+      titre: "On installe un n°de tracking sur toutes vos annonces Leboncoin",
       desc: "Ce numéro transfère automatiquement les appels sur votre mobile ou votre Fixe. De plus chaque appel est capté, classifié et analysé,",
     },
     {
       num: "2",
       icon: "query_stats",
-      titre: "On mesure tout pendant 15 jours",
+      titre: "On mesure tous les appels de vos Annonces sur une durée de 15 jours",
       desc: "Volume d\u2019appels, appels décrochés, appels manqués, délais de rappels, opportunités définitivement perdues, heures creuses.",
     },
     {
       num: "3",
       icon: "assignment_turned_in",
-      titre: "On vous livre un diagnostic chiffré",
+      titre: "On vous livre un diagnostic complet pour une prise de décision claire",
       desc: "Vous voyez enfin comment vos appels sont réellement gérés et combien ils vous coûtent en chiffre d\u2019affaires et en marge.",
     },
   ];
