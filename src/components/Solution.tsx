@@ -3,7 +3,7 @@ export default function Solution() {
     {
       num: "1",
       icon: "settings_input_antenna",
-      titre: "On installe un tracking invisible sur vos annonces",
+      titre: "On installe un numéro de tracking sur toutes les annonces que vous publiez",
       desc: "Un numéro de suivi dédié capte chaque appel entrant, sans changer vos habitudes.",
     },
     {
