@@ -28,10 +28,7 @@ export default function Solution() {
       <div className="max-w-7xl mx-auto">
         {/* En-tête aligné à gauche */}
         <div className="max-w-3xl mb-20">
-          <span className="font-opensans text-xs uppercase tracking-[0.2em] text-orange font-bold mb-6 block">
-            Processus d&apos;audit
-          </span>
-          <h2 className="font-nunito text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-bleu leading-[1.1] tracking-tight mb-8">
+          <h2 className="font-nunito text-[36px] font-extrabold text-bleu leading-[1.1] tracking-tight mb-8">
             Avec l&apos;Audit BVO, mesurez la marge invisible que vous perdez chaque mois
           </h2>
           <p className="font-opensans text-lg sm:text-xl text-gray-500 leading-relaxed">
