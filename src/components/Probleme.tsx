@@ -109,13 +109,13 @@ export default function Probleme() {
 
           {/* Colonne droite — Texte + raisons */}
           <div className="lg:w-7/12">
-            <p className="text-gray-700 text-lg sm:text-xl mb-8 font-bold">
+            <p className="text-gray-700 text-lg sm:text-xl mb-8">
               Vos annonces g&eacute;n&egrave;rent des appels. Beaucoup d&apos;appels&hellip;
               <br className="hidden sm:block" />
               Mais dans la r&eacute;alit&eacute; du terrain&hellip;
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
               {raisons.map((item) => (
                 <div key={item.text} className="flex items-center gap-3 bg-white rounded-xl px-5 py-4 border border-gray-100 shadow-sm">
                   <div className="w-10 h-10 rounded-lg bg-bleu/5 flex items-center justify-center shrink-0 text-bleu">
@@ -125,35 +125,17 @@ export default function Probleme() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* Bandeau Résultat — fond gris clair */}
-        <div className="mt-12 bg-gray-100 border border-gray-200 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
-          {/* Icône alerte */}
-          <div className="w-12 h-12 rounded-full bg-orange/20 flex items-center justify-center shrink-0">
-            <svg className="w-7 h-7 text-orange" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-2h2v2h-2zm0-4V7h2v6h-2z" />
-            </svg>
+            {/* Résultat — encadré orange */}
+            <div className="bg-orange/10 border-l-4 border-orange rounded-xl px-6 py-5">
+              <p className="text-orange font-bold text-base sm:text-lg mb-1">
+                R&eacute;sultat&nbsp;: une partie de vos appels ne sont jamais trait&eacute;s ou rappel&eacute;s trop tard.
+              </p>
+              <p className="text-gray-600 text-sm sm:text-base italic">
+                Et chaque appel manqu&eacute; = une opportunit&eacute; qui part chez un concurrent.
+              </p>
+            </div>
           </div>
-
-          {/* Texte */}
-          <div className="flex-1 text-center sm:text-left">
-            <p className="text-bleu-dark font-bold text-lg sm:text-xl mb-1">
-              R&eacute;sultat&nbsp;: &#128073; une partie de vos appels ne sont jamais trait&eacute;s ou rappel&eacute;s trop tard.
-            </p>
-            <p className="text-gray-600 text-sm sm:text-base">
-              Et chaque appel manqu&eacute; = une opportunit&eacute; qui part chez un concurrent.
-            </p>
-          </div>
-
-          {/* Bouton CTA */}
-          <a
-            href="#offre"
-            className="inline-block bg-bleu-dark hover:bg-blue-900 text-white font-bold px-6 py-3 rounded-lg transition-colors whitespace-nowrap text-sm sm:text-base"
-          >
-            Inverser la tendance
-          </a>
         </div>
       </div>
     </section>
