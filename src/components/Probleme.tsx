@@ -43,15 +43,14 @@ export default function Probleme() {
           c&apos;est ce qui se passe apr&egrave;s leur publication
         </h2>
 
-        <div className="flex flex-col lg:flex-row lg:gap-16 lg:items-start">
+        <div className="flex flex-col lg:flex-row lg:gap-16 lg:items-start mb-10">
           {/* Colonne gauche — Schéma entonnoir */}
           <div className="lg:w-5/12 mb-10 lg:mb-0">
             <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 relative overflow-hidden">
-              {/* Ligne décorative */}
               <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-green-400 via-orange to-red-500" />
 
               <div className="ml-4">
-                {/* Étape 1 — Annonces */}
+                {/* Étape 1 */}
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center shrink-0">
                     <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -64,14 +63,13 @@ export default function Probleme() {
                   </div>
                 </div>
 
-                {/* Flèche */}
                 <div className="flex items-center gap-4 mb-6 pl-4">
                   <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
                   </svg>
                 </div>
 
-                {/* Étape 2 — Appels */}
+                {/* Étape 2 */}
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 rounded-full bg-orange/10 flex items-center justify-center shrink-0">
                     <svg className="w-6 h-6 text-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -84,14 +82,13 @@ export default function Probleme() {
                   </div>
                 </div>
 
-                {/* Flèche */}
                 <div className="flex items-center gap-4 mb-6 pl-4">
                   <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
                   </svg>
                 </div>
 
-                {/* Étape 3 — Perdu */}
+                {/* Étape 3 */}
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                     <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -107,7 +104,7 @@ export default function Probleme() {
             </div>
           </div>
 
-          {/* Colonne droite — Texte + raisons */}
+          {/* Colonne droite */}
           <div className="lg:w-7/12">
             <p className="text-gray-700 text-lg sm:text-xl mb-8">
               Vos annonces g&eacute;n&egrave;rent des appels. Beaucoup d&apos;appels&hellip;
@@ -115,7 +112,7 @@ export default function Probleme() {
               Mais dans la r&eacute;alit&eacute; du terrain&hellip;
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {raisons.map((item) => (
                 <div key={item.text} className="flex items-center gap-3 bg-white rounded-xl px-5 py-4 border border-gray-100 shadow-sm">
                   <div className="w-10 h-10 rounded-lg bg-bleu/5 flex items-center justify-center shrink-0 text-bleu">
@@ -125,17 +122,32 @@ export default function Probleme() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
 
-            {/* Résultat — encadré orange */}
-            <div className="bg-orange/10 border-l-4 border-orange rounded-xl px-6 py-5">
-              <p className="text-orange font-bold text-base sm:text-lg mb-1">
-                R&eacute;sultat&nbsp;: une partie de vos appels ne sont jamais trait&eacute;s ou rappel&eacute;s trop tard.
+        {/* Bandeau résultat */}
+        <div className="bg-gray-100 rounded-2xl px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-orange flex items-center justify-center shrink-0 mt-0.5">
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold text-gray-900 text-base sm:text-lg">
+                R&eacute;sultat&nbsp;: 👉 une partie de vos appels ne sont jamais trait&eacute;s ou rappel&eacute;s trop tard.
               </p>
-              <p className="text-gray-600 text-sm sm:text-base italic">
+              <p className="text-gray-500 text-sm mt-1 italic">
                 Et chaque appel manqu&eacute; = une opportunit&eacute; qui part chez un concurrent.
               </p>
             </div>
           </div>
+          <a
+            href="#offre"
+            className="shrink-0 bg-bleu-dark text-white font-bold px-6 py-3 rounded-xl hover:bg-bleu transition-colors text-sm sm:text-base text-center"
+          >
+            Inverser la tendance
+          </a>
         </div>
       </div>
     </section>
