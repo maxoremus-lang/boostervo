@@ -3,20 +3,44 @@ import { useState } from "react";
 
 const faqItems = [
   {
-    question: "Leboncoin me donne déjà des statistiques, qu'est-ce qui manque ?",
-    answer: "Leboncoin vous montre les appels. Pas ce qu'ils deviennent.",
+    question: "Je rappelle déjà tous les appels manqués, pourquoi faire l'audit ?",
+    answer: [
+      "Aujourd'hui, vous avez des appels manqués… et vous les rappelez, c'est une excellente démarche.",
+      "Maintenant, avez-vous une vision précise de l'efficacité de ces rappels ? Combien d'appels sont réellement rappelés, à quel moment, sous quel délai, et avec quel impact sur vos ventes ?",
+      "Selon les analyses réalisées par BoosterVO :\n• Appel décroché immédiatement : 20% à 40% des contacts peuvent mener à un RDV ou une vente\n• Rappel rapide (< 10 min) : 10% à 20%\n• Rappel tardif (> 30 min) : 2% à 10%",
+      "Autrement dit, plus le délai de rappel augmente, plus la probabilité de conversion s'effondre.",
+    ],
   },
   {
-    question: "Puis-je savoir avec Leboncoin si mes appels génèrent des ventes ?",
-    answer: "Non. Vous voyez l'appel… pas le résultat.",
+    question: "Pourquoi c'est gratuit ?",
+    answer: [
+      "Parce qu'avant de parler solution, il faut déjà savoir s'il y a un problème — et qu'on ne peut pas corriger ce que l'on ne mesure pas.",
+      "Parce qu'il est essentiel que vous sachiez si une fuite de marge invisible impacte la rentabilité de vos annonces Leboncoin… sans même que vous le voyiez.",
+      "L'Audit BVO fonctionne exactement comme un bilan de santé : il permet de détecter un problème avant qu'il ne devienne critique. Ensuite, libre à vous de décider quoi faire des résultats.",
+    ],
   },
   {
-    question: "Je rappelle mes appels manqués, quel est le problème ?",
-    answer: "La vraie question est : combien, à quelle vitesse… et avec quel résultat ?",
+    question: "Est-ce que ça va changer ma façon de travailler ?",
+    answer: [
+      "Non, absolument pas. Vos annonces restent identiques, votre téléphone (fixe ou mobile) continue de sonner normalement.",
+      "C'est complètement transparent pour vous comme pour les prospects qui cherchent à vous joindre.",
+      "La seule différence : vous voyez enfin ce qui se passe réellement sur vos appels.",
+    ],
   },
   {
-    question: "Leboncoin permet-il de mesurer mes pertes ?",
-    answer: "Non. Il mesure l'activité. Pas l'argent que vous perdez.",
+    question: "Est-ce que je peux perdre des appels pendant la période de tracking ?",
+    answer: [
+      "Non. À chaque appel sur le numéro de tracking, votre téléphone sonne instantanément, exactement comme aujourd'hui.",
+      "Le tracking est totalement transparent : il ne bloque rien, ne ralentit rien et n'interfère pas avec votre activité.",
+    ],
+  },
+  {
+    question: "Pourquoi 15 jours de tracking ?",
+    answer: [
+      "Parce que 15 jours suffisent pour obtenir une vision fiable et exploitable de votre flux d'appels.",
+      "Cette période permet d'analyser vos données et de les projeter sur un mois complet afin d'identifier précisément :\n• Ce que vous perdez\n• À quel moment vous le perdez\n• Combien vous pourriez récupérer",
+      "L'Audit BVO permet justement de mesurer ces éléments pour identifier ce que vous pouvez améliorer… et récupérer.",
+    ],
   },
 ];
 
@@ -32,7 +56,7 @@ export default function FAQLeboncoin() {
       <div className="max-w-3xl mx-auto">
         {/* Titre */}
         <h2 className="font-nunito font-extrabold text-2xl sm:text-3xl md:text-4xl text-bleu text-center leading-tight mb-12">
-          FAQ – Leboncoin suffit-il vraiment ?
+          Questions-réponses sur l&apos;audit BoosterVO
         </h2>
 
         {/* Accordéon */}
@@ -60,12 +84,16 @@ export default function FAQLeboncoin() {
 
               <div
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                  openIndex === index ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                  openIndex === index ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
-                <p className="px-6 pb-5 text-gray-600 text-lg leading-relaxed">
-                  {item.answer}
-                </p>
+                <div className="px-6 pb-5 text-gray-600 text-lg leading-relaxed space-y-3">
+                  {item.answer.map((paragraph, i) => (
+                    <p key={i} className="whitespace-pre-line">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
