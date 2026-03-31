@@ -101,8 +101,8 @@ export default function FAQLeboncoin() {
 
         {/* Punchline de conclusion */}
         <p className="text-center font-nunito font-extrabold text-lg sm:text-xl md:text-2xl mt-12">
-          <span className="text-bleu">Leboncoin vous montre ce qui sonne.</span><br />
-          <span className="text-orange italic">BoosterVO vous montre ce que ça rapporte.</span>
+          <span className="text-bleu">Leboncoin vous montre ce qui sonne</span><br />
+          <span className="text-orange">BoosterVO vous montre la marge que vous pouvez récupérer avec une solution &ldquo;Zero appel manqué&rdquo;</span>
         </p>
       </div>
     </section>
