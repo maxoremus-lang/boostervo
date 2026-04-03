@@ -693,6 +693,8 @@
 
         <div class="input-area">
             <button class="btn-end" onclick="endSession()">Terminer</button>
+            <button class="btn-end" id="btnExport" style="display:none; border-color: rgba(52,211,153,0.3); color: #34d399;" onclick="exportConversation()">📄 Texte</button>
+            <button class="btn-end" id="btnExportAudio" style="display:none; border-color: rgba(139,92,246,0.3); color: #a78bfa;" onclick="exportAudio()">🎧 Audio</button>
             <input type="text" class="input-text" id="inputText" placeholder="Tapez ou utilisez le micro..." />
             <button class="btn-icon btn-mic" id="btnMic" onclick="toggleMic()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
@@ -725,6 +727,12 @@ let isRecording = false;
 let recognition = null;
 let synthesis = window.speechSynthesis;
 let isSpeaking = false;
+
+// ─── AUDIO RECORDING ───
+let mediaRecorder = null;
+let audioChunks = [];
+let audioStream = null;
+let isSessionRecording = false;
 
 // ─── SYSTEM PROMPTS ───
 const PERSONAS = {
@@ -811,23 +819,75 @@ RÈGLES :
 - Sois encourageant mais honnête dans l'évaluation
 - La note doit refléter : pertinence, qualité de l'argumentation, ton commercial, utilisation des données clés (40% appels manqués, 5000-8000€ de marge)
 - Précise à chaque objection le type de négociant qui la pose pour contextualiser
-- Après 10 questions, donne un SCORE GLOBAL avec un résumé des forces et faiblesses
+- Après 10 questions, donne un SCORE GLOBAL DÉTAILLÉ :
+
+═══ SCORE GLOBAL DU QUIZ ═══
+Score : X/100 (total des notes sur 10 pour chaque question)
+
+📊 Répartition par catégorie d'objection :
+- Objections "pas le temps / rappeler plus tard" : X/10
+- Objections "j'ai déjà un système" : X/10
+- Objections "combien ça coûte" : X/10
+- Objections "je ne rate pas d'appels" : X/10
+- Objections "envoyez un mail" : X/10
+
+✅ Points forts (top 3 réponses)
+❌ Faiblesses (top 3 réponses à retravailler)
+💡 Conseil principal
+🎯 Les 3 objections à repratiquer en priorité
 
 Commence par te présenter brièvement et pose la première objection.`;
 
 const SYSTEM_PROMPT_FEEDBACK = `
 INSTRUCTION SPÉCIALE - FIN DE SESSION :
 Quand le setter dit "TERMINER" ou que tu détectes la fin de la conversation :
-1. Sors du rôle du négociant
-2. Donne un FEEDBACK COMPLET en tant que formateur :
-   - Score global /20
-   - Respect du script (accroche, découverte, closing) /5
-   - Gestion des objections /5
-   - Ton et attitude commerciale /5
-   - Capacité à décrocher le RDV /5
-   - Points forts ✅
-   - Axes d'amélioration ❌
-   - Conseil principal 💡
+1. Sors IMMÉDIATEMENT du rôle du négociant
+2. Deviens un formateur commercial expert BoosterVO et donne une ANALYSE COMPLÈTE structurée en 4 parties :
+
+═══ PARTIE 1 : SCORE GLOBAL ═══
+Score global : X/20
+Décomposition :
+- Respect du script (accroche → découverte → closing) : X/5
+- Gestion des objections : X/5
+- Ton et posture commerciale (confiance, fluidité, écoute active) : X/5
+- Capacité à décrocher le RDV / avancer dans le processus : X/5
+
+═══ PARTIE 2 : ANALYSE PHRASE PAR PHRASE ═══
+Reprends les phrases clés du setter dans l'ordre chronologique et analyse-les :
+Pour chaque intervention importante du setter, indique :
+✅ Ce qui est bien (et pourquoi)
+❌ Ce qui est à améliorer (et pourquoi)
+💡 Ce qu'il aurait dû dire à la place
+
+Exemple de format :
+📝 Le setter a dit : "[sa phrase]"
+→ ✅ Bon point : [explication]
+→ ❌ Problème : [explication]
+→ 💡 Version améliorée : "[la phrase idéale]"
+
+═══ PARTIE 3 : COMPARAISON AVEC LE SCRIPT IDÉAL ═══
+Reprends les 3 étapes du script BoosterVO et évalue ce que le setter a fait vs ce qu'il aurait dû faire :
+
+🎯 ÉTAPE 1 — ACCROCHE
+- Script idéal : Se présenter clairement, mentionner qu'on travaille avec des négociants VO, citer le chiffre de 40% d'appels manqués (étude Leboncoin janvier 2025), annoncer la récupération de 1500-3000€ de marge
+- Ce que le setter a fait : [résumé]
+- Écart : [analyse]
+
+🎯 ÉTAPE 2 — DÉCOUVERTE
+- Script idéal : Demander si le négociant a les stats Leboncoin, combien d'appels il reçoit, combien il en rate, quel est son délai de rappel, souligner que Leboncoin ne donne pas ces 2 infos
+- Ce que le setter a fait : [résumé]
+- Écart : [analyse]
+
+🎯 ÉTAPE 3 — CLOSING
+- Script idéal : Proposer l'audit gratuit de 15 jours, expliquer qu'on va mesurer (pas supposer), proposer d'envoyer la vidéo de 4 minutes, prendre le mail, fixer un créneau de rappel
+- Ce que le setter a fait : [résumé]
+- Écart : [analyse]
+
+═══ PARTIE 4 : SYNTHÈSE ET PLAN D'ACTION ═══
+✅ Points forts (top 3)
+❌ Axes d'amélioration prioritaires (top 3)
+💡 Conseil principal pour la prochaine session
+🎯 Objectif à travailler : [un objectif précis et mesurable]
 `;
 
 // ─── INIT ───
@@ -881,6 +941,9 @@ function startChat() {
 
     document.getElementById('chatContainer').style.display = 'flex';
     conversationHistory = [];
+
+    // Démarrer l'enregistrement audio de la session
+    startSessionRecording();
 
     let systemPrompt;
     if (currentMode === 'simulation') {
@@ -987,13 +1050,61 @@ async function sendMessage() {
 
 function endSession() {
     if (conversationHistory.length < 3) {
-        // Nothing to end
         resetToMenu();
         return;
     }
     addMessage('system', '🏁 Fin de session — Génération du feedback...');
     conversationHistory.push({ role: 'user', content: 'TERMINER — Donne-moi le feedback complet de cette session.' });
-    callAPI(conversationHistory);
+    callAPI(conversationHistory).then(() => {
+        document.getElementById('btnExport').style.display = 'inline-block';
+        if (isSessionRecording) {
+            stopSessionRecording();
+            document.getElementById('btnExportAudio').style.display = 'inline-block';
+        }
+    });
+}
+
+function exportConversation() {
+    const now = new Date();
+    const date = now.toLocaleDateString('fr-FR');
+    const heure = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const modeLabel = currentMode === 'simulation' ? 
+        `Simulation d'appel — ${currentPersona?.name || 'Inconnu'}` : 
+        'Quiz Objections';
+
+    let transcript = '';
+    transcript += '═══════════════════════════════════════════════════\n';
+    transcript += '       BOOSTERVO — RETRANSCRIPTION ENTRAÎNEMENT\n';
+    transcript += '═══════════════════════════════════════════════════\n\n';
+    transcript += `Setter      : ${config.setterName}\n`;
+    transcript += `Mode        : ${modeLabel}\n`;
+    transcript += `Date        : ${date} à ${heure}\n`;
+    transcript += '───────────────────────────────────────────────────\n\n';
+
+    conversationHistory.forEach(msg => {
+        if (msg.role === 'system') return;
+        
+        const label = msg.role === 'user' ? 
+            `🎯 ${config.setterName}` : 
+            (currentMode === 'simulation' ? '🏪 Négociant' : '🎓 Formateur');
+        
+        transcript += `${label} :\n`;
+        transcript += `${msg.content}\n\n`;
+    });
+
+    transcript += '───────────────────────────────────────────────────\n';
+    transcript += `Session terminée le ${date} à ${heure}\n`;
+    transcript += '═══════════════════════════════════════════════════\n';
+
+    // Télécharger le fichier
+    const blob = new Blob([transcript], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const filename = `BVO_Training_${config.setterName}_${now.toISOString().slice(0,10)}_${now.toISOString().slice(11,16).replace(':','h')}.txt`;
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 function resetToMenu() {
@@ -1001,10 +1112,64 @@ function resetToMenu() {
     document.getElementById('chatMessages').innerHTML = '';
     document.getElementById('modeBadge').style.display = 'none';
     document.getElementById('modeSelector').style.display = 'flex';
+    document.getElementById('btnExport').style.display = 'none';
+    document.getElementById('btnExportAudio').style.display = 'none';
+    if (isSessionRecording) stopSessionRecording();
     conversationHistory = [];
     currentMode = null;
     currentPersona = null;
     synthesis.cancel();
+}
+
+// ─── SESSION AUDIO RECORDING ───
+async function startSessionRecording() {
+    try {
+        audioChunks = [];
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm;codecs=opus' });
+        
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                audioChunks.push(event.data);
+            }
+        };
+
+        mediaRecorder.start(1000); // Enregistre par chunks d'1 seconde
+        isSessionRecording = true;
+        addMessage('system', '🔴 Enregistrement audio de la session activé');
+    } catch (err) {
+        console.warn('Impossible d\'activer l\'enregistrement audio :', err);
+        addMessage('system', '⚠️ Micro non disponible — enregistrement audio désactivé');
+        isSessionRecording = false;
+    }
+}
+
+function stopSessionRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+    }
+    if (audioStream) {
+        audioStream.getTracks().forEach(track => track.stop());
+        audioStream = null;
+    }
+    isSessionRecording = false;
+}
+
+function exportAudio() {
+    if (audioChunks.length === 0) {
+        addMessage('system', '⚠️ Aucun audio enregistré.');
+        return;
+    }
+
+    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const now = new Date();
+    const filename = `BVO_Audio_${config.setterName}_${now.toISOString().slice(0,10)}_${now.toISOString().slice(11,16).replace(':','h')}.webm`;
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 // ─── SPEECH RECOGNITION ───
