@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BoosterVO — Entraînement Setter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bvo-blue: #1B4F9B;
+            --bvo-blue-dark: #143d7a;
+            --bvo-blue-light: #2a6bc7;
+            --bvo-orange: #FF6600;
+            --bvo-orange-dark: #e55a00;
+            --bvo-orange-glow: rgba(255, 102, 0, 0.15);
+            --bg-primary: #0a0f1e;
+            --bg-secondary: #111827;
+            --bg-card: #1a2236;
+            --bg-message-bot: #1e2a42;
+            --bg-message-user: var(--bvo-blue);
+            --text-primary: #f0f2f7;
+            --text-secondary: #8b95a8;
+            --text-muted: #5a6478;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ─── HEADER ─── */
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-mark {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--bvo-blue) 0%, var(--bvo-blue-light) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 16px;
+            color: white;
+            letter-spacing: -0.5px;
+            box-shadow: 0 4px 12px rgba(27, 79, 155, 0.4);
+        }
+
+        .header-title {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .mode-badge {
+            background: var(--bvo-orange-glow);
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            color: var(--bvo-orange);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ─── MODE SELECTOR ─── */
+        .mode-selector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 40px 20px;
+            gap: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mode-selector h2 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 26px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mode-selector p {
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 440px;
+            line-height: 1.6;
+            margin-top: -10px;
+        }
+
+        .mode-cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .mode-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 30px 26px;
+            width: 280px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--bvo-blue), var(--bvo-orange));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mode-card:hover {
+            border-color: rgba(255, 102, 0, 0.3);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), 0 0 30px rgba(255, 102, 0, 0.08);
+        }
+
+        .mode-card:hover::before { opacity: 1; }
+
+        .mode-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .mode-card-icon.sim {
+            background: linear-gradient(135deg, rgba(27, 79, 155, 0.2), rgba(42, 107, 199, 0.1));
+        }
+
+        .mode-card-icon.quiz {
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.2), rgba(255, 102, 0, 0.08));
+        }
+
+        .mode-card h3 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .mode-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        /* ─── PERSONA SELECTOR ─── */
+        .persona-selector {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 40px 20px;
+            gap: 24px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .persona-selector h2 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 22px;
+            text-align: center;
+        }
+
+        .persona-grid {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 650px;
+        }
+
+        .persona-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 40px;
+            padding: 12px 22px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .persona-chip:hover {
+            border-color: var(--bvo-orange);
+            background: rgba(255, 102, 0, 0.08);
+            transform: scale(1.04);
+        }
+
+        .back-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .back-btn:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        /* ─── CHAT AREA ─── */
+        .chat-container {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-messages::-webkit-scrollbar { width: 4px; }
+        .chat-messages::-webkit-scrollbar-track { background: transparent; }
+        .chat-messages::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+
+        .message {
+            max-width: 78%;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14.5px;
+            line-height: 1.6;
+            animation: msgIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.bot {
+            background: var(--bg-message-bot);
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, var(--bvo-blue), var(--bvo-blue-light));
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.system {
+            background: rgba(255, 102, 0, 0.08);
+            border: 1px solid rgba(255, 102, 0, 0.2);
+            align-self: center;
+            text-align: center;
+            font-size: 13px;
+            color: var(--bvo-orange);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            max-width: 90%;
+        }
+
+        .message-label {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .message.bot .message-label { color: var(--bvo-orange); }
+        .message.user .message-label { color: rgba(255, 255, 255, 0.7); }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            padding: 14px 18px;
+            background: var(--bg-message-bot);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            border-bottom-left-radius: 4px;
+            gap: 5px;
+        }
+
+        .typing-indicator span {
+            width: 7px;
+            height: 7px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            display: inline-block;
+            animation: typing 1.2s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1); }
+        }
+
+        /* ─── INPUT AREA ─── */
+        .input-area {
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .input-text {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 40px;
+            padding: 13px 20px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-text::placeholder { color: var(--text-muted); }
+        .input-text:focus { border-color: var(--bvo-blue-light); }
+
+        .btn-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-mic {
+            background: linear-gradient(135deg, var(--bvo-orange), var(--bvo-orange-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        .btn-mic:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 20px rgba(255, 102, 0, 0.5);
+        }
+
+        .btn-mic.recording {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.5); }
+            50% { box-shadow: 0 0 0 12px rgba(255, 51, 51, 0); }
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, var(--bvo-blue), var(--bvo-blue-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(27, 79, 155, 0.3);
+        }
+
+        .btn-send:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 20px rgba(27, 79, 155, 0.5);
+        }
+
+        .btn-end {
+            background: none;
+            border: 1px solid rgba(255, 80, 80, 0.3);
+            color: #ff6b6b;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-end:hover {
+            background: rgba(255, 80, 80, 0.1);
+            border-color: rgba(255, 80, 80, 0.5);
+        }
+
+        /* ─── STATUS BAR ─── */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-primary);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #34d399;
+        }
+
+        .status-dot.error { background: #ff6b6b; }
+
+        /* ─── CONFIG MODAL ─── */
+        .config-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .config-modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            width: 90%;
+            max-width: 420px;
+        }
+
+        .config-modal h3 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .config-modal p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .config-field {
+            margin-bottom: 16px;
+        }
+
+        .config-field label {
+            display: block;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+
+        .config-field input {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 11px 14px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .config-field input:focus { border-color: var(--bvo-blue-light); }
+
+        .config-save {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--bvo-orange), var(--bvo-orange-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        .config-save:hover { transform: scale(1.02); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 600px) {
+            .mode-cards { flex-direction: column; align-items: center; }
+            .mode-card { width: 100%; max-width: 320px; }
+            .message { max-width: 88%; }
+            .header-title { font-size: 16px; }
+        }
+
+        /* ─── VOICE VISUALIZER ─── */
+        .voice-status {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 102, 0, 0.06);
+            border-top: 1px solid rgba(255, 102, 0, 0.1);
+            font-size: 13px;
+            color: var(--bvo-orange);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+        }
+
+        .voice-bars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 16px;
+        }
+
+        .voice-bars span {
+            width: 3px;
+            background: var(--bvo-orange);
+            border-radius: 2px;
+            animation: bar 0.8s infinite ease-in-out;
+        }
+
+        .voice-bars span:nth-child(1) { height: 6px; animation-delay: 0s; }
+        .voice-bars span:nth-child(2) { height: 12px; animation-delay: 0.1s; }
+        .voice-bars span:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+        .voice-bars span:nth-child(4) { height: 14px; animation-delay: 0.3s; }
+        .voice-bars span:nth-child(5) { height: 6px; animation-delay: 0.4s; }
+
+        @keyframes bar {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.4); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── CONFIG MODAL ─── -->
+    <div class="config-overlay" id="configOverlay">
+        <div class="config-modal">
+            <h3>👋 Bienvenue</h3>
+            <p>Entrez votre prénom pour démarrer l'entraînement.</p>
+            <div class="config-field">
+                <label>Votre prénom</label>
+                <input type="text" id="setterName" placeholder="Ex : Julien" autofocus />
+            </div>
+            <button class="config-save" onclick="saveConfig()">C'est parti !</button>
+        </div>
+    </div>
+
+    <!-- ─── HEADER ─── -->
+    <div class="header">
+        <div class="header-left">
+            <div class="logo-mark">BVO</div>
+            <div>
+                <div class="header-title">Training Setter</div>
+                <div class="header-subtitle">Entraînement à la prospection VO</div>
+            </div>
+        </div>
+        <div id="modeBadge" class="mode-badge" style="display:none;">—</div>
+    </div>
+
+    <!-- ─── MODE SELECTOR ─── -->
+    <div class="mode-selector" id="modeSelector">
+        <h2>Choisissez votre entraînement</h2>
+        <p>Sélectionnez un mode pour commencer votre session de training.</p>
+        <div class="mode-cards">
+            <div class="mode-card" onclick="selectMode('simulation')">
+                <div class="mode-card-icon sim">📞</div>
+                <h3>Simulation d'appel</h3>
+                <p>Entraînez-vous face à un négociant VO virtuel. Déroulez votre script, gérez les objections et décrochez le RDV.</p>
+            </div>
+            <div class="mode-card" onclick="selectMode('quiz')">
+                <div class="mode-card-icon quiz">🎯</div>
+                <h3>Quiz Objections</h3>
+                <p>Testez vos réflexes face aux objections courantes. Répondez et recevez un score avec la réponse idéale.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── PERSONA SELECTOR ─── -->
+    <div class="persona-selector" id="personaSelector">
+        <h2>Quel type de négociant ?</h2>
+        <div class="persona-grid">
+            <div class="persona-chip" onclick="selectPersona('wester')">😎 Eric — Le Confiant</div>
+            <div class="persona-chip" onclick="selectPersona('ariel')">🤝 Ariel — Le Poli Passif</div>
+            <div class="persona-chip" onclick="selectPersona('jessy')">🏠 Jessy — Le Petit Volume</div>
+            <div class="persona-chip" onclick="selectPersona('mathieu')">⚔️ Mathieu — Le Challenger</div>
+            <div class="persona-chip" onclick="selectPersona('nissar')">⏱️ Nissar — Le VIP Pressé</div>
+            <div class="persona-chip" onclick="selectPersona('random')">🎲 Aléatoire</div>
+        </div>
+        <button class="back-btn" onclick="goBack()">← Retour</button>
+    </div>
+
+    <!-- ─── CHAT ─── -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages injected here -->
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span><span></span><span></span>
+        </div>
+
+        <div class="voice-status" id="voiceStatus">
+            <div class="voice-bars"><span></span><span></span><span></span><span></span><span></span></div>
+            <span id="voiceStatusText">Écoute en cours...</span>
+        </div>
+
+        <div class="input-area">
+            <button class="btn-end" onclick="endSession()">Terminer</button>
+            <button class="btn-end" id="btnExport" style="display:none; border-color: rgba(52,211,153,0.3); color: #34d399;" onclick="exportConversation()">📄 Exporter</button>
+            <input type="text" class="input-text" id="inputText" placeholder="Tapez ou utilisez le micro..." />
+            <button class="btn-icon btn-mic" id="btnMic" onclick="toggleMic()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </button>
+            <button class="btn-icon btn-send" onclick="sendMessage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- ─── STATUS BAR ─── -->
+    <div class="status-bar">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Prêt</span>
+    </div>
+
+<script>
+// ─── STATE ───
+// TODO: Remplacer par l'URL réelle du webhook n8n
+const WEBHOOK_URL = 'https://n8n.boostervo.com/webhook/chatbot-training';
+
+let config = {
+    webhookUrl: WEBHOOK_URL,
+    setterName: localStorage.getItem('bvo_setter') || ''
+};
+let currentMode = null;
+let currentPersona = null;
+let conversationHistory = [];
+let isRecording = false;
+let recognition = null;
+let synthesis = window.speechSynthesis;
+let isSpeaking = false;
+
+// ─── SYSTEM PROMPTS ───
+const PERSONAS = {
+    wester: {
+        name: "Eric — Le Confiant",
+        trait: `Vous êtes Eric, négociant VO expérimenté et confiant. Vous êtes convaincu que vous gérez déjà très bien vos appels. Vous dites des choses comme "Moi, je reçois tous les mails, donc je vois", "On rappelle tout de suite, dans le quart d'heure". Vous écoutez poliment mais vous pensez que vous n'avez pas besoin d'aide. Si le setter propose d'envoyer une vidéo, vous acceptez assez vite mais vous repoussez le rappel ("Ouais, après non, pas demain"). Vous êtes courtois mais pas impressionné.`
+    },
+    ariel: {
+        name: "Ariel — Le Poli Passif",
+        trait: `Vous êtes Ariel, gérant de Transacoto. Vous décrochez avec le nom de votre société "Transacoto, bonjour". Vous dites "D'accord" et "Tout à fait" à presque tout, vous acquiescez facilement mais sans réel engagement. Vous demandez parfois de répéter ("En reprenant quoi ? J'ai pas entendu"). Vous êtes poli, vous ne dites jamais non frontalement, mais vous n'êtes pas activement intéressé. Vous acceptez la vidéo sans résistance. Le défi pour le setter c'est de vous engager vraiment au lieu de juste obtenir un "oui oui" passif.`
+    },
+    jessy: {
+        name: "Jessy — Le Petit Volume",
+        trait: `Vous êtes Jessy, vous faites de l'achat-revente "de temps en temps". Vous n'êtes pas un gros négociant. Vous ne connaissez pas vos stats Leboncoin, vous n'avez jamais regardé. Quand on vous dit que Leboncoin vous indique vos appels manqués, vous répondez "Non" honnêtement. Vous avez des enfants en fond sonore qui vous distraient. Vous dites "D'accord, d'accord" et "Oui, si vous voulez". Vous ne posez pas de question sur le prix. Vous êtes facile à closer mais le setter doit adapter son discours à un petit profil.`
+    },
+    mathieu: {
+        name: "Mathieu — Le Challenger",
+        trait: `Vous êtes Mathieu, associé d'une concession moto (Legend Bike). Vous êtes le plus dur. Dès le début vous suspectez que c'est une IA qui appelle ("Vous êtes une IA, là !"). Vous avez une équipe structurée, tout est traité "quasi instantanément". Vous affirmez ne louper que "2 appels manqués par mois, c'est rien du tout". Vous demandez le prix rapidement "C'est quoi la tarification de votre système ?". Quand on vous parle de secrétaire, vous dites "J'en paye pas déjà de secrétaire". Vous voulez regarder la vidéo AVANT d'être rappelé ("c'est moi qui vous rappellerai si je suis intéressé"). Vous êtes factuel, direct, et vous ne vous laissez pas embobiner.`
+    },
+    nissar: {
+        name: "Nissar — Le VIP Pressé",
+        trait: `Vous êtes Nissar de Sandra Fucopa. Vous avez le pack le plus haut sur Leboncoin avec toutes les analyses. Un client arrive justement quand le setter appelle : "Là, pour le coup, j'ai un rendez-vous qui vient d'arriver, qui est en train de se garer devant l'agence." Vous accordez 3 minutes max. Vous connaissez déjà vos stats : "Combien d'appels manqués, pour quel véhicule en l'occurrence, etc." Vous êtes coopératif si le setter est efficace et concis, mais vous interrompez si ça traîne ("Attendez, excusez-moi, 2 secondes"). Vous acceptez la vidéo facilement si on respecte votre temps.`
+    }
+};
+
+const SYSTEM_PROMPT_SIMULATION = (persona) => `Tu es un formateur IA pour BoosterVO. Tu joues le rôle d'un négociant de véhicules d'occasion (VO) en France que le setter doit convaincre par téléphone.
+
+CONTEXTE BOOSTERVO :
+- BoosterVO est un service de call tracking et automatisation pour les négociants VO
+- Problème : 40% des appels des acheteurs potentiels sur Leboncoin ne sont pas répondus = 1500-5000€/mois de marge perdue
+- Offre : suivi gratuit pendant quelques jours pour mesurer concrètement ce qui est décroché, manqué, rappelé, en combien de temps, et ce que ça donne derrière
+- L'objectif du setter est d'amener le négociant à reconnaître un manque de visibilité, puis proposer le suivi/audit
+
+LE SCRIPT DE PROSPECTION DU SETTER (phases clés que le formateur évalue) :
+
+PHASE 1 - ACCROCHE :
+Le setter doit se présenter sans vendre, capter l'attention avec un constat terrain : "On observe quelque chose d'assez surprenant chez les négociants qui publient sur Leboncoin. Une partie des appels générés par leurs annonces ne leur rapporte strictement rien. Dans certains cas, ça représente entre 1500 et 5000€ de marge qui partent à la trappe chaque mois." Puis demander 2-3 minutes.
+
+PHASE 2 - DÉCOUVERTE / GESTION DES RÉACTIONS :
+Selon la réaction du négociant, le setter doit adapter :
+
+CAS "J'ai 2 minutes / Allez-y" : Le setter doit enchaîner 3 questions clés :
+1. "Quand un prospect appelle sur une de vos annonces, vous arrivez à décrocher immédiatement à chaque fois ?"
+2. "Et quand vous ne décrochez pas, vous les rappelez tous systématiquement ?"
+3. "Vous avez une vraie visibilité dessus ? Combien sont rappelés, en combien de temps, et ce que ça donne derrière en ventes ?"
+Objectif : amener le "non" ou le flou.
+
+CAS "Comment ça des appels qui rapportent rien ?" : Le setter doit expliquer que le problème n'est pas tant les appels manqués mais ce qui se passe après : appels non décrochés jamais rappelés, ou rappelés trop tard, ou rappelés sans suivi. Puis demander la visibilité du négociant.
+
+CAS "Moi je rappelle tout" : Le setter doit valoriser ("vous êtes au-dessus de la moyenne") puis basculer sur la traçabilité : "est-ce que vous avez une vision précise ? Combien sont réellement rappelés, en combien de temps, avec quel résultat derrière ? Ou c'est quelque chose que vous faites mais sans traçabilité réelle ?"
+
+CAS "Je suis équipé / J'ai les stats Leboncoin" : Le setter doit reconnaître que Leboncoin donne une première vision (appels reçus, manqués), puis montrer que tout ce qui est derrière (rappels, délais, résultats) est beaucoup plus difficile à suivre.
+
+CAS "C'est quoi le but / Vous vendez quoi ?" : Le setter doit rassurer ("l'idée c'est pas de vous vendre quoi que ce soit"), recentrer sur la mesure : "le but c'est simplement de voir si une partie des appels ne se transforment pas sans que vous le sachiez."
+
+CAS "Pas intéressé / Pas le temps" : Le setter doit faire un soft push avec une question directe : "Juste une question : aujourd'hui, vous savez précisément combien d'appels manqués vous perdez vraiment en ventes ?" Si le négociant répond → enchaîner. S'il refuse → sortir proprement.
+
+CAS "Oui je sais / Oui j'ai une visibilité" : Le setter doit tester la solidité : "Vous arrivez à suivre quoi exactement ? Nombre d'appels manqués rappelés ? Délai moyen de rappel ? Taux de transformation derrière ?" 90% vont s'effondrer ici. Puis : "Ok, donc vous avez une partie de la vision, mais pas forcément l'ensemble du parcours."
+
+PHASE 3 - MOMENT DE BASCULE :
+Dès qu'il obtient un doute, un flou, ou un "pas vraiment", le setter doit enchaîner : "C'est exactement là que se situe le problème. Parce qu'en réalité, c'est souvent à ce niveau-là que se perd la marge. Et c'est aussi ce que Leboncoin ne permet pas de voir."
+
+PHASE 4 - TRANSITION VERS L'AUDIT :
+Le setter doit proposer : "On met en place un suivi pendant quelques jours, juste pour mesurer concrètement : ce qui est décroché, ce qui est manqué, ce qui est rappelé, en combien de temps, et ce que ça donne derrière. L'idée c'est pas de changer votre façon de travailler, c'est juste de mettre des chiffres sur ce qui se passe déjà."
+
+TON PERSONNAGE :
+${persona.trait}
+
+RÈGLES :
+- Tu parles comme un vrai négociant VO français, langage courant, pas soutenu
+- Tu ne facilites JAMAIS la tâche au setter, il doit mériter le RDV
+- Tu réagis naturellement : si le setter est mauvais, tu raccroches poliment
+- Tes réponses sont COURTES (1-3 phrases max), comme au téléphone
+- Tu commences la conversation en décrochant : "Allô ?" ou "Oui allô ?" ou "Ouais ?"
+- Si le setter arrive à te convaincre après un bon échange, tu peux accepter le suivi/audit
+- NE SORS JAMAIS du rôle pendant la simulation
+- Tu dois naturellement incarner un des 7 cas de réaction ci-dessus selon ton personnage
+
+Commence par décrocher le téléphone.`;
+
+const SYSTEM_PROMPT_QUIZ = `Tu es un formateur IA pour BoosterVO. Tu fais passer un quiz d'entraînement aux setters sur la gestion des objections ET sur la maîtrise du script de prospection.
+
+CONTEXTE BOOSTERVO :
+- BoosterVO est un service de call tracking et automatisation pour les négociants VO
+- Problème : 40% des appels des acheteurs potentiels sur Leboncoin ne sont pas répondus
+- Offre : suivi gratuit pendant quelques jours pour mesurer les appels manqués
+
+DÉROULEMENT :
+1. Tu présentes une situation/objection d'un négociant VO avec le contexte (quel type de négociant, à quel moment de l'appel)
+2. Le setter répond comme il le ferait au téléphone
+3. Tu évalues sa réponse sur 10 avec :
+   - Ce qui est bien ✅
+   - Ce qui manque ❌
+   - La réponse idéale 💡 (tirée du script officiel BVO)
+4. Tu passes à la situation suivante
+
+BANQUE DE SITUATIONS (mélange objections réelles + mises en situation script, dans un ordre aléatoire, difficulté croissante) :
+
+SITUATIONS SCRIPT — PHASE ACCROCHE :
+- Le négociant décroche et dit "Oui allô ?" — Comment tu te présentes et tu accroches ? (Évaluer : ne pas vendre, constater un problème, mentionner 1500-5000€ de marge perdue)
+
+SITUATIONS SCRIPT — PHASE DÉCOUVERTE :
+- Le négociant dit "Allez-y, j'ai 2 minutes" — Quelles sont tes 3 questions clés ? (Évaluer : décrocher immédiatement ? rappeler systématiquement ? visibilité sur les résultats ?)
+- Le négociant demande "Comment ça des appels qui rapportent rien ?" — Comment tu expliques ? (Évaluer : ne pas accuser, expliquer ce qui se passe APRÈS l'appel manqué)
+- Le négociant dit "Moi je rappelle tout" — Comment tu rebondis ? (Évaluer : valoriser + basculer sur la traçabilité réelle)
+- Le négociant dit "J'ai déjà les stats Leboncoin" — Comment tu montres la limite ? (Évaluer : reconnaître LBC + montrer que rappels/délais/résultats ne sont pas suivis)
+- Le négociant dit "Oui je sais, j'ai une visibilité" — Comment tu testes la solidité ? (Évaluer : demander combien rappelés, délai moyen, taux de transformation)
+
+SITUATIONS SCRIPT — PHASE BASCULE :
+- Le négociant hésite, dit "bah, pas vraiment..." — Comment tu enchaînes pour créer le déclic ? (Évaluer : "C'est exactement là que se perd la marge" + "Leboncoin ne permet pas de voir ça")
+
+SITUATIONS SCRIPT — PHASE TRANSITION AUDIT :
+- Tu as obtenu le doute du négociant, il est ouvert — Comment tu proposes le suivi ? (Évaluer : "quelques jours de suivi", mesurer concrètement, "pas changer votre façon de travailler, juste mettre des chiffres")
+
+OBJECTIONS TERRAIN (tirées de vrais appels) :
+- "Là, pour le coup, j'ai un rendez-vous qui vient d'arriver. Je ne vais pas pouvoir rester au téléphone." (Nissar — le client pressé)
+- "Moi, je reçois tous les mails du bon coin, donc je vois quand j'ai un appel manqué." (Eric — pense déjà tout gérer)
+- "On rappelle tout de suite. C'est dans le quart d'heure." (Eric — confiant sur ses délais)
+- "Envoyez-moi vos vidéos avant de me rappeler, c'est moi qui vous rappellerai si je suis intéressé." (Mathieu — veut garder le contrôle)
+- "Vous êtes une IA, là ! Ça met du temps à répondre, les réponses sont très particulières." (Mathieu — suspicieux)
+- "J'ai 2 appels manqués par mois via le bon coin, c'est rien du tout. Tout est traité." (Mathieu — minimise le problème)
+- "C'est quoi la tarification de votre système ? Moi je vais être franc et honnête, on va être rapide." (Mathieu — demande le prix direct)
+- "J'en paye pas déjà de secrétaire. Mon équipe décroche le téléphone, ça fait partie de leur job." (Mathieu — rejette l'argument secrétaire)
+- "Nous, on a le pack le plus haut sur le bon coin. Ça veut dire qu'on a déjà toutes les analyses." (Nissar — pense avoir déjà les outils)
+- "Ouais, après non, pas demain." (Eric — repousse le rappel)
+- "Maintenant, quand on met une annonce de voiture, c'est payant alors." (Jessy — ne comprend pas bien l'offre)
+- "Tous les clients nous contactent via la messagerie Le Boncoin à 99% du temps." (Mathieu — minimise l'importance des appels)
+- "C'est quoi le but exactement ? Vous vendez quoi ?" (négociant méfiant — veut comprendre avant d'écouter)
+- "Pas intéressé." (négociant sec — test du soft push)
+
+RÈGLES :
+- Alterne entre situations script et objections terrain (ne fais pas tout d'un bloc)
+- Sois encourageant mais honnête dans l'évaluation
+- La note doit refléter : pertinence, qualité de l'argumentation, ton commercial, maîtrise du script BVO
+- Précise à chaque situation le type de négociant et le moment de l'appel pour contextualiser
+- Pose 12 questions au total (6 situations script + 6 objections terrain)
+- Après 12 questions, donne un SCORE GLOBAL DÉTAILLÉ :
+
+═══ SCORE GLOBAL DU QUIZ ═══
+Score : X/120 (total des notes sur 10 pour chaque question)
+
+📊 Répartition par phase :
+- Accroche : X/10
+- Découverte (3 questions clés, gestion des réactions) : X/10
+- Bascule (créer le déclic) : X/10
+- Transition audit (proposer le suivi) : X/10
+- Objections terrain : X/10
+
+✅ Points forts (top 3 réponses)
+❌ Faiblesses (top 3 réponses à retravailler)
+💡 Conseil principal
+🎯 Les 3 situations à repratiquer en priorité
+
+Commence par te présenter brièvement et pose la première situation.`;
+
+const SYSTEM_PROMPT_FEEDBACK = `
+INSTRUCTION SPÉCIALE - FIN DE SESSION :
+Quand le setter dit "TERMINER" ou que tu détectes la fin de la conversation :
+1. Sors du rôle du négociant
+2. Donne un FEEDBACK COMPLET en tant que formateur :
+
+═══ SCORE GLOBAL : X/20 ═══
+
+📊 Évaluation par phase du script :
+- Accroche (se présenter sans vendre, mentionner le constat terrain, demander 2-3 min) : /5
+- Découverte (poser les 3 questions clés : décrochage, rappels, visibilité) : /5
+- Gestion de la réaction (adapter selon le cas : confiant, sceptique, pressé, etc.) : /5
+- Bascule + Transition audit (créer le déclic, proposer le suivi sans forcer) : /5
+
+✅ Points forts (ce que le setter a bien fait)
+❌ Axes d'amélioration (ce qui manque ou ce qui est mal exécuté)
+💡 Conseil principal
+
+🎯 Analyse phrase par phrase :
+Pour chaque intervention clé du setter, indique :
+- Ce qu'il a dit
+- Ce qu'il aurait dû dire selon le script
+- Pourquoi c'est important
+
+📋 Comparaison avec le script idéal :
+- Phase Accroche : ce qui a été fait vs ce qui était attendu
+- Phase Découverte : les 3 questions posées vs les 3 questions du script
+- Phase Bascule : le moment de déclic a-t-il été saisi ?
+- Phase Audit : la proposition a-t-elle été formulée correctement ?
+`;
+
+// ─── INIT ───
+window.onload = () => {
+    if (!config.setterName) {
+        document.getElementById('configOverlay').style.display = 'flex';
+    }
+    setupSpeechRecognition();
+};
+
+function saveConfig() {
+    const name = document.getElementById('setterName').value.trim();
+    if (!name) return alert('Veuillez entrer votre prénom.');
+    config.setterName = name;
+    localStorage.setItem('bvo_setter', name);
+    document.getElementById('configOverlay').style.display = 'none';
+}
+
+// ─── NAVIGATION ───
+function selectMode(mode) {
+    currentMode = mode;
+    document.getElementById('modeSelector').style.display = 'none';
+    if (mode === 'simulation') {
+        document.getElementById('personaSelector').style.display = 'flex';
+    } else {
+        startChat();
+    }
+}
+
+function selectPersona(key) {
+    if (key === 'random') {
+        const keys = Object.keys(PERSONAS);
+        key = keys[Math.floor(Math.random() * keys.length)];
+    }
+    currentPersona = PERSONAS[key];
+    document.getElementById('personaSelector').style.display = 'none';
+    startChat();
+}
+
+function goBack() {
+    document.getElementById('personaSelector').style.display = 'none';
+    document.getElementById('modeSelector').style.display = 'flex';
+    currentMode = null;
+}
+
+function startChat() {
+    const badge = document.getElementById('modeBadge');
+    badge.style.display = 'block';
+    badge.textContent = currentMode === 'simulation' ?
+        `📞 ${currentPersona.name}` : '🎯 Quiz Objections';
+
+    document.getElementById('chatContainer').style.display = 'flex';
+    conversationHistory = [];
+
+    let systemPrompt;
+    if (currentMode === 'simulation') {
+        systemPrompt = SYSTEM_PROMPT_SIMULATION(currentPersona) + SYSTEM_PROMPT_FEEDBACK;
+    } else {
+        systemPrompt = SYSTEM_PROMPT_QUIZ;
+    }
+
+    conversationHistory.push({ role: 'system', content: systemPrompt });
+
+    addMessage('system', currentMode === 'simulation' ?
+        `🎬 Simulation démarrée — Vous appelez "${currentPersona.name}"` :
+        '🎯 Quiz Objections — Répondez aux mises en situation');
+
+    // Trigger first bot message
+    callAPI([...conversationHistory, { role: 'user', content: 'Commence.' }], true);
+}
+
+// ─── MESSAGES ───
+function addMessage(type, text) {
+    const container = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `message ${type}`;
+
+    if (type === 'bot') {
+        div.innerHTML = `<span class="message-label">${currentMode === 'simulation' ? '🏪 Négociant' : '🎓 Formateur'}</span>${formatText(text)}`;
+    } else if (type === 'user') {
+        div.innerHTML = `<span class="message-label">🎯 ${config.setterName}</span>${formatText(text)}`;
+    } else {
+        div.textContent = text;
+    }
+
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function formatText(text) {
+    return text
+        .replace(/✅/g, '<br>✅')
+        .replace(/❌/g, '<br>❌')
+        .replace(/💡/g, '<br>💡')
+        .replace(/\n/g, '<br>');
+}
+
+// ─── API CALL ───
+async function callAPI(messages, isFirst = false) {
+    const typing = document.getElementById('typingIndicator');
+    typing.style.display = 'flex';
+    setStatus('loading', 'Réflexion en cours...');
+
+    try {
+        const payload = {
+            messages: messages.map(m => ({
+                role: m.role === 'system' ? 'system' : m.role,
+                content: m.content
+            })),
+            setter_name: config.setterName,
+            mode: currentMode,
+            persona: currentPersona?.name || null
+        };
+
+        const response = await fetch(config.webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        const botText = data.response || data.content || data.text ||
+            (Array.isArray(data) && data[0]?.content?.[0]?.text) ||
+            'Erreur : réponse inattendue du serveur.';
+
+        typing.style.display = 'none';
+
+        if (isFirst) {
+            conversationHistory.push({ role: 'user', content: 'Commence.' });
+        }
+
+        conversationHistory.push({ role: 'assistant', content: botText });
+        addMessage('bot', botText);
+        speakText(botText);
+        setStatus('ok', 'Connecté');
+
+    } catch (err) {
+        typing.style.display = 'none';
+        addMessage('system', `⚠️ Erreur de connexion : ${err.message}`);
+        setStatus('error', 'Erreur de connexion');
+    }
+}
+
+async function sendMessage() {
+    const input = document.getElementById('inputText');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    addMessage('user', text);
+    conversationHistory.push({ role: 'user', content: text });
+
+    await callAPI(conversationHistory);
+}
+
+function endSession() {
+    if (conversationHistory.length < 3) {
+        resetToMenu();
+        return;
+    }
+    addMessage('system', '🏁 Fin de session — Génération du feedback...');
+    conversationHistory.push({ role: 'user', content: 'TERMINER — Donne-moi le feedback complet de cette session.' });
+    callAPI(conversationHistory).then(() => {
+        document.getElementById('btnExport').style.display = 'inline-block';
+    });
+}
+
+function exportConversation() {
+    const now = new Date();
+    const date = now.toLocaleDateString('fr-FR');
+    const heure = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const modeLabel = currentMode === 'simulation' ? 
+        `Simulation d'appel — ${currentPersona?.name || 'Inconnu'}` : 
+        'Quiz Objections';
+
+    let transcript = '';
+    transcript += '═══════════════════════════════════════════════════\n';
+    transcript += '       BOOSTERVO — RETRANSCRIPTION ENTRAÎNEMENT\n';
+    transcript += '═══════════════════════════════════════════════════\n\n';
+    transcript += `Setter      : ${config.setterName}\n`;
+    transcript += `Mode        : ${modeLabel}\n`;
+    transcript += `Date        : ${date} à ${heure}\n`;
+    transcript += '───────────────────────────────────────────────────\n\n';
+
+    conversationHistory.forEach(msg => {
+        if (msg.role === 'system') return;
+        
+        const label = msg.role === 'user' ? 
+            `🎯 ${config.setterName}` : 
+            (currentMode === 'simulation' ? '🏪 Négociant' : '🎓 Formateur');
+        
+        transcript += `${label} :\n`;
+        transcript += `${msg.content}\n\n`;
+    });
+
+    transcript += '───────────────────────────────────────────────────\n';
+    transcript += `Session terminée le ${date} à ${heure}\n`;
+    transcript += '═══════════════════════════════════════════════════\n';
+
+    // Télécharger le fichier
+    const blob = new Blob([transcript], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const filename = `BVO_Training_${config.setterName}_${now.toISOString().slice(0,10)}_${now.toISOString().slice(11,16).replace(':','h')}.txt`;
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function resetToMenu() {
+    document.getElementById('chatContainer').style.display = 'none';
+    document.getElementById('chatMessages').innerHTML = '';
+    document.getElementById('modeBadge').style.display = 'none';
+    document.getElementById('modeSelector').style.display = 'flex';
+    document.getElementById('btnExport').style.display = 'none';
+    conversationHistory = [];
+    currentMode = null;
+    currentPersona = null;
+    synthesis.cancel();
+}
+
+// ─── SPEECH RECOGNITION ───
+function setupSpeechRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    recognition = new SpeechRecognition();
+    recognition.lang = 'fr-FR';
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
+        document.getElementById('inputText').value = transcript;
+
+        if (event.results[event.results.length - 1].isFinal) {
+            stopRecording();
+            sendMessage();
+        }
+    };
+
+    recognition.onerror = (event) => {
+        stopRecording();
+        if (event.error !== 'no-speech') {
+            addMessage('system', `⚠️ Erreur micro : ${event.error}`);
+        }
+    };
+
+    recognition.onend = () => {
+        stopRecording();
+    };
+}
+
+function toggleMic() {
+    if (isSpeaking) {
+        synthesis.cancel();
+        isSpeaking = false;
+    }
+
+    if (isRecording) {
+        recognition?.stop();
+        stopRecording();
+    } else {
+        startRecording();
+    }
+}
+
+function startRecording() {
+    if (!recognition) {
+        alert('La reconnaissance vocale n\'est pas supportée par votre navigateur. Utilisez Chrome ou Edge.');
+        return;
+    }
+    isRecording = true;
+    document.getElementById('btnMic').classList.add('recording');
+    document.getElementById('voiceStatus').style.display = 'flex';
+    document.getElementById('voiceStatusText').textContent = 'Parlez maintenant...';
+    recognition.start();
+}
+
+function stopRecording() {
+    isRecording = false;
+    document.getElementById('btnMic').classList.remove('recording');
+    document.getElementById('voiceStatus').style.display = 'none';
+}
+
+// ─── TEXT TO SPEECH ───
+function speakText(text) {
+    if (!synthesis) return;
+    synthesis.cancel();
+
+    // Clean text for speech
+    const cleanText = text
+        .replace(/[✅❌💡🎬🏁🎯📞⚠️🏪🎓]/g, '')
+        .replace(/<[^>]*>/g, '')
+        .replace(/\*\*/g, '')
+        .replace(/Score.*\/\d+/g, (match) => match.replace(/\//g, ' sur '))
+        .trim();
+
+    if (!cleanText) return;
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'fr-FR';
+    utterance.rate = 1.05;
+    utterance.pitch = 1.0;
+
+    // Try to get a French voice
+    const voices = synthesis.getVoices();
+    const frVoice = voices.find(v => v.lang.startsWith('fr') && v.name.includes('Google')) ||
+                    voices.find(v => v.lang.startsWith('fr'));
+    if (frVoice) utterance.voice = frVoice;
+
+    utterance.onstart = () => {
+        isSpeaking = true;
+        document.getElementById('voiceStatus').style.display = 'flex';
+        document.getElementById('voiceStatusText').textContent = 'En train de parler...';
+    };
+
+    utterance.onend = () => {
+        isSpeaking = false;
+        document.getElementById('voiceStatus').style.display = 'none';
+    };
+
+    synthesis.speak(utterance);
+}
+
+// Load voices (async in some browsers)
+speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+
+// ─── STATUS ───
+function setStatus(state, text) {
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    dot.className = `status-dot${state === 'error' ? ' error' : ''}`;
+    if (state === 'loading') dot.style.background = 'var(--bvo-orange)';
+    else if (state === 'ok') dot.style.background = '#34d399';
+    txt.textContent = text;
+}
+
+// ─── KEYBOARD ───
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && document.activeElement.id === 'inputText') {
+        sendMessage();
+    }
+});
+</script>
+
+</body>
+</html>
