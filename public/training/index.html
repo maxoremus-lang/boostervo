@@ -712,8 +712,8 @@
 
 <script>
 // ─── STATE ───
-// TODO: Remplacer par l'URL réelle du webhook n8n
 const WEBHOOK_URL = 'https://n8n.boostervo.com/webhook/chatbot-training';
+const WEBHOOK_EMAIL_URL = 'https://n8n.boostervo.com/webhook/chatbot-training-email';
 
 let config = {
     webhookUrl: WEBHOOK_URL,
@@ -1076,7 +1076,50 @@ function endSession() {
     conversationHistory.push({ role: 'user', content: 'TERMINER — Donne-moi le feedback complet de cette session.' });
     callAPI(conversationHistory).then(() => {
         document.getElementById('btnExport').style.display = 'inline-block';
+        // Envoi automatique du rapport par email
+        sendReportByEmail();
     });
+}
+
+async function sendReportByEmail() {
+    const now = new Date();
+    const date = now.toLocaleDateString('fr-FR');
+    const heure = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const modeLabel = currentMode === 'simulation' ?
+        `Simulation d'appel — ${currentPersona?.name || 'Inconnu'}` :
+        'Quiz Objections';
+
+    // Construire la transcription complète
+    let transcript = '';
+    let rapport = '';
+    conversationHistory.forEach(msg => {
+        if (msg.role === 'system') return;
+        const label = msg.role === 'user' ?
+            `🎯 ${config.setterName}` :
+            (currentMode === 'simulation' ? '🏪 Négociant' : '🎓 Formateur');
+        const line = `${label} :\n${msg.content}\n\n`;
+        transcript += line;
+        // Le dernier message assistant = le feedback
+        if (msg.role === 'assistant') rapport = msg.content;
+    });
+
+    try {
+        await fetch(WEBHOOK_EMAIL_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                setter_name: config.setterName,
+                mode: modeLabel,
+                date: date,
+                heure: heure,
+                transcript: transcript,
+                rapport: rapport
+            })
+        });
+        addMessage('system', '📧 Rapport envoyé par email.');
+    } catch (err) {
+        addMessage('system', '⚠️ Envoi email échoué — utilisez le bouton Exporter.');
+    }
 }
 
 function exportConversation() {
