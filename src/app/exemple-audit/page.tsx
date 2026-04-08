@@ -25,7 +25,9 @@ export default function ExempleAudit() {
         <div className={styles.heroLeft}>
           <div className={styles.eyebrow}>Exemple d&apos;audit r&eacute;el</div>
           <h1 className={styles.h1}>
-            Mesurez le <span className={styles.italic}>profit cach&eacute;</span>
+            Mesurez le
+            <br />
+            <span className={styles.italic}>profit cach&eacute;</span>
             <br />
             derri&egrave;re <span className={styles.underline}>vos appels.</span>
           </h1>
