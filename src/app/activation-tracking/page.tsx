@@ -9,7 +9,6 @@ function ActivationContent() {
   const [sent, setSent] = useState(false);
 
   const prenom = searchParams.get("prenom") || "";
-  const nom = searchParams.get("nom") || "";
   const societe = searchParams.get("societe") || "";
 
   useEffect(() => {
