@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     await transporter.sendMail({
       from: `"BoosterVO" <${process.env.SMTP_USER}>`,
-      to: "lucas@boostervo.fr, contact@boostervo.fr",
+      to: "lucas@boostervo.fr, max@boostervo.fr",
       subject: `Demande activation tracking gratuit — ${societe}`,
       html: htmlBody,
       replyTo: email !== "Non renseigné" ? email : undefined,
