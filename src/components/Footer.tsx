@@ -14,6 +14,12 @@ export default function Footer() {
           &copy; {new Date().getFullYear()} BoosterVO. Tous droits
           r&eacute;serv&eacute;s.
           <br />
+          Marque exploit&eacute;e par <strong className="text-white/70">MERCURE SAS</strong>,
+          <br />
+          SAS au capital de 2&nbsp;000&nbsp;&euro; &ndash; Paris B&nbsp;941519613
+          <br />
+          Si&egrave;ge social&nbsp;: 60 rue Fran&ccedil;ois 1<sup>er</sup>, 75008 Paris.
+          <br />
           <a href="/cgv" className="hover:text-white underline">CGV</a> &middot; <a href="/mentions-legales" className="hover:text-white underline">Mentions l&eacute;gales</a> &middot; <a href="/confidentialite" className="hover:text-white underline">Politique de
           confidentialit&eacute;</a>
         </p>
