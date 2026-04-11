@@ -12,6 +12,15 @@ const faqItems = [
     ],
   },
   {
+    question: "Comment le tracking BVO prouve-t-il la perte de marge ?",
+    answer: [
+      "Nous ne faisons pas d'estimation.",
+      "Chaque appel manqué ou rappelé trop tard est systématiquement recontacté pour savoir ce que le prospect a fait : rendez-vous, achat… ou achat chez un concurrent.",
+      "Ces échanges sont enregistrés, ce qui permet d'identifier précisément les opportunités perdues.",
+      "La perte de marge est donc mesurée factuellement, à partir de cas réels, et non supposée.",
+    ],
+  },
+  {
     question: "Pourquoi c'est gratuit ?",
     answer: [
       "Parce qu'avant de parler solution, il faut déjà savoir s'il y a un problème — et qu'on ne peut pas corriger ce que l'on ne mesure pas.",
