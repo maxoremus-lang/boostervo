@@ -101,7 +101,7 @@ export default function DashboardPage() {
             className="text-center p-4 active:bg-gray-50 transition"
           >
             <div className="text-2xl font-nunito font-extrabold text-green-600">{doneCount}</div>
-            <div className="text-[10px] text-gray-500 uppercase font-semibold">Faits</div>
+            <div className="text-[10px] text-gray-500 uppercase font-semibold">Traités</div>
           </Link>
         </div>
       </div>
