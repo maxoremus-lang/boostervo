@@ -34,6 +34,23 @@ const periodSubtitle: Record<Period, string> = {
   all: "Depuis le début",
 };
 
+/**
+ * Formate un délai en minutes vers "45 min" / "1h30" / "2j 4h".
+ * Au-delà de 24h on passe en jours pour rester lisible.
+ */
+function formatDelay(minutes: number): string {
+  if (minutes <= 0) return "—";
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hours < 24) {
+    return mins > 0 ? `${hours}h ${String(mins).padStart(2, "0")}` : `${hours}h`;
+  }
+  const days = Math.floor(hours / 24);
+  const remainingHours = hours % 24;
+  return remainingHours > 0 ? `${days}j ${remainingHours}h` : `${days}j`;
+}
+
 export default function StatsGeneralPage() {
   const [period, setPeriod] = useState<Period>("week");
   const [stats, setStats] = useState<StatsResponse | null>(null);
@@ -137,7 +154,7 @@ export default function StatsGeneralPage() {
             <KPI label="Taux transfo" value={`${stats.conversionRate}%`} color="text-bleu" />
             <KPI label="Rappels faits" value={String(stats.callbacksDone)} color="text-green-600" />
             <KPI label="Taux de rappel" value={`${stats.callbackRate}%`} color="text-bleu" />
-            <KPI label="Délai moyen" value={`${stats.avgDelayMin} min`} color="text-orange" />
+            <KPI label="Délai moyen" value={formatDelay(stats.avgDelayMin)} color="text-orange" />
             <KPI
               label="RDV pris"
               value={String(stats.appointmentsCount)}

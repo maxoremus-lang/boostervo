@@ -57,18 +57,25 @@ export async function GET(req: NextRequest) {
   });
 
   // --- KPI de performance (basés sur les call events de la période) ---
-  let callbacksDone = 0;
+  let callbacksDone = 0; // prospects avec ≥ 1 answered ET ≥ 1 missed dans la période
   let totalDelayMs = 0;
   let delayCount = 0;
-  let appointmentsCount = 0;
-  let salesCount = 0;
+  let appointmentsCount = 0; // prospects callback-done qui ont abouti à RDV / essai / devis
+  let salesCount = 0; // prospects callback-done qui ont abouti à vente
+
+  let prospectsWithMissed = 0; // dénominateur du taux de rappel
 
   for (const p of prospects) {
     const missed = p.callEvents.filter((e) => e.type === "missed");
     const answered = p.callEvents.filter((e) => e.type === "answered");
 
+    if (missed.length === 0) continue; // pas d'appel manqué dans la période = pas comptabilisé
+    prospectsWithMissed++;
+
     if (answered.length > 0) {
       callbacksDone++;
+
+      // Délai = temps entre le 1er missed (plus ancien) et le 1er answered (plus ancien)
       const firstMissed = missed[missed.length - 1];
       const firstAnswered = answered[answered.length - 1];
       if (firstMissed && firstAnswered) {
@@ -78,14 +85,16 @@ export async function GET(req: NextRequest) {
           delayCount++;
         }
       }
-    }
 
-    // Compteurs sur le statut courant du prospect (pas limité à la période)
-    if (p.status === "appointment" || p.status === "test_drive") appointmentsCount++;
-    if (p.status === "sold") salesCount++;
+      // Taux de transfo : parmi les prospects qu'on a RAPPELÉS, combien ont abouti
+      // (on regarde leur statut actuel pour mesurer le succès du rappel)
+      if (p.status === "appointment" || p.status === "test_drive" || p.status === "quote_sent") {
+        appointmentsCount++;
+      }
+      if (p.status === "sold") salesCount++;
+    }
   }
 
-  const prospectsWithMissed = prospects.filter((p) => p.callEvents.some((e) => e.type === "missed")).length;
   const callbackRate = prospectsWithMissed > 0 ? Math.round((callbacksDone / prospectsWithMissed) * 100) : 0;
   const avgDelayMin = delayCount > 0 ? Math.round(totalDelayMs / delayCount / 60000) : 0;
   const conversionRate = callbacksDone > 0 ? Math.round(((appointmentsCount + salesCount) / callbacksDone) * 100) : 0;
