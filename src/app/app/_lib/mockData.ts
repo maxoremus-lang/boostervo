@@ -212,6 +212,23 @@ export function formatRelativeTime(iso: string): string {
   return `il y a ${diffD}j`;
 }
 
+// Formatte "il y a 3j · 26 avr. 26" — relatif + date absolue
+// Pour aujourd'hui on affiche juste le relatif (sinon "il y a 45 min · 17 avr. 26" est redondant)
+export function formatRelativeWithDate(iso: string): string {
+  const d = new Date(iso);
+  const now = new Date();
+  const relative = formatRelativeTime(iso);
+
+  const isToday = d.toDateString() === now.toDateString();
+  if (isToday) return relative;
+
+  // Format "26 avr. 26" (jour court, mois court, année à 2 chiffres)
+  const day = d.getDate();
+  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
+  const year2 = String(d.getFullYear()).slice(-2);
+  return `${relative} · ${day} ${monthShort}. ${year2}`;
+}
+
 export function missedCallsCount(p: Prospect): number {
   return p.callEvents.filter((e) => e.type === "missed").length;
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { Prospect } from "../_lib/types";
-import { formatRelativeTime, missedCallsCount } from "../_lib/mockData";
+import { formatRelativeWithDate, missedCallsCount } from "../_lib/mockData";
 import { StatusBadge, UrgentBadge, NewBadge, KnownBadge } from "./Badge";
 
 function PhoneIcon() {
@@ -49,11 +49,11 @@ export default function ProspectCard({
               <p className="font-nunito font-bold text-gray-900">{prospect.phone}</p>
               {missed > 1 && (
                 <p className="text-xs text-red-600 font-semibold">
-                  {missed} appels manqués · {formatRelativeTime(prospect.lastActivityAt)}
+                  {missed} appels manqués · {formatRelativeWithDate(prospect.lastActivityAt)}
                 </p>
               )}
               {missed <= 1 && (
-                <p className="text-xs text-gray-500">{formatRelativeTime(prospect.lastActivityAt)}</p>
+                <p className="text-xs text-gray-500">{formatRelativeWithDate(prospect.lastActivityAt)}</p>
               )}
             </>
           )}
@@ -65,8 +65,8 @@ export default function ProspectCard({
         <>
           <p className="text-xs text-gray-500 mb-3">
             {prospect.isKnown
-              ? `${missed > 1 ? `${missed}e tentative · ` : "Rappelle · "}${formatRelativeTime(prospect.lastActivityAt)}`
-              : `${missed} appels manqués · ${formatRelativeTime(prospect.lastActivityAt)}`}
+              ? `${missed > 1 ? `${missed}e tentative · ` : "Rappelle · "}${formatRelativeWithDate(prospect.lastActivityAt)}`
+              : `${missed} appels manqués · ${formatRelativeWithDate(prospect.lastActivityAt)}`}
           </p>
           <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
             <a
