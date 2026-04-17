@@ -37,18 +37,13 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // URL de callback pour recevoir le statut de l'appel
-    const statusUrl = new URL("/api/webhooks/twilio/status", req.url);
-
     // TwiML : transférer vers le téléphone du négociant
+    // Le status callback est géré par la config "Call status changes" dans la console Twilio
+    // qui pointe vers /api/webhooks/twilio/status
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Dial callerId="${to}" timeout="25" action="${statusUrl.toString()}">
-    <Number statusCallbackEvent="ringing answered completed"
-            statusCallback="${statusUrl.toString()}"
-            statusCallbackMethod="POST">
-      ${user.forwardPhone}
-    </Number>
+  <Dial callerId="${to}" timeout="25">
+    ${user.forwardPhone}
   </Dial>
 </Response>`;
 
