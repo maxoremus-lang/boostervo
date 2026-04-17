@@ -163,7 +163,7 @@ export default function StatsParStatutPage() {
                 return (
                   <Link
                     key={s.key}
-                    href={`/app/rappels?filter=${s.group}&from=stats`}
+                    href={`/app/rappels?status=${s.key}&from=stats`}
                     className={`${s.bg} rounded-2xl p-3 flex flex-col gap-1 active:opacity-70 transition`}
                   >
                     <div className="flex items-center gap-1.5">

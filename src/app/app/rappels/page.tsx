@@ -4,9 +4,28 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import ProspectCard from "../_components/ProspectCard";
 import BottomNav from "../_components/BottomNav";
-import type { Prospect } from "../_lib/types";
+import type { Prospect, CallbackStatus } from "../_lib/types";
 
 type Filter = "urgent" | "todo" | "in_progress" | "done" | "all";
+
+const STATUS_LABELS: Record<CallbackStatus, string> = {
+  pending: "À recontacter",
+  postponed: "Reporté",
+  unreachable: "Injoignable",
+  appointment: "RDV pris",
+  test_drive: "Essai",
+  quote_sent: "Devis envoyé",
+  not_interested: "Pas intéressé",
+  sold: "Vente conclue",
+};
+
+const FILTER_LABELS: Record<Filter, string> = {
+  urgent: "Urgents",
+  todo: "À faire",
+  in_progress: "En cours",
+  done: "Terminés",
+  all: "",
+};
 
 const filters: { key: Filter; label: string }[] = [
   { key: "urgent", label: "Urgents" },
@@ -23,6 +42,7 @@ type ApiResponse = {
 
 export default function RappelsListPage() {
   const [activeFilter, setActiveFilter] = useState<Filter>("todo");
+  const [statusExact, setStatusExact] = useState<CallbackStatus | null>(null);
   const [search, setSearch] = useState("");
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -30,19 +50,27 @@ export default function RappelsListPage() {
   const [backTo, setBackTo] = useState<string | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  // Au montage, lire ?filter=..., ?from=... et ?focus=search de l'URL
+  // Au montage, lire ?filter=..., ?status=..., ?from=... et ?focus=search
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const f = params.get("filter");
-    if (f && ["urgent", "todo", "in_progress", "done", "all"].includes(f)) {
-      setActiveFilter(f as Filter);
+
+    // Filtre par statut précis (prioritaire)
+    const s = params.get("status") as CallbackStatus | null;
+    if (s && STATUS_LABELS[s]) {
+      setStatusExact(s);
+    } else {
+      // Sinon filtre par groupe
+      const f = params.get("filter");
+      if (f && ["urgent", "todo", "in_progress", "done", "all"].includes(f)) {
+        setActiveFilter(f as Filter);
+      }
     }
+
     const from = params.get("from");
     if (from === "stats") setBackTo("/app/stats/par-statut");
 
     // Auto-focus sur la recherche (depuis l'icône loupe du dashboard)
     if (params.get("focus") === "search") {
-      // timeout pour laisser le rendu initial se faire
       setTimeout(() => {
         searchRef.current?.focus();
         searchRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -55,7 +83,12 @@ export default function RappelsListPage() {
     let cancelled = false;
     const handler = setTimeout(async () => {
       try {
-        const params = new URLSearchParams({ filter: activeFilter });
+        const params = new URLSearchParams();
+        if (statusExact) {
+          params.set("status", statusExact);
+        } else {
+          params.set("filter", activeFilter);
+        }
         if (search.trim()) params.set("search", search.trim());
         const res = await fetch(`/api/prospects?${params.toString()}`);
         if (!res.ok) {
@@ -82,7 +115,7 @@ export default function RappelsListPage() {
       cancelled = true;
       clearTimeout(handler);
     };
-  }, [activeFilter, search]);
+  }, [activeFilter, statusExact, search]);
 
   const prospects = data?.prospects ?? [];
   const counts = data?.counts ?? { urgent: 0, todo: 0, in_progress: 0, done: 0, all: 0 };
@@ -103,16 +136,44 @@ export default function RappelsListPage() {
             Retour aux stats par statut
           </Link>
         )}
-        <h1 className="text-xl font-nunito font-extrabold">Mes rappels</h1>
+        <h1 className="text-xl font-nunito font-extrabold">
+          Mes rappels
+          {statusExact && (
+            <span className="font-semibold opacity-90"> — {STATUS_LABELS[statusExact]}</span>
+          )}
+          {!statusExact && activeFilter !== "all" && (
+            <span className="font-semibold opacity-90"> — {FILTER_LABELS[activeFilter]}</span>
+          )}
+        </h1>
         <p className="text-xs opacity-80">
-          {counts.all} rappels · {counts.todo} à faire · {unknownCount} inconnus
+          {statusExact
+            ? `${prospects.length} prospect${prospects.length > 1 ? "s" : ""}`
+            : `${counts.all} rappels · ${counts.todo} à faire · ${unknownCount} inconnus`}
         </p>
       </div>
 
-      {/* Filtres */}
+      {/* Bandeau statut actif (quand on vient d'une stat par statut précis) */}
+      {statusExact && (
+        <div className="flex items-center justify-between px-5 py-2 bg-violet-50 border-b border-violet-100">
+          <span className="text-xs font-semibold text-violet-900">
+            Filtre actif : <span className="font-extrabold">{STATUS_LABELS[statusExact]}</span>
+          </span>
+          <button
+            onClick={() => setStatusExact(null)}
+            className="text-[11px] font-bold text-violet-700 active:opacity-60 flex items-center gap-1"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Effacer
+          </button>
+        </div>
+      )}
+
+      {/* Filtres par groupe */}
       <div className="flex px-5 py-3 bg-white border-b border-gray-100 overflow-x-auto gap-2">
         {filters.map((f) => {
-          const isActive = activeFilter === f.key;
+          const isActive = !statusExact && activeFilter === f.key;
           const isUrgent = f.key === "urgent";
           const count = counts[f.key];
           // Style spécial pour Urgents : rouge, avec point pulsant si count > 0
@@ -128,7 +189,10 @@ export default function RappelsListPage() {
           return (
             <button
               key={f.key}
-              onClick={() => setActiveFilter(f.key)}
+              onClick={() => {
+                setStatusExact(null); // cliquer un groupe efface le filtre statut précis
+                setActiveFilter(f.key);
+              }}
               className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${classes}`}
             >
               {isUrgent && count > 0 && (

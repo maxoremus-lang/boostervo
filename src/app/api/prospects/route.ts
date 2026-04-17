@@ -16,11 +16,21 @@ export async function GET(req: NextRequest) {
   const userId = (session.user as any).id;
   const { searchParams } = req.nextUrl;
   const filter = searchParams.get("filter") || "all";
+  const statusExact = searchParams.get("status"); // filtre par statut précis (prioritaire)
   const search = searchParams.get("search")?.trim().toLowerCase();
+
+  const VALID_STATUSES = [
+    "pending", "postponed", "unreachable",
+    "appointment", "test_drive", "quote_sent",
+    "sold", "not_interested",
+  ];
 
   // Construire le filtre principal
   let baseFilter: any = undefined;
-  if (filter === "urgent") {
+  if (statusExact && VALID_STATUSES.includes(statusExact)) {
+    // Filtre par statut précis (prend le pas sur filter)
+    baseFilter = { status: statusExact };
+  } else if (filter === "urgent") {
     baseFilter = { isUrgent: true, status: "pending" };
   } else if (filter === "todo") {
     baseFilter = { status: { in: ["pending", "postponed", "unreachable"] } };
