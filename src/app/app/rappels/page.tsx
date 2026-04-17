@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProspectCard from "../_components/ProspectCard";
 import BottomNav from "../_components/BottomNav";
 import SearchButton from "../_components/SearchButton";
@@ -25,7 +25,7 @@ const FILTER_LABELS: Record<Filter, string> = {
   urgent: "Urgents",
   todo: "À faire",
   in_progress: "En cours",
-  done: "Terminés",
+  done: "Traités",
   all: "",
 };
 
@@ -41,7 +41,7 @@ const filters: { key: Filter; label: string }[] = [
   { key: "urgent", label: "Urgents" },
   { key: "todo", label: "À faire" },
   { key: "in_progress", label: "En cours" },
-  { key: "done", label: "Terminés" },
+  { key: "done", label: "Traités" },
   { key: "all", label: "Tous" },
 ];
 
@@ -58,6 +58,7 @@ export default function RappelsListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [backTo, setBackTo] = useState<string | null>(null);
+  const filtersBarRef = useRef<HTMLDivElement>(null);
 
   // Au montage, lire ?filter=..., ?status=..., ?from=...
   useEffect(() => {
@@ -84,6 +85,17 @@ export default function RappelsListPage() {
     const from = params.get("from");
     if (from === "stats") setBackTo("/app/stats/par-statut");
   }, []);
+
+  // Centrer le bouton de filtre actif dans la barre scrollable
+  useEffect(() => {
+    if (statusExact) return; // en mode statut précis, aucun bouton n'est actif
+    const bar = filtersBarRef.current;
+    if (!bar) return;
+    const btn = bar.querySelector<HTMLButtonElement>(`[data-filter-key="${activeFilter}"]`);
+    if (btn) {
+      btn.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+    }
+  }, [activeFilter, statusExact]);
 
   // Fetch à chaque changement de filtre ou de recherche (débounced)
   useEffect(() => {
@@ -187,7 +199,7 @@ export default function RappelsListPage() {
       )}
 
       {/* Filtres par groupe */}
-      <div className="flex px-5 py-3 bg-white border-b border-gray-100 overflow-x-auto gap-2">
+      <div ref={filtersBarRef} className="flex px-5 py-3 bg-white border-b border-gray-100 overflow-x-auto gap-2 scroll-smooth">
         {filters.map((f) => {
           const isActive = !statusExact && activeFilter === f.key;
           const isUrgent = f.key === "urgent";
@@ -205,6 +217,7 @@ export default function RappelsListPage() {
           return (
             <button
               key={f.key}
+              data-filter-key={f.key}
               onClick={() => {
                 setStatusExact(null); // cliquer un groupe efface le filtre statut précis
                 setPeriod(null); // et efface la période héritée des stats
