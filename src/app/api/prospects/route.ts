@@ -95,7 +95,7 @@ export async function GET(req: NextRequest) {
     })),
   }));
 
-  // Compteurs pour les filtres
+  // Compteurs par groupe (filtres principaux)
   const counts = {
     urgent: await prisma.prospect.count({ where: { userId, isUrgent: true, status: "pending" } }),
     todo: await prisma.prospect.count({ where: { userId, status: { in: ["pending", "postponed", "unreachable"] } } }),
@@ -104,5 +104,20 @@ export async function GET(req: NextRequest) {
     all: await prisma.prospect.count({ where: { userId } }),
   };
 
-  return NextResponse.json({ prospects: result, counts });
+  // Compteurs par statut précis (pour les sous-filtres)
+  const statusRows = await prisma.prospect.groupBy({
+    by: ["status"],
+    where: { userId },
+    _count: { _all: true },
+  });
+  const byStatus: Record<string, number> = {
+    pending: 0, postponed: 0, unreachable: 0,
+    appointment: 0, test_drive: 0, quote_sent: 0,
+    sold: 0, not_interested: 0,
+  };
+  for (const row of statusRows) {
+    byStatus[row.status] = row._count._all;
+  }
+
+  return NextResponse.json({ prospects: result, counts, byStatus });
 }

@@ -48,6 +48,7 @@ const filters: { key: Filter; label: string }[] = [
 type ApiResponse = {
   prospects: Prospect[];
   counts: Record<Filter, number>;
+  byStatus: Record<CallbackStatus, number>;
 };
 
 export default function RappelsListPage() {
@@ -233,6 +234,30 @@ export default function RappelsListPage() {
           );
         })}
       </div>
+
+      {/* Sous-filtres pour "Traités" : Vendus / Pas intéressés */}
+      {!statusExact && activeFilter === "done" && data?.byStatus && (
+        <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
+          <button
+            onClick={() => {
+              setStatusExact("sold");
+              setPeriod(null);
+            }}
+            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-emerald-50 text-emerald-800 border border-emerald-200 active:opacity-60"
+          >
+            ✅ Vendus · {data.byStatus.sold}
+          </button>
+          <button
+            onClick={() => {
+              setStatusExact("not_interested");
+              setPeriod(null);
+            }}
+            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-gray-100 text-gray-600 border border-gray-200 active:opacity-60"
+          >
+            ❌ Pas intéressés · {data.byStatus.not_interested}
+          </button>
+        </div>
+      )}
 
       {/* Liste */}
       <div className="px-5 py-4 space-y-3">
