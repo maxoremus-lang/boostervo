@@ -18,13 +18,15 @@ function PhoneIcon({ className = "w-6 h-6" }: { className?: string }) {
 }
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleString("fr-FR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const d = new Date(iso);
+  const weekday = d.toLocaleDateString("fr-FR", { weekday: "short" }).replace(".", "");
+  const day = d.getDate();
+  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
+  const year2 = String(d.getFullYear()).slice(-2);
+  const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  const weekdayCap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  // Ex: "Mar. 19 avr. 26 · 14:32"
+  return `${weekdayCap}. ${day} ${monthShort}. ${year2} · ${time}`;
 }
 
 function formatEventDate(iso: string) {
@@ -46,8 +48,11 @@ function formatEventDate(iso: string) {
     return `${weekday.charAt(0).toUpperCase()}${weekday.slice(1)}. ${time}`;
   }
 
-  const dateShort = d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
-  return `${dateShort} ${time}`;
+  const day = d.getDate();
+  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
+  const year2 = String(d.getFullYear()).slice(-2);
+  // Ex: "12 avr. 26 · 14:32"
+  return `${day} ${monthShort}. ${year2} · ${time}`;
 }
 
 export default function ProspectDetailPage({ params }: { params: { id: string } }) {
