@@ -32,21 +32,37 @@ function LoginForm() {
     setError("");
     setLoading(true);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email: email.trim().toLowerCase(),
+        password,
+        redirect: false,
+        callbackUrl,
+      });
 
-    setLoading(false);
+      setLoading(false);
 
-    if (result?.error) {
-      setError("Email ou mot de passe incorrect");
-      return;
+      if (!result) {
+        setError("Erreur de connexion. Réessayez.");
+        return;
+      }
+
+      if (result.error) {
+        setError("Email ou mot de passe incorrect");
+        return;
+      }
+
+      if (result.ok) {
+        // Forcer un rechargement complet pour que les cookies soient pris en compte
+        window.location.href = callbackUrl;
+        return;
+      }
+
+      setError("Réponse inattendue. Réessayez.");
+    } catch (err) {
+      setLoading(false);
+      setError("Erreur réseau. Vérifiez votre connexion.");
     }
-
-    router.push(callbackUrl);
-    router.refresh();
   };
 
   return (
