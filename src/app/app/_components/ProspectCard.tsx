@@ -39,10 +39,19 @@ export default function ProspectCard({
           {prospect.isKnown ? (
             <>
               <p className="font-nunito font-bold text-gray-900 truncate">{prospect.name}</p>
-              <p className="text-xs text-gray-500 truncate">
-                {prospect.vehicleInterest}
-                {prospect.vehiclePrice && ` · ${prospect.vehiclePrice.toLocaleString("fr-FR")} €`}
-              </p>
+              {(prospect.vehicleInterest || prospect.vehiclePrice) && (
+                <p className="text-xs text-gray-500 truncate">
+                  {prospect.vehicleInterest}
+                  {prospect.vehiclePrice && ` · ${prospect.vehiclePrice.toLocaleString("fr-FR")} €`}
+                </p>
+              )}
+              {missed > 1 ? (
+                <p className="text-xs text-red-600 font-semibold">
+                  {missed} appels manqués · {formatRelativeWithDate(prospect.lastActivityAt)}
+                </p>
+              ) : (
+                <p className="text-xs text-gray-500">{formatRelativeWithDate(prospect.lastActivityAt)}</p>
+              )}
             </>
           ) : (
             <>
