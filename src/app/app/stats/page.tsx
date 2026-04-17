@@ -2,14 +2,20 @@
 
 import Link from "next/link";
 import BottomNav from "../_components/BottomNav";
+import SearchButton from "../_components/SearchButton";
 
 export default function StatsHubPage() {
   return (
     <div className="pb-24 min-h-screen bg-fond">
       {/* Header */}
       <div className="bg-bleu px-5 pt-6 pb-5 text-white">
-        <h1 className="text-xl font-nunito font-extrabold">Mes statistiques</h1>
-        <p className="text-xs opacity-80">Choisis une vue pour commencer</p>
+        <div className="flex justify-between items-start gap-3">
+          <div className="flex-1">
+            <h1 className="text-xl font-nunito font-extrabold">Mes statistiques</h1>
+            <p className="text-xs opacity-80">Choisis une vue pour commencer</p>
+          </div>
+          <SearchButton />
+        </div>
       </div>
 
       {/* Cards de choix */}

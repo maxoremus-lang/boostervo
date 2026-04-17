@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import BottomNav from "../../_components/BottomNav";
+import SearchButton from "../../_components/SearchButton";
 import { StatusBadge, UrgentBadge, NewBadge, KnownBadge } from "../../_components/Badge";
 import type { Prospect } from "../../_lib/types";
 import { formatRelativeTime, missedCallsCount } from "../../_lib/mockData";
@@ -108,17 +109,18 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
     <div className="pb-24">
       {/* Header */}
       <div className="bg-bleu px-5 pt-6 pb-5 text-white">
-        <div className="flex items-center justify-between mb-4">
-          <Link href="/app/rappels" className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center" aria-label="Retour">
+        <div className="flex items-center justify-between mb-4 gap-2">
+          <Link href="/app/rappels" className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center shrink-0" aria-label="Retour">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-1 justify-center flex-wrap">
             {prospect.isKnown ? <KnownBadge /> : <NewBadge />}
             {prospect.isUrgent && prospect.status === "pending" && <UrgentBadge />}
             {prospect.status !== "pending" && <StatusBadge status={prospect.status} />}
           </div>
+          <SearchButton />
         </div>
         {prospect.isKnown ? (
           <>

@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import BottomNav from "../_components/BottomNav";
+import SearchButton from "../_components/SearchButton";
 
 type Me = {
   id: string;
@@ -63,7 +63,10 @@ export default function ProfilPage() {
   return (
     <div className="pb-24">
       {/* Header */}
-      <div className="bg-bleu px-5 pt-6 pb-10 text-white text-center">
+      <div className="bg-bleu px-5 pt-6 pb-10 text-white text-center relative">
+        <div className="absolute top-4 right-4">
+          <SearchButton />
+        </div>
         <div className="w-20 h-20 bg-white/15 rounded-full mx-auto flex items-center justify-center mb-3">
           <span className="text-3xl font-nunito font-extrabold">{initials}</span>
         </div>

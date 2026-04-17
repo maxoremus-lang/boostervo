@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import BottomNav from "../../_components/BottomNav";
+import SearchButton from "../../_components/SearchButton";
 import type { CallbackStatus } from "../../_lib/types";
 
 type Period = "day" | "week" | "month" | "all";
@@ -93,13 +94,16 @@ export default function StatsParStatutPage() {
     <div className="pb-24">
       {/* Header avec bouton retour */}
       <div className="bg-bleu px-5 pt-6 pb-5 text-white">
-        <div className="flex items-center gap-3 mb-3">
-          <Link href="/app/stats" className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center" aria-label="Retour">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </Link>
-          <p className="text-xs uppercase opacity-70 font-semibold">Statistiques</p>
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <div className="flex items-center gap-3">
+            <Link href="/app/stats" className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center" aria-label="Retour">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </Link>
+            <p className="text-xs uppercase opacity-70 font-semibold">Statistiques</p>
+          </div>
+          <SearchButton />
         </div>
         <h1 className="text-xl font-nunito font-extrabold">Stats par statut</h1>
         <p className="text-xs opacity-80">{periodSubtitle[period]}</p>
