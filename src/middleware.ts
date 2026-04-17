@@ -12,8 +12,12 @@ export async function middleware(req: NextRequest) {
   if (pathname.startsWith("/app")) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token) {
-      const loginUrl = new URL("/app/login", req.url);
-      loginUrl.searchParams.set("callbackUrl", req.url);
+      // Utiliser le host de la requête (ou NEXTAUTH_URL) pour le redirect
+      const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || "boostervo.fr";
+      const proto = req.headers.get("x-forwarded-proto") || "https";
+      const baseUrl = `${proto}://${host}`;
+      const loginUrl = new URL("/app/login", baseUrl);
+      loginUrl.searchParams.set("callbackUrl", `${baseUrl}${pathname}`);
       return NextResponse.redirect(loginUrl);
     }
   }
