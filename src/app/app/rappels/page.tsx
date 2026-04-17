@@ -6,9 +6,10 @@ import ProspectCard from "../_components/ProspectCard";
 import BottomNav from "../_components/BottomNav";
 import type { Prospect } from "../_lib/types";
 
-type Filter = "todo" | "in_progress" | "done" | "all";
+type Filter = "urgent" | "todo" | "in_progress" | "done" | "all";
 
 const filters: { key: Filter; label: string }[] = [
+  { key: "urgent", label: "Urgents" },
   { key: "todo", label: "À faire" },
   { key: "in_progress", label: "En cours" },
   { key: "done", label: "Terminés" },
@@ -32,7 +33,7 @@ export default function RappelsListPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const f = params.get("filter");
-    if (f && ["todo", "in_progress", "done", "all"].includes(f)) {
+    if (f && ["urgent", "todo", "in_progress", "done", "all"].includes(f)) {
       setActiveFilter(f as Filter);
     }
     const from = params.get("from");
@@ -74,7 +75,7 @@ export default function RappelsListPage() {
   }, [activeFilter, search]);
 
   const prospects = data?.prospects ?? [];
-  const counts = data?.counts ?? { todo: 0, in_progress: 0, done: 0, all: 0 };
+  const counts = data?.counts ?? { urgent: 0, todo: 0, in_progress: 0, done: 0, all: 0 };
   const unknownCount = prospects.filter((p) => !p.isKnown).length;
 
   return (
@@ -100,17 +101,33 @@ export default function RappelsListPage() {
 
       {/* Filtres */}
       <div className="flex px-5 py-3 bg-white border-b border-gray-100 overflow-x-auto gap-2">
-        {filters.map((f) => (
-          <button
-            key={f.key}
-            onClick={() => setActiveFilter(f.key)}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${
-              activeFilter === f.key ? "bg-orange text-white" : "bg-gray-100 text-gray-600"
-            }`}
-          >
-            {f.label} · {counts[f.key]}
-          </button>
-        ))}
+        {filters.map((f) => {
+          const isActive = activeFilter === f.key;
+          const isUrgent = f.key === "urgent";
+          const count = counts[f.key];
+          // Style spécial pour Urgents : rouge, avec point pulsant si count > 0
+          const classes = isUrgent
+            ? isActive
+              ? "bg-red-600 text-white"
+              : count > 0
+                ? "bg-red-50 text-red-700 border border-red-200"
+                : "bg-gray-100 text-gray-400"
+            : isActive
+              ? "bg-orange text-white"
+              : "bg-gray-100 text-gray-600";
+          return (
+            <button
+              key={f.key}
+              onClick={() => setActiveFilter(f.key)}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${classes}`}
+            >
+              {isUrgent && count > 0 && (
+                <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-white" : "bg-red-600"} animate-pulse`} />
+              )}
+              {f.label} · {count}
+            </button>
+          );
+        })}
       </div>
 
       {/* Recherche */}

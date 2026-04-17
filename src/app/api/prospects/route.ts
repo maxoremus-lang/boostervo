@@ -18,20 +18,22 @@ export async function GET(req: NextRequest) {
   const filter = searchParams.get("filter") || "all";
   const search = searchParams.get("search")?.trim().toLowerCase();
 
-  // Construire le filtre de statut
-  let statusFilter: any = undefined;
-  if (filter === "todo") {
-    statusFilter = { in: ["pending", "postponed", "unreachable"] };
+  // Construire le filtre principal
+  let baseFilter: any = undefined;
+  if (filter === "urgent") {
+    baseFilter = { isUrgent: true, status: "pending" };
+  } else if (filter === "todo") {
+    baseFilter = { status: { in: ["pending", "postponed", "unreachable"] } };
   } else if (filter === "in_progress") {
-    statusFilter = { in: ["appointment", "test_drive", "quote_sent"] };
+    baseFilter = { status: { in: ["appointment", "test_drive", "quote_sent"] } };
   } else if (filter === "done") {
-    statusFilter = { in: ["sold", "not_interested"] };
+    baseFilter = { status: { in: ["sold", "not_interested"] } };
   }
 
   const prospects = await prisma.prospect.findMany({
     where: {
       userId,
-      ...(statusFilter ? { status: statusFilter } : {}),
+      ...(baseFilter ?? {}),
       ...(search
         ? {
             OR: [
@@ -73,6 +75,7 @@ export async function GET(req: NextRequest) {
 
   // Compteurs pour les filtres
   const counts = {
+    urgent: await prisma.prospect.count({ where: { userId, isUrgent: true, status: "pending" } }),
     todo: await prisma.prospect.count({ where: { userId, status: { in: ["pending", "postponed", "unreachable"] } } }),
     in_progress: await prisma.prospect.count({ where: { userId, status: { in: ["appointment", "test_drive", "quote_sent"] } } }),
     done: await prisma.prospect.count({ where: { userId, status: { in: ["sold", "not_interested"] } } }),
