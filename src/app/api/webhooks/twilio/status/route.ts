@@ -27,8 +27,15 @@ export async function POST(req: NextRequest) {
     }
 
     // Déterminer le type d'événement
-    const isMissed = ["no-answer", "busy", "failed", "canceled"].includes(callStatus);
-    const isAnswered = callStatus === "completed";
+    // Heuristique : si "completed" mais durée ≤ 5s, c'est probablement la messagerie vocale
+    const durationSec = duration ? parseInt(duration) : 0;
+    const isVoicemail = callStatus === "completed" && durationSec > 0 && durationSec <= 5;
+    const isMissed = ["no-answer", "busy", "failed", "canceled"].includes(callStatus) || isVoicemail;
+    const isAnswered = callStatus === "completed" && !isVoicemail;
+
+    if (isVoicemail) {
+      console.log(`[Twilio Status] 📞 Voicemail detected (duration ${durationSec}s ≤ 5s) — treating as missed`);
+    }
 
     // Si ni manqué ni décroché, on ignore
     if (!isMissed && !isAnswered) {

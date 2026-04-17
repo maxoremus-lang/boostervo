@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     const actionUrl = new URL("/api/webhooks/twilio/status", "https://boostervo.fr");
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Dial callerId="${to}" timeout="20" action="${actionUrl.toString()}" method="POST">
+  <Dial callerId="${to}" timeout="15" action="${actionUrl.toString()}" method="POST">
     ${user.forwardPhone}
   </Dial>
 </Response>`;
