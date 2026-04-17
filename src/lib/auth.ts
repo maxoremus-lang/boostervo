@@ -3,10 +3,28 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "./prisma";
 
+// Derrière Traefik (Docker), les cookies __Secure- / __Host- posent problème.
+// On désactive les cookies sécurisés pour que ça fonctionne derrière le proxy.
+const useSecureCookies = false;
+
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 }, // 30 jours
   pages: {
     signIn: "/app/login",
+  },
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: { httpOnly: true, sameSite: "lax", path: "/", secure: useSecureCookies },
+    },
+    callbackUrl: {
+      name: "next-auth.callback-url",
+      options: { sameSite: "lax", path: "/", secure: useSecureCookies },
+    },
+    csrfToken: {
+      name: "next-auth.csrf-token",
+      options: { httpOnly: true, sameSite: "lax", path: "/", secure: useSecureCookies },
+    },
   },
   providers: [
     CredentialsProvider({
