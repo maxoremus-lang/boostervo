@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  dealership   String
+  twilioNumber String?  // Numéro Twilio assigné au négociant
+  forwardPhone String?  // Numéro réel où transférer les appels
+  role         String   @default("negotiant") // "admin" | "negotiant"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  prospects Prospect[]
+}
+
+model Prospect {
+  id              String    @id @default(cuid())
+  phone           String    // Numéro de l'appelant (source de vérité)
+  name            String?   // Saisi après rappel
+  vehicleInterest String?   // Ex: "Peugeot 3008 GT 2021"
+  vehiclePrice    Float?
+  budget          Float?
+  notes           String?
+  status          String    @default("pending") // pending|postponed|unreachable|appointment|test_drive|quote_sent|not_interested|sold
+  isUrgent        Boolean   @default(false)
+  appointmentAt   DateTime?
+  postponedUntil  DateTime? // Date de report programmé
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  callEvents CallEvent[]
+
+  @@unique([phone, userId])
+}
+
+model CallEvent {
+  id          String   @id @default(cuid())
+  type        String   // "missed" | "answered"
+  callSid     String?  // Twilio Call SID
+  durationSec Int?
+  ringSec     Int?
+  fromPhone   String?  // Numéro appelant
+  toPhone     String?  // Numéro Twilio appelé
+  prospectId  String
+  prospect    Prospect @relation(fields: [prospectId], references: [id])
+  createdAt   DateTime @default(now())
+}
