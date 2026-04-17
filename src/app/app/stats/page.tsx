@@ -3,6 +3,7 @@
 import Link from "next/link";
 import BottomNav from "../_components/BottomNav";
 import SearchButton from "../_components/SearchButton";
+import SearchBar from "../_components/SearchBar";
 
 export default function StatsHubPage() {
   return (
@@ -17,6 +18,8 @@ export default function StatsHubPage() {
           <SearchButton />
         </div>
       </div>
+
+      <SearchBar />
 
       {/* Cards de choix */}
       <div className="px-5 pt-5 space-y-3">

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ProspectCard from "../_components/ProspectCard";
 import BottomNav from "../_components/BottomNav";
 import SearchButton from "../_components/SearchButton";
+import SearchBar from "../_components/SearchBar";
 import type { Prospect, CallbackStatus } from "../_lib/types";
 
 type Filter = "urgent" | "todo" | "in_progress" | "done" | "all";
@@ -151,6 +152,8 @@ export default function RappelsListPage() {
           <SearchButton />
         </div>
       </div>
+
+      <SearchBar />
 
       {/* Bandeau statut actif (quand on vient d'une stat par statut précis) */}
       {statusExact && (

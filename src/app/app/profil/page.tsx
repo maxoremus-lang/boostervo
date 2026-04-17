@@ -4,6 +4,7 @@ import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import BottomNav from "../_components/BottomNav";
 import SearchButton from "../_components/SearchButton";
+import SearchBar from "../_components/SearchBar";
 
 type Me = {
   id: string;
@@ -73,6 +74,8 @@ export default function ProfilPage() {
         <h1 className="text-xl font-nunito font-extrabold">{me?.name ?? (loading ? "Chargement…" : "—")}</h1>
         <p className="text-xs opacity-80">{me?.dealership ?? ""}</p>
       </div>
+
+      <SearchBar />
 
       <div className="px-5 -mt-5 space-y-4">
         {/* Infos */}

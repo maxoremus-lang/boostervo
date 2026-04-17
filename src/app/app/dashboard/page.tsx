@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import ProspectCard from "../_components/ProspectCard";
 import BottomNav from "../_components/BottomNav";
 import SearchButton from "../_components/SearchButton";
+import SearchBar from "../_components/SearchBar";
 import type { Prospect } from "../_lib/types";
 
 type ApiResponse = {
@@ -69,6 +70,8 @@ export default function DashboardPage() {
           <SearchButton />
         </div>
       </div>
+
+      <SearchBar />
 
       {/* Stats rapides */}
       <div className="px-5 -mt-5">

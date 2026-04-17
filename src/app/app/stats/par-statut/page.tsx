@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import BottomNav from "../../_components/BottomNav";
 import SearchButton from "../../_components/SearchButton";
+import SearchBar from "../../_components/SearchBar";
 import type { CallbackStatus } from "../../_lib/types";
 
 type Period = "day" | "week" | "month" | "all";
@@ -108,6 +109,8 @@ export default function StatsParStatutPage() {
         <h1 className="text-xl font-nunito font-extrabold">Stats par statut</h1>
         <p className="text-xs opacity-80">{periodSubtitle[period]}</p>
       </div>
+
+      <SearchBar />
 
       {/* Sélecteur période */}
       <div className="flex gap-2 px-5 py-3 bg-white border-b border-gray-100 overflow-x-auto">

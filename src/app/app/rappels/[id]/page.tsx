@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import BottomNav from "../../_components/BottomNav";
 import SearchButton from "../../_components/SearchButton";
+import SearchBar from "../../_components/SearchBar";
 import { StatusBadge, UrgentBadge, NewBadge, KnownBadge } from "../../_components/Badge";
 import type { Prospect } from "../../_lib/types";
 import { formatRelativeTime, missedCallsCount } from "../../_lib/mockData";
@@ -135,6 +136,8 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
           </>
         )}
       </div>
+
+      <SearchBar />
 
       {/* Boutons principaux */}
       <div className="px-5 -mt-3 space-y-2">
