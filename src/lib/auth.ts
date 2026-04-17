@@ -34,23 +34,37 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Mot de passe", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+        console.log("[Auth] authorize called with email:", credentials?.email);
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email.toLowerCase().trim() },
-        });
-        if (!user) return null;
+        if (!credentials?.email || !credentials?.password) {
+          console.log("[Auth] Missing credentials");
+          return null;
+        }
 
-        const valid = await compare(credentials.password, user.passwordHash);
-        if (!valid) return null;
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email.toLowerCase().trim() },
+          });
+          console.log("[Auth] User found:", !!user, user?.email);
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          dealership: user.dealership,
-        };
+          if (!user) return null;
+
+          const valid = await compare(credentials.password, user.passwordHash);
+          console.log("[Auth] Password valid:", valid);
+
+          if (!valid) return null;
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            dealership: user.dealership,
+          };
+        } catch (err) {
+          console.error("[Auth] Error in authorize:", err);
+          return null;
+        }
       },
     }),
   ],
