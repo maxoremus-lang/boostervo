@@ -77,7 +77,7 @@ export default function ProfilPage() {
 
       <SearchBar />
 
-      <div className="px-5 -mt-5 space-y-4">
+      <div className="px-5 mt-4 space-y-4">
         {/* Infos */}
         <div className="bg-white rounded-2xl shadow-sm divide-y divide-gray-100">
           {loading ? (
