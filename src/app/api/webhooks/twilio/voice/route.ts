@@ -38,11 +38,11 @@ export async function POST(req: NextRequest) {
     }
 
     // TwiML : transférer vers le téléphone du négociant
-    // Le status callback est géré par la config "Call status changes" dans la console Twilio
-    // qui pointe vers /api/webhooks/twilio/status
+    // action= reçoit DialCallStatus (no-answer, busy, completed) après la tentative
+    const actionUrl = new URL("/api/webhooks/twilio/status", "https://boostervo.fr");
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Dial callerId="${to}" timeout="25">
+  <Dial callerId="${to}" timeout="20" action="${actionUrl.toString()}" method="POST">
     ${user.forwardPhone}
   </Dial>
 </Response>`;
