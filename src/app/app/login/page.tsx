@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { currentUser } from "../_lib/mockData";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useState, Suspense } from "react";
 
 function PhoneIcon() {
   return (
@@ -18,17 +17,80 @@ function PhoneIcon() {
   );
 }
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState(currentUser.email);
-  const [password, setPassword] = useState("demo");
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/app/dashboard";
 
-  const onSubmit = (e: React.FormEvent) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // MVP : aucun vrai check, redirige vers dashboard
-    router.push("/app/dashboard");
+    setError("");
+    setLoading(true);
+
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    setLoading(false);
+
+    if (result?.error) {
+      setError("Email ou mot de passe incorrect");
+      return;
+    }
+
+    router.push(callbackUrl);
+    router.refresh();
   };
 
+  return (
+    <form onSubmit={onSubmit} className="w-full max-w-sm space-y-3">
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 text-center">
+          {error}
+        </div>
+      )}
+      <div>
+        <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="max@boostervo.fr"
+          className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
+          autoComplete="email"
+          required
+        />
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Mot de passe</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
+          autoComplete="current-password"
+          required
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-orange hover:bg-orange-dark disabled:opacity-50 text-white font-bold py-3.5 rounded-xl mt-4 shadow-md transition"
+      >
+        {loading ? "Connexion..." : "Se connecter"}
+      </button>
+    </form>
+  );
+}
+
+export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-8 pb-20 bg-fond">
       <div className="w-20 h-20 bg-bleu rounded-2xl flex items-center justify-center mb-6 shadow-lg">
@@ -37,43 +99,9 @@ export default function LoginPage() {
       <h1 className="text-2xl font-nunito font-extrabold text-bleu">Bienvenue</h1>
       <p className="text-gray-500 text-sm mb-8 text-center">Connectez-vous pour gérer vos rappels</p>
 
-      <form onSubmit={onSubmit} className="w-full max-w-sm space-y-3">
-        <div>
-          <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
-            autoComplete="email"
-          />
-        </div>
-        <div>
-          <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Mot de passe</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
-            autoComplete="current-password"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-orange hover:bg-orange-dark text-white font-bold py-3.5 rounded-xl mt-4 shadow-md transition"
-        >
-          Se connecter
-        </button>
-        <p className="text-center text-xs text-gray-500 mt-4">
-          Pas encore de compte ?{" "}
-          <Link href="#" className="text-orange font-semibold">
-            Créer un compte
-          </Link>
-        </p>
-        <p className="text-center text-[11px] text-gray-400 mt-8">
-          Démo : utilisez n&apos;importe quel email / mot de passe.
-        </p>
-      </form>
+      <Suspense fallback={<div className="text-gray-400 text-sm">Chargement...</div>}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
