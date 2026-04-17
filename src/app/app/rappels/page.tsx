@@ -26,6 +26,15 @@ export default function RappelsListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Au montage, lire ?filter=... de l'URL (ex: depuis la page Stats)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const f = params.get("filter");
+    if (f && ["todo", "in_progress", "done", "all"].includes(f)) {
+      setActiveFilter(f as Filter);
+    }
+  }, []);
+
   // Fetch à chaque changement de filtre ou de recherche (débounced)
   useEffect(() => {
     let cancelled = false;
