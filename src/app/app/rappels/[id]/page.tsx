@@ -34,25 +34,28 @@ function formatEventDate(iso: string) {
   const now = new Date();
   const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 
+  const day = d.getDate();
+  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
+  const year2 = String(d.getFullYear()).slice(-2);
+  const dateShort = `${day} ${monthShort}. ${year2}`; // "12 avr. 26"
+
   const isSameDay = d.toDateString() === now.toDateString();
-  if (isSameDay) return time;
+  if (isSameDay) return `Aujourd'hui · ${time}`;
 
   const yesterday = new Date(now);
   yesterday.setDate(now.getDate() - 1);
-  if (d.toDateString() === yesterday.toDateString()) return `Hier ${time}`;
+  if (d.toDateString() === yesterday.toDateString()) return `Hier · ${dateShort} · ${time}`;
 
   const diffDays = Math.floor((now.getTime() - d.getTime()) / (24 * 60 * 60 * 1000));
   if (diffDays < 7) {
     const weekday = d.toLocaleDateString("fr-FR", { weekday: "short" }).replace(".", "");
-    // Capitalise première lettre
-    return `${weekday.charAt(0).toUpperCase()}${weekday.slice(1)}. ${time}`;
+    const weekdayCap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    // Ex: "Mer. 15 avr. 26 · 14:32"
+    return `${weekdayCap}. ${dateShort} · ${time}`;
   }
 
-  const day = d.getDate();
-  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
-  const year2 = String(d.getFullYear()).slice(-2);
   // Ex: "12 avr. 26 · 14:32"
-  return `${day} ${monthShort}. ${year2} · ${time}`;
+  return `${dateShort} · ${time}`;
 }
 
 export default function ProspectDetailPage({ params }: { params: { id: string } }) {
