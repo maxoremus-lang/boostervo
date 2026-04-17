@@ -268,7 +268,16 @@ export default function RappelsListPage() {
         ) : prospects.length === 0 ? (
           <p className="text-center text-gray-400 text-sm py-8">Aucun rappel ne correspond</p>
         ) : (
-          prospects.map((p) => <ProspectCard key={p.id} prospect={p} />)
+          prospects.map((p, i) => (
+            <div key={p.id} className="flex items-start gap-2">
+              <span className="flex-shrink-0 w-6 pt-3 text-right text-xs font-bold text-gray-400 tabular-nums">
+                {i + 1}
+              </span>
+              <div className="flex-1 min-w-0">
+                <ProspectCard prospect={p} />
+              </div>
+            </div>
+          ))
         )}
       </div>
 
