@@ -125,17 +125,6 @@ export default function RappelsListPage() {
     <div className="pb-24">
       {/* Header */}
       <div className="bg-bleu px-5 pt-6 pb-5 text-white">
-        {backTo && (
-          <Link
-            href={backTo}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold opacity-80 active:opacity-60 mb-2"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Retour aux stats par statut
-          </Link>
-        )}
         <h1 className="text-xl font-nunito font-extrabold">
           Mes rappels
           {statusExact && (
@@ -154,19 +143,31 @@ export default function RappelsListPage() {
 
       {/* Bandeau statut actif (quand on vient d'une stat par statut précis) */}
       {statusExact && (
-        <div className="flex items-center justify-between px-5 py-2 bg-violet-50 border-b border-violet-100">
-          <span className="text-xs font-semibold text-violet-900">
-            Filtre actif : <span className="font-extrabold">{STATUS_LABELS[statusExact]}</span>
+        <div className="flex items-center justify-between px-5 py-2 bg-violet-50 border-b border-violet-100 gap-3">
+          {backTo ? (
+            <Link
+              href={backTo}
+              className="flex items-center gap-1.5 text-[11px] font-bold text-violet-700 active:opacity-60"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              Retour aux stats
+            </Link>
+          ) : (
+            <button
+              onClick={() => setStatusExact(null)}
+              className="flex items-center gap-1 text-[11px] font-bold text-violet-700 active:opacity-60"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Effacer
+            </button>
+          )}
+          <span className="text-xs font-semibold text-violet-900 truncate">
+            Filtre : <span className="font-extrabold">{STATUS_LABELS[statusExact]}</span>
           </span>
-          <button
-            onClick={() => setStatusExact(null)}
-            className="text-[11px] font-bold text-violet-700 active:opacity-60 flex items-center gap-1"
-          >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            Effacer
-          </button>
         </div>
       )}
 
