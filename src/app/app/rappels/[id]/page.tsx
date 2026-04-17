@@ -25,8 +25,27 @@ function formatDate(iso: string) {
   });
 }
 
-function formatTime(iso: string) {
-  return new Date(iso).toLocaleString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+function formatEventDate(iso: string) {
+  const d = new Date(iso);
+  const now = new Date();
+  const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+
+  const isSameDay = d.toDateString() === now.toDateString();
+  if (isSameDay) return time;
+
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (d.toDateString() === yesterday.toDateString()) return `Hier ${time}`;
+
+  const diffDays = Math.floor((now.getTime() - d.getTime()) / (24 * 60 * 60 * 1000));
+  if (diffDays < 7) {
+    const weekday = d.toLocaleDateString("fr-FR", { weekday: "short" }).replace(".", "");
+    // Capitalise première lettre
+    return `${weekday.charAt(0).toUpperCase()}${weekday.slice(1)}. ${time}`;
+  }
+
+  const dateShort = d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+  return `${dateShort} ${time}`;
 }
 
 export default function ProspectDetailPage({ params }: { params: { id: string } }) {
@@ -207,7 +226,7 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
                 <div className="flex-1">
                   <p className="text-sm font-semibold">{ev.type === "answered" ? "Rappel effectué" : "Appel manqué"}</p>
                   <p className="text-xs text-gray-500">
-                    {formatTime(ev.at)} · {formatRelativeTime(ev.at)}
+                    {formatEventDate(ev.at)} · {formatRelativeTime(ev.at)}
                     {ev.ringSec && ` · sonné ${ev.ringSec}s`}
                     {ev.durationSec && ` · durée ${Math.round(ev.durationSec / 60)}min ${ev.durationSec % 60}s`}
                   </p>
