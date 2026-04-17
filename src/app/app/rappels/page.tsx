@@ -27,6 +27,14 @@ const FILTER_LABELS: Record<Filter, string> = {
   all: "",
 };
 
+type Period = "day" | "week" | "month" | "all";
+const PERIOD_LABELS: Record<Period, string> = {
+  day: "aujourd'hui",
+  week: "7 derniers jours",
+  month: "30 derniers jours",
+  all: "",
+};
+
 const filters: { key: Filter; label: string }[] = [
   { key: "urgent", label: "Urgents" },
   { key: "todo", label: "À faire" },
@@ -43,6 +51,7 @@ type ApiResponse = {
 export default function RappelsListPage() {
   const [activeFilter, setActiveFilter] = useState<Filter>("todo");
   const [statusExact, setStatusExact] = useState<CallbackStatus | null>(null);
+  const [period, setPeriod] = useState<Period | null>(null);
   const [search, setSearch] = useState("");
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,6 +73,12 @@ export default function RappelsListPage() {
       if (f && ["urgent", "todo", "in_progress", "done", "all"].includes(f)) {
         setActiveFilter(f as Filter);
       }
+    }
+
+    // Période (propagée depuis la page Stats pour cohérence des compteurs)
+    const p = params.get("period") as Period | null;
+    if (p && ["day", "week", "month", "all"].includes(p) && p !== "all") {
+      setPeriod(p);
     }
 
     const from = params.get("from");
@@ -89,6 +104,7 @@ export default function RappelsListPage() {
         } else {
           params.set("filter", activeFilter);
         }
+        if (period) params.set("period", period);
         if (search.trim()) params.set("search", search.trim());
         const res = await fetch(`/api/prospects?${params.toString()}`);
         if (!res.ok) {
@@ -115,7 +131,7 @@ export default function RappelsListPage() {
       cancelled = true;
       clearTimeout(handler);
     };
-  }, [activeFilter, statusExact, search]);
+  }, [activeFilter, statusExact, period, search]);
 
   const prospects = data?.prospects ?? [];
   const counts = data?.counts ?? { urgent: 0, todo: 0, in_progress: 0, done: 0, all: 0 };
@@ -147,7 +163,7 @@ export default function RappelsListPage() {
           {backTo ? (
             <Link
               href={backTo}
-              className="flex items-center gap-1.5 text-[11px] font-bold text-violet-700 active:opacity-60"
+              className="flex items-center gap-1.5 text-[11px] font-bold text-violet-700 active:opacity-60 flex-shrink-0"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -156,8 +172,8 @@ export default function RappelsListPage() {
             </Link>
           ) : (
             <button
-              onClick={() => setStatusExact(null)}
-              className="flex items-center gap-1 text-[11px] font-bold text-violet-700 active:opacity-60"
+              onClick={() => { setStatusExact(null); setPeriod(null); }}
+              className="flex items-center gap-1 text-[11px] font-bold text-violet-700 active:opacity-60 flex-shrink-0"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -165,8 +181,9 @@ export default function RappelsListPage() {
               Effacer
             </button>
           )}
-          <span className="text-xs font-semibold text-violet-900 truncate">
-            Filtre : <span className="font-extrabold">{STATUS_LABELS[statusExact]}</span>
+          <span className="text-xs font-semibold text-violet-900 truncate text-right">
+            <span className="font-extrabold">{STATUS_LABELS[statusExact]}</span>
+            {period && <span className="opacity-70"> · {PERIOD_LABELS[period]}</span>}
           </span>
         </div>
       )}
@@ -192,6 +209,7 @@ export default function RappelsListPage() {
               key={f.key}
               onClick={() => {
                 setStatusExact(null); // cliquer un groupe efface le filtre statut précis
+                setPeriod(null); // et efface la période héritée des stats
                 setActiveFilter(f.key);
               }}
               className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${classes}`}

@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const filter = searchParams.get("filter") || "all";
   const statusExact = searchParams.get("status"); // filtre par statut précis (prioritaire)
+  const period = searchParams.get("period"); // day|week|month|all (optionnel)
   const search = searchParams.get("search")?.trim().toLowerCase();
 
   const VALID_STATUSES = [
@@ -24,6 +25,16 @@ export async function GET(req: NextRequest) {
     "appointment", "test_drive", "quote_sent",
     "sold", "not_interested",
   ];
+
+  // Filtre temporel optionnel (pour cohérence avec la page Stats)
+  let sinceFilter: any = undefined;
+  if (period && period !== "all") {
+    const since = new Date();
+    if (period === "day") since.setHours(0, 0, 0, 0);
+    else if (period === "week") since.setDate(since.getDate() - 7);
+    else if (period === "month") since.setDate(since.getDate() - 30);
+    sinceFilter = { updatedAt: { gte: since } };
+  }
 
   // Construire le filtre principal
   let baseFilter: any = undefined;
@@ -44,6 +55,7 @@ export async function GET(req: NextRequest) {
     where: {
       userId,
       ...(baseFilter ?? {}),
+      ...(sinceFilter ?? {}),
       ...(search
         ? {
             OR: [
