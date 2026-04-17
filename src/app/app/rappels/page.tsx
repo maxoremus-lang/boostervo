@@ -1,50 +1,67 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { prospects } from "../_lib/mockData";
+import { useEffect, useState } from "react";
 import ProspectCard from "../_components/ProspectCard";
 import BottomNav from "../_components/BottomNav";
-import type { CallbackStatus } from "../_lib/types";
+import type { Prospect } from "../_lib/types";
 
 type Filter = "todo" | "in_progress" | "done" | "all";
 
-const filters: { key: Filter; label: string; match: (s: CallbackStatus) => boolean }[] = [
-  { key: "todo", label: "À faire", match: (s) => s === "pending" || s === "postponed" || s === "unreachable" },
-  { key: "in_progress", label: "En cours", match: (s) => s === "appointment" || s === "test_drive" || s === "quote_sent" },
-  { key: "done", label: "Terminés", match: (s) => s === "sold" || s === "not_interested" },
-  { key: "all", label: "Tous", match: () => true },
+const filters: { key: Filter; label: string }[] = [
+  { key: "todo", label: "À faire" },
+  { key: "in_progress", label: "En cours" },
+  { key: "done", label: "Terminés" },
+  { key: "all", label: "Tous" },
 ];
+
+type ApiResponse = {
+  prospects: Prospect[];
+  counts: Record<Filter, number>;
+};
 
 export default function RappelsListPage() {
   const [activeFilter, setActiveFilter] = useState<Filter>("todo");
   const [search, setSearch] = useState("");
+  const [data, setData] = useState<ApiResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const counts = useMemo(() => {
-    const c: Record<Filter, number> = { todo: 0, in_progress: 0, done: 0, all: prospects.length };
-    for (const p of prospects) {
-      if (p.status === "pending" || p.status === "postponed" || p.status === "unreachable") c.todo++;
-      else if (p.status === "appointment" || p.status === "test_drive" || p.status === "quote_sent") c.in_progress++;
-      else if (p.status === "sold" || p.status === "not_interested") c.done++;
-    }
-    return c;
-  }, []);
+  // Fetch à chaque changement de filtre ou de recherche (débounced)
+  useEffect(() => {
+    let cancelled = false;
+    const handler = setTimeout(async () => {
+      try {
+        const params = new URLSearchParams({ filter: activeFilter });
+        if (search.trim()) params.set("search", search.trim());
+        const res = await fetch(`/api/prospects?${params.toString()}`);
+        if (!res.ok) {
+          if (!cancelled) {
+            setError("Erreur de chargement");
+            setLoading(false);
+          }
+          return;
+        }
+        const json: ApiResponse = await res.json();
+        if (cancelled) return;
+        setData(json);
+        setError(null);
+        setLoading(false);
+      } catch {
+        if (!cancelled) {
+          setError("Erreur réseau");
+          setLoading(false);
+        }
+      }
+    }, search ? 250 : 0); // debounce 250ms uniquement pour la recherche
 
-  const filtered = useMemo(() => {
-    const filter = filters.find((f) => f.key === activeFilter)!;
-    const s = search.trim().toLowerCase();
-    return prospects
-      .filter((p) => filter.match(p.status))
-      .filter((p) => {
-        if (!s) return true;
-        return (
-          p.phone.toLowerCase().includes(s) ||
-          (p.name && p.name.toLowerCase().includes(s)) ||
-          (p.vehicleInterest && p.vehicleInterest.toLowerCase().includes(s))
-        );
-      })
-      .sort((a, b) => (b.isUrgent ? 1 : 0) - (a.isUrgent ? 1 : 0));
+    return () => {
+      cancelled = true;
+      clearTimeout(handler);
+    };
   }, [activeFilter, search]);
 
+  const prospects = data?.prospects ?? [];
+  const counts = data?.counts ?? { todo: 0, in_progress: 0, done: 0, all: 0 };
   const unknownCount = prospects.filter((p) => !p.isKnown).length;
 
   return (
@@ -53,7 +70,7 @@ export default function RappelsListPage() {
       <div className="bg-bleu px-5 pt-6 pb-5 text-white">
         <h1 className="text-xl font-nunito font-extrabold">Mes rappels</h1>
         <p className="text-xs opacity-80">
-          {prospects.length} rappels · {counts.todo} à faire · {unknownCount} inconnus
+          {counts.all} rappels · {counts.todo} à faire · {unknownCount} inconnus
         </p>
       </div>
 
@@ -89,10 +106,14 @@ export default function RappelsListPage() {
 
       {/* Liste */}
       <div className="px-5 py-4 space-y-3">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <p className="text-center text-gray-400 text-sm py-8">Chargement…</p>
+        ) : error ? (
+          <p className="text-center text-red-600 text-sm py-8">{error}</p>
+        ) : prospects.length === 0 ? (
           <p className="text-center text-gray-400 text-sm py-8">Aucun rappel ne correspond</p>
         ) : (
-          filtered.map((p) => <ProspectCard key={p.id} prospect={p} />)
+          prospects.map((p) => <ProspectCard key={p.id} prospect={p} />)
         )}
       </div>
 

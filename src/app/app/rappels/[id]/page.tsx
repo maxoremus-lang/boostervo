@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getProspect, formatRelativeTime, missedCallsCount } from "../../_lib/mockData";
+import { useEffect, useState } from "react";
 import BottomNav from "../../_components/BottomNav";
 import { StatusBadge, UrgentBadge, NewBadge, KnownBadge } from "../../_components/Badge";
+import type { Prospect } from "../../_lib/types";
+import { formatRelativeTime, missedCallsCount } from "../../_lib/mockData";
 
 function PhoneIcon({ className = "w-6 h-6" }: { className?: string }) {
   return (
@@ -27,8 +30,57 @@ function formatTime(iso: string) {
 }
 
 export default function ProspectDetailPage({ params }: { params: { id: string } }) {
-  const prospect = getProspect(params.id);
-  if (!prospect) notFound();
+  const [prospect, setProspect] = useState<Prospect | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/prospects/${params.id}`);
+        if (!res.ok) {
+          if (!cancelled) {
+            setError(res.status === 404 ? "Prospect introuvable" : "Erreur de chargement");
+            setLoading(false);
+          }
+          return;
+        }
+        const data = await res.json();
+        if (!cancelled) {
+          setProspect(data);
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setError("Erreur réseau");
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Chargement…
+      </div>
+    );
+  }
+
+  if (!prospect) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <p className="text-red-600 mb-4">{error ?? "Prospect introuvable"}</p>
+        <Link href="/app/rappels" className="text-orange font-bold">
+          Retour aux rappels
+        </Link>
+      </div>
+    );
+  }
 
   const telHref = `tel:${prospect.phone.replace(/\s/g, "")}`;
   const missed = missedCallsCount(prospect);
@@ -142,23 +194,27 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
           Historique des appels ({missed} manqué{missed > 1 ? "s" : ""})
         </h2>
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
-          {prospect.callEvents.map((ev) => (
-            <div key={ev.id} className="flex gap-3">
-              <div
-                className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                  ev.type === "answered" ? "bg-green-500" : "bg-red-500"
-                }`}
-              />
-              <div className="flex-1">
-                <p className="text-sm font-semibold">{ev.type === "answered" ? "Rappel effectué" : "Appel manqué"}</p>
-                <p className="text-xs text-gray-500">
-                  {formatTime(ev.at)} · {formatRelativeTime(ev.at)}
-                  {ev.ringSec && ` · sonné ${ev.ringSec}s`}
-                  {ev.durationSec && ` · durée ${Math.round(ev.durationSec / 60)}min ${ev.durationSec % 60}s`}
-                </p>
+          {prospect.callEvents.length === 0 ? (
+            <p className="text-sm text-gray-400 italic">Aucun appel enregistré</p>
+          ) : (
+            prospect.callEvents.map((ev) => (
+              <div key={ev.id} className="flex gap-3">
+                <div
+                  className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                    ev.type === "answered" ? "bg-green-500" : "bg-red-500"
+                  }`}
+                />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold">{ev.type === "answered" ? "Rappel effectué" : "Appel manqué"}</p>
+                  <p className="text-xs text-gray-500">
+                    {formatTime(ev.at)} · {formatRelativeTime(ev.at)}
+                    {ev.ringSec && ` · sonné ${ev.ringSec}s`}
+                    {ev.durationSec && ` · durée ${Math.round(ev.durationSec / 60)}min ${ev.durationSec % 60}s`}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
