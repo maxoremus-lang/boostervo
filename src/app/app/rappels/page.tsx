@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProspectCard from "../_components/ProspectCard";
 import BottomNav from "../_components/BottomNav";
 import type { Prospect } from "../_lib/types";
@@ -28,8 +28,9 @@ export default function RappelsListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [backTo, setBackTo] = useState<string | null>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  // Au montage, lire ?filter=... et ?from=... de l'URL (ex: depuis la page Stats)
+  // Au montage, lire ?filter=..., ?from=... et ?focus=search de l'URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const f = params.get("filter");
@@ -38,6 +39,15 @@ export default function RappelsListPage() {
     }
     const from = params.get("from");
     if (from === "stats") setBackTo("/app/stats/par-statut");
+
+    // Auto-focus sur la recherche (depuis l'icône loupe du dashboard)
+    if (params.get("focus") === "search") {
+      // timeout pour laisser le rendu initial se faire
+      setTimeout(() => {
+        searchRef.current?.focus();
+        searchRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 100);
+    }
   }, []);
 
   // Fetch à chaque changement de filtre ou de recherche (débounced)
@@ -137,6 +147,7 @@ export default function RappelsListPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
+            ref={searchRef}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher (nom ou numéro)..."
