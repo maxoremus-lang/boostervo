@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import ProspectCard from "../_components/ProspectCard";
@@ -73,21 +74,30 @@ export default function DashboardPage() {
 
       <SearchBar />
 
-      {/* Stats rapides */}
+      {/* Stats rapides — cliquables */}
       <div className="px-5 -mt-5">
-        <div className="bg-white rounded-2xl shadow-md p-4 grid grid-cols-3 gap-2">
-          <div className="text-center border-r border-gray-100">
+        <div className="bg-white rounded-2xl shadow-md grid grid-cols-3 overflow-hidden">
+          <Link
+            href="/app/rappels?filter=todo"
+            className="text-center p-4 border-r border-gray-100 active:bg-gray-50 transition"
+          >
             <div className="text-2xl font-nunito font-extrabold text-orange">{toCallCount}</div>
             <div className="text-[10px] text-gray-500 uppercase font-semibold">À rappeler</div>
-          </div>
-          <div className="text-center border-r border-gray-100">
+          </Link>
+          <Link
+            href="/app/rappels?filter=urgent"
+            className="text-center p-4 border-r border-gray-100 active:bg-gray-50 transition"
+          >
             <div className="text-2xl font-nunito font-extrabold text-red-600">{urgents.length}</div>
             <div className="text-[10px] text-gray-500 uppercase font-semibold">Urgents</div>
-          </div>
-          <div className="text-center">
+          </Link>
+          <Link
+            href="/app/rappels?filter=done"
+            className="text-center p-4 active:bg-gray-50 transition"
+          >
             <div className="text-2xl font-nunito font-extrabold text-green-600">{doneCount}</div>
             <div className="text-[10px] text-gray-500 uppercase font-semibold">Faits</div>
-          </div>
+          </Link>
         </div>
       </div>
 
