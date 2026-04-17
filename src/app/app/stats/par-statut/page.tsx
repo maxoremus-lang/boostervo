@@ -137,7 +137,7 @@ export default function StatsParStatutPage() {
                   return (
                     <Link
                       key={g.key}
-                      href={`/app/rappels?filter=${g.key}`}
+                      href={`/app/rappels?filter=${g.key}&from=stats`}
                       className="flex flex-col items-center gap-0.5 active:opacity-70 transition"
                     >
                       <span className={`text-3xl font-nunito font-extrabold ${g.color}`}>{total}</span>
@@ -163,7 +163,7 @@ export default function StatsParStatutPage() {
                 return (
                   <Link
                     key={s.key}
-                    href={`/app/rappels?filter=${s.group}`}
+                    href={`/app/rappels?filter=${s.group}&from=stats`}
                     className={`${s.bg} rounded-2xl p-3 flex flex-col gap-1 active:opacity-70 transition`}
                   >
                     <div className="flex items-center gap-1.5">

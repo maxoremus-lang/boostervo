@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import ProspectCard from "../_components/ProspectCard";
 import BottomNav from "../_components/BottomNav";
@@ -25,14 +26,17 @@ export default function RappelsListPage() {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [backTo, setBackTo] = useState<string | null>(null);
 
-  // Au montage, lire ?filter=... de l'URL (ex: depuis la page Stats)
+  // Au montage, lire ?filter=... et ?from=... de l'URL (ex: depuis la page Stats)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const f = params.get("filter");
     if (f && ["todo", "in_progress", "done", "all"].includes(f)) {
       setActiveFilter(f as Filter);
     }
+    const from = params.get("from");
+    if (from === "stats") setBackTo("/app/stats/par-statut");
   }, []);
 
   // Fetch à chaque changement de filtre ou de recherche (débounced)
@@ -77,6 +81,17 @@ export default function RappelsListPage() {
     <div className="pb-24">
       {/* Header */}
       <div className="bg-bleu px-5 pt-6 pb-5 text-white">
+        {backTo && (
+          <Link
+            href={backTo}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold opacity-80 active:opacity-60 mb-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Retour aux stats par statut
+          </Link>
+        )}
         <h1 className="text-xl font-nunito font-extrabold">Mes rappels</h1>
         <p className="text-xs opacity-80">
           {counts.all} rappels · {counts.todo} à faire · {unknownCount} inconnus
