@@ -11,7 +11,7 @@ import type { Prospect } from "../_lib/types";
 
 type ApiResponse = {
   prospects: Prospect[];
-  counts: { todo: number; in_progress: number; done: number; all: number };
+  counts: { urgent: number; todo: number; in_progress: number; done: number; all: number };
 };
 
 export default function DashboardPage() {
