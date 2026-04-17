@@ -54,10 +54,15 @@ export default function DashboardPage() {
   const userName = (session?.user?.name as string | undefined) ?? "…";
   const prospects = data?.prospects ?? [];
 
+  // Listes affichées dans le corps du dashboard (pending uniquement, les actifs à rappeler)
   const urgents = prospects.filter((p) => p.isUrgent && p.status === "pending");
   const todos = prospects.filter((p) => !p.isUrgent && p.status === "pending");
-  const toCallCount = prospects.filter((p) => p.status === "pending").length;
-  const doneCount = data?.counts.done ?? 0;
+
+  // Chiffres des 3 cases — utilisent les counts serveur pour être cohérents
+  // avec les boutons de filtre de la page "Mes rappels"
+  const toCallCount = data?.counts.todo ?? 0; // pending + postponed + unreachable
+  const urgentCount = data?.counts.urgent ?? 0; // isUrgent=true && status=pending
+  const doneCount = data?.counts.done ?? 0; // sold + not_interested
 
   return (
     <div className="pb-24">
@@ -88,7 +93,7 @@ export default function DashboardPage() {
             href="/app/rappels?filter=urgent"
             className="text-center p-4 border-r border-gray-100 active:bg-gray-50 transition"
           >
-            <div className="text-2xl font-nunito font-extrabold text-red-600">{urgents.length}</div>
+            <div className="text-2xl font-nunito font-extrabold text-red-600">{urgentCount}</div>
             <div className="text-[10px] text-gray-500 uppercase font-semibold">Urgents</div>
           </Link>
           <Link
