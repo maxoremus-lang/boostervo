@@ -51,7 +51,7 @@ type ApiResponse = {
 };
 
 export default function RappelsListPage() {
-  const [activeFilter, setActiveFilter] = useState<Filter>("todo");
+  const [activeFilter, setActiveFilter] = useState<Filter>("urgent");
   const [statusExact, setStatusExact] = useState<CallbackStatus | null>(null);
   const [period, setPeriod] = useState<Period | null>(null);
   const [data, setData] = useState<ApiResponse | null>(null);
