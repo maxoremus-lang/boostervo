@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { getProspect } from "../../../_lib/mockData";
+import { useEffect, useState } from "react";
 import type { CallbackStatus } from "../../../_lib/types";
 
 const resultSections: { label: string; options: { status: CallbackStatus; label: string }[] }[] = [
@@ -31,33 +30,123 @@ const resultSections: { label: string; options: { status: CallbackStatus; label:
   },
 ];
 
+type Prospect = {
+  id: string;
+  phone: string;
+  name: string | null;
+  vehicleInterest: string | null;
+  status: CallbackStatus;
+  appointmentAt: string | null;
+  notes: string | null;
+};
+
 export default function FichePage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const prospect = getProspect(params.id);
 
-  const [name, setName] = useState(prospect?.name ?? "");
-  const [vehicle, setVehicle] = useState(prospect?.vehicleInterest ?? "");
-  const [status, setStatus] = useState<CallbackStatus>(prospect?.status ?? "pending");
-  const [appointmentAt, setAppointmentAt] = useState(prospect?.appointmentAt ?? "");
-  const [notes, setNotes] = useState(prospect?.notes ?? "");
+  const [prospect, setProspect] = useState<Prospect | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!prospect) {
-    return <div className="p-6">Prospect introuvable</div>;
-  }
+  const [name, setName] = useState("");
+  const [vehicle, setVehicle] = useState("");
+  const [status, setStatus] = useState<CallbackStatus>("pending");
+  const [appointmentAt, setAppointmentAt] = useState("");
+  const [notes, setNotes] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  const save = (e: React.FormEvent) => {
+  // Charger le prospect depuis l'API
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/prospects/${params.id}`);
+        if (!res.ok) {
+          if (!cancelled) {
+            setError(res.status === 404 ? "Prospect introuvable" : "Erreur de chargement");
+            setLoading(false);
+          }
+          return;
+        }
+        const data = await res.json();
+        if (cancelled) return;
+        setProspect(data);
+        setName(data.name ?? "");
+        setVehicle(data.vehicleInterest ?? "");
+        setStatus(data.status ?? "pending");
+        setAppointmentAt(data.appointmentAt ?? "");
+        setNotes(data.notes ?? "");
+        setLoading(false);
+      } catch {
+        if (!cancelled) {
+          setError("Erreur réseau");
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [params.id]);
+
+  const save = async (e: React.FormEvent) => {
     e.preventDefault();
-    // MVP : stub. Backend : appeler l'API.
-    alert(`Fiche enregistrée (mock) :\n${name}\n${vehicle}\n${status}`);
-    router.push(`/app/rappels/${params.id}`);
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/prospects/${params.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          vehicleInterest: vehicle,
+          status,
+          appointmentAt: status === "appointment" ? appointmentAt || null : null,
+          notes,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({} as any));
+        setError(err.error ?? "Erreur lors de l'enregistrement");
+        setSaving(false);
+        return;
+      }
+      router.push(`/app/rappels/${params.id}`);
+      router.refresh();
+    } catch {
+      setError("Erreur réseau");
+      setSaving(false);
+    }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Chargement…
+      </div>
+    );
+  }
+
+  if (!prospect) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <p className="text-red-600 mb-4">{error ?? "Prospect introuvable"}</p>
+        <Link href="/app/rappels" className="text-orange font-bold">
+          Retour aux rappels
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* Header */}
-      <div className="bg-bleu px-5 pt-6 pb-5 text-white">
+    <div className="h-[100dvh] flex flex-col bg-white">
+      {/* Header fixe */}
+      <div className="shrink-0 bg-bleu px-5 pt-6 pb-5 text-white">
         <div className="flex items-center justify-between mb-3">
-          <Link href={`/app/rappels/${params.id}`} className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center" aria-label="Fermer">
+          <Link
+            href={`/app/rappels/${params.id}`}
+            className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center"
+            aria-label="Fermer"
+          >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -71,8 +160,9 @@ export default function FichePage({ params }: { params: { id: string } }) {
         <p className="text-xs opacity-80">{prospect.phone}</p>
       </div>
 
-      <form onSubmit={save} className="flex-1 flex flex-col">
-        <div className="px-5 py-4 space-y-4 pb-28">
+      {/* Form = zone scrollable + footer fixe */}
+      <form onSubmit={save} className="flex-1 flex flex-col min-h-0">
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
           <div>
             <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Nom du prospect</label>
             <input
@@ -148,13 +238,20 @@ export default function FichePage({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        <div className="fixed left-0 right-0 bottom-0 bg-white border-t border-gray-100 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        {/* Footer toujours visible */}
+        <div className="shrink-0 bg-white border-t border-gray-100 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-md mx-auto">
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg px-3 py-2 mb-2 text-center">
+                {error}
+              </div>
+            )}
             <button
               type="submit"
-              className="w-full bg-orange hover:bg-orange-dark text-white font-nunito font-extrabold py-3.5 rounded-2xl shadow-md transition"
+              disabled={saving}
+              className="w-full bg-orange hover:bg-orange-dark disabled:opacity-50 text-white font-nunito font-extrabold py-3.5 rounded-2xl shadow-md transition"
             >
-              Enregistrer la fiche
+              {saving ? "Enregistrement…" : "Enregistrer la fiche"}
             </button>
           </div>
         </div>
