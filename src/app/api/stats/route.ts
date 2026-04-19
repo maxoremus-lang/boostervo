@@ -90,6 +90,9 @@ export async function GET(req: NextRequest) {
 
   let prospectsWithMissed = 0; // dénominateur du taux de rappel
 
+  // Collecte de tous les délais de rappel (un par "round" missed → answered)
+  const allDelaysMs: number[] = [];
+
   for (const p of prospects) {
     const missed = p.callEvents.filter((e) => e.type === "missed");
     const answered = p.callEvents.filter((e) => e.type === "answered");
@@ -100,14 +103,25 @@ export async function GET(req: NextRequest) {
     if (answered.length > 0) {
       callbacksDone++;
 
-      // Délai = temps entre le 1er missed (plus ancien) et le 1er answered (plus ancien)
-      const firstMissed = missed[missed.length - 1];
-      const firstAnswered = answered[answered.length - 1];
-      if (firstMissed && firstAnswered) {
-        const delay = new Date(firstAnswered.createdAt).getTime() - new Date(firstMissed.createdAt).getTime();
-        if (delay > 0) {
-          totalDelayMs += delay;
-          delayCount++;
+      // Calcul propre des délais par "round" : chaque answered termine une séquence
+      // de missed qui le précèdent. Le délai = answered.at - firstMissed.at du round.
+      const sortedAsc = [...p.callEvents].sort(
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
+      let firstMissedOfRound: Date | null = null;
+      for (const ev of sortedAsc) {
+        if (ev.type === "missed") {
+          if (!firstMissedOfRound) firstMissedOfRound = ev.createdAt;
+        } else if (ev.type === "answered") {
+          if (firstMissedOfRound) {
+            const delay = ev.createdAt.getTime() - firstMissedOfRound.getTime();
+            if (delay > 0) {
+              allDelaysMs.push(delay);
+              totalDelayMs += delay;
+              delayCount++;
+            }
+            firstMissedOfRound = null;
+          }
         }
       }
 
@@ -119,6 +133,32 @@ export async function GET(req: NextRequest) {
       if (p.status === "sold") salesCount++;
     }
   }
+
+  // --- Distribution des délais par tranches (9 buckets) ---
+  const MIN = 60 * 1000;
+  const HOUR = 60 * MIN;
+  const DAY = 24 * HOUR;
+  const buckets = [
+    { key: "lt1min",    label: "< 1 min",      max: 1 * MIN },
+    { key: "1to3min",   label: "1-3 min",      max: 3 * MIN },
+    { key: "3to5min",   label: "3-5 min",      max: 5 * MIN },
+    { key: "5to10min",  label: "5-10 min",     max: 10 * MIN },
+    { key: "10to15min", label: "10-15 min",    max: 15 * MIN },
+    { key: "15to20min", label: "15-20 min",    max: 20 * MIN },
+    { key: "20minTo1h", label: "20 min - 1 h", max: 1 * HOUR },
+    { key: "1hTo24h",   label: "1 - 24 h",     max: 24 * HOUR },
+    { key: "gt24h",     label: "> 24 h",       max: Infinity },
+  ];
+  const delayDistribution = buckets.map((b) => ({ key: b.key, label: b.label, count: 0 }));
+  for (const d of allDelaysMs) {
+    const idx = buckets.findIndex((b) => d < b.max);
+    const i = idx === -1 ? buckets.length - 1 : idx;
+    delayDistribution[i].count++;
+  }
+  const fastCallbacks = allDelaysMs.filter((d) => d < 5 * MIN).length; // < 5 min = réflexe commercial idéal
+  const fastCallbackRate = allDelaysMs.length > 0
+    ? Math.round((fastCallbacks / allDelaysMs.length) * 100)
+    : 0;
 
   const callbackRate = prospectsWithMissed > 0 ? Math.round((callbacksDone / prospectsWithMissed) * 100) : 0;
   const avgDelayMin = delayCount > 0 ? Math.round(totalDelayMs / delayCount / 60000) : 0;
@@ -185,5 +225,13 @@ export async function GET(req: NextRequest) {
     byStatusTotal,
     byDay,
     teamRanking: null,
+    // Stats dédiées au délai de rappel
+    delayStats: {
+      totalCallbacks: allDelaysMs.length,
+      avgDelayMs: delayCount > 0 ? Math.round(totalDelayMs / delayCount) : 0,
+      fastCallbacks,
+      fastCallbackRate,
+      distribution: delayDistribution,
+    },
   });
 }

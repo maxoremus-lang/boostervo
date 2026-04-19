@@ -68,6 +68,29 @@ export default function StatsHubPage() {
             </svg>
           </div>
         </Link>
+
+        <Link
+          href="/app/stats/delai-rappel"
+          className="block bg-white rounded-2xl p-5 shadow-sm active:opacity-70 transition"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-6 h-6 text-green-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h2 className="font-nunito font-extrabold text-lg text-bleu">Stats délai de rappel</h2>
+              <p className="text-xs text-gray-500 mt-1">
+                Mesurez votre réactivité : délai moyen, % de rappels sous 5 min, répartition par
+                tranches de temps. L&apos;indicateur n°1 de la transformation VO.
+              </p>
+            </div>
+            <svg className="w-5 h-5 text-gray-300 flex-shrink-0 mt-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </Link>
       </div>
 
       <BottomNav />
