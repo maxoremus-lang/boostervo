@@ -91,22 +91,15 @@ export default function ProspectCard({
       </div>
 
       {isUrgentCard && (
-        <>
-          <p className="text-xs text-gray-500 mb-3">
-            {prospect.isKnown
-              ? `${missed > 1 ? `${missed}e tentative · ` : "Rappelle · "}${formatRelativeWithDate(prospect.lastActivityAt)}`
-              : `${missed} appels manqués · ${formatRelativeWithDate(prospect.lastActivityAt)}`}
-          </p>
-          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-            <a
-              href={`tel:${prospect.phone.replace(/\s/g, "")}`}
-              className="flex-1 bg-orange hover:bg-orange-dark text-white text-sm font-bold py-2 rounded-lg flex items-center justify-center gap-1.5 transition"
-            >
-              <PhoneIcon /> Rappeler
-            </a>
-            <button className="px-3 bg-gray-100 text-gray-700 text-sm font-bold py-2 rounded-lg">⋯</button>
-          </div>
-        </>
+        <div className="flex gap-2 mt-3" onClick={(e) => e.stopPropagation()}>
+          <a
+            href={`tel:${prospect.phone.replace(/\s/g, "")}`}
+            className="flex-1 bg-orange hover:bg-orange-dark text-white text-sm font-bold py-2 rounded-lg flex items-center justify-center gap-1.5 transition"
+          >
+            <PhoneIcon /> Rappeler
+          </a>
+          <button className="px-3 bg-gray-100 text-gray-700 text-sm font-bold py-2 rounded-lg">⋯</button>
+        </div>
       )}
     </Link>
   );
