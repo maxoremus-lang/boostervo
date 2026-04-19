@@ -13,23 +13,48 @@ function PhoneIcon() {
   );
 }
 
+/** Formatte un n° de tel type +33612345678 → 06 12 34 56 78 */
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, "");
+  // Cas +33
+  if (digits.startsWith("33") && digits.length === 11) {
+    const local = "0" + digits.slice(2);
+    return local.match(/.{1,2}/g)?.join(" ") ?? raw;
+  }
+  // Cas 0XXXXXXXXX (10 chiffres)
+  if (digits.length === 10 && digits.startsWith("0")) {
+    return digits.match(/.{1,2}/g)?.join(" ") ?? raw;
+  }
+  return raw;
+}
+
 export default function ProspectCard({
   prospect,
   variant = "default",
+  index,
 }: {
   prospect: Prospect;
   variant?: "default" | "urgent";
+  index?: number;
 }) {
   const missed = missedCallsCount(prospect);
   const isUrgentCard = variant === "urgent" || prospect.isUrgent;
+  const phoneFormatted = formatPhone(prospect.phone);
 
   return (
     <Link
       href={`/app/rappels/${prospect.id}`}
-      className={`block bg-white rounded-2xl shadow-sm transition active:scale-[0.99] ${
+      className={`block bg-white rounded-2xl shadow-sm transition active:scale-[0.99] relative ${
         isUrgentCard ? "border-l-4 border-red-500 p-4" : "p-3.5"
       }`}
     >
+      {/* Numéro d'ordre (sur urgent uniquement) */}
+      {isUrgentCard && typeof index === "number" && (
+        <div className="absolute -left-3 -top-3 w-7 h-7 bg-red-600 text-white rounded-full flex items-center justify-center font-nunito font-extrabold text-sm shadow-md">
+          {index + 1}
+        </div>
+      )}
+
       <div className="flex justify-between items-start mb-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -39,12 +64,11 @@ export default function ProspectCard({
           {prospect.isKnown ? (
             <>
               <p className="font-nunito font-bold text-gray-900 truncate">{prospect.name}</p>
-              {(prospect.vehicleInterest || prospect.vehiclePrice) && (
-                <p className="text-xs text-gray-500 truncate">
-                  {prospect.vehicleInterest}
-                  {prospect.vehiclePrice && ` · ${prospect.vehiclePrice.toLocaleString("fr-FR")} €`}
-                </p>
-              )}
+              <p className="text-xs text-gray-500 truncate">
+                {phoneFormatted}
+                {prospect.vehicleInterest && ` · ${prospect.vehicleInterest}`}
+                {prospect.vehiclePrice && ` · ${prospect.vehiclePrice.toLocaleString("fr-FR")} €`}
+              </p>
               {missed > 1 ? (
                 <p className="text-xs text-red-600 font-semibold">
                   {missed} appels manqués · {formatRelativeWithDate(prospect.lastActivityAt)}
@@ -55,7 +79,7 @@ export default function ProspectCard({
             </>
           ) : (
             <>
-              <p className="font-nunito font-bold text-gray-900">{prospect.phone}</p>
+              <p className="font-nunito font-bold text-gray-900">{phoneFormatted}</p>
               {missed > 1 && (
                 <p className="text-xs text-red-600 font-semibold">
                   {missed} appels manqués · {formatRelativeWithDate(prospect.lastActivityAt)}

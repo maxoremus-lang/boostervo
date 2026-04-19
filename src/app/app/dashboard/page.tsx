@@ -123,9 +123,9 @@ export default function DashboardPage() {
                 </h2>
                 <span className="text-xs text-gray-400">{urgents.length} rappels</span>
               </div>
-              <div className="space-y-3">
-                {urgents.map((p) => (
-                  <ProspectCard key={p.id} prospect={p} variant="urgent" />
+              <div className="space-y-3 pl-3">
+                {urgents.map((p, i) => (
+                  <ProspectCard key={p.id} prospect={p} variant="urgent" index={i} />
                 ))}
               </div>
             </div>
