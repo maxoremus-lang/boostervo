@@ -47,25 +47,35 @@ function formatDelay(ms: number): string {
 /**
  * Pour chaque event "answered", calcule le délai depuis le premier "missed"
  * de la séquence non encore rappelée qui le précède.
- * Retourne une Map { answeredEventId → delayMs }
+ * Pour chaque event "missed", calcule son numéro d'ordre dans la séquence
+ * (le compteur repart à 1 après chaque answered).
+ * Retourne { delays, missedNumbers }.
  */
-function computeCallbackDelays(events: { id: string; at: string; type: string }[]): Map<string, number> {
+function computeCallbackAnalysis(events: { id: string; at: string; type: string }[]): {
+  delays: Map<string, number>;
+  missedNumbers: Map<string, number>;
+} {
   const delays = new Map<string, number>();
+  const missedNumbers = new Map<string, number>();
   // Trier par ordre chronologique ASC
   const sorted = [...events].sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
   let firstMissedOfRound: { at: string } | null = null;
+  let missedCountInRound = 0;
   for (const ev of sorted) {
     if (ev.type === "missed") {
       if (!firstMissedOfRound) firstMissedOfRound = { at: ev.at };
+      missedCountInRound++;
+      missedNumbers.set(ev.id, missedCountInRound);
     } else if (ev.type === "answered") {
       if (firstMissedOfRound) {
         const delay = new Date(ev.at).getTime() - new Date(firstMissedOfRound.at).getTime();
         if (delay > 0) delays.set(ev.id, delay);
         firstMissedOfRound = null;
       }
+      missedCountInRound = 0;
     }
   }
-  return delays;
+  return { delays, missedNumbers };
 }
 
 function formatEventDate(iso: string) {
@@ -363,9 +373,10 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
             <p className="text-sm text-gray-400 italic">Aucun appel enregistré</p>
           ) : (
             (() => {
-              const delays = computeCallbackDelays(prospect.callEvents);
+              const { delays, missedNumbers } = computeCallbackAnalysis(prospect.callEvents);
               return prospect.callEvents.map((ev) => {
                 const delayMs = delays.get(ev.id);
+                const missedNum = missedNumbers.get(ev.id);
                 return (
                   <div key={ev.id} className="flex gap-3">
                     <div
@@ -374,7 +385,11 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
                       }`}
                     />
                     <div className="flex-1">
-                      <p className="text-sm font-semibold">{ev.type === "answered" ? "Rappel effectué" : "Appel manqué"}</p>
+                      <p className="text-sm font-semibold">
+                        {ev.type === "answered"
+                          ? "Rappel effectué"
+                          : `Appel manqué n°${missedNum ?? "?"}`}
+                      </p>
                       <p className="text-xs text-gray-500">
                         {formatEventDate(ev.at)} · {formatRelativeTime(ev.at)}
                         {ev.ringSec && ` · sonné ${ev.ringSec}s`}
