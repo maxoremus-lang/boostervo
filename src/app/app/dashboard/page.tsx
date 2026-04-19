@@ -123,9 +123,16 @@ export default function DashboardPage() {
                 </h2>
                 <span className="text-xs text-gray-400">{urgents.length} rappels</span>
               </div>
-              <div className="space-y-3 pl-3">
+              <div className="space-y-3">
                 {urgents.map((p, i) => (
-                  <ProspectCard key={p.id} prospect={p} variant="urgent" index={i} />
+                  <div key={p.id} className="flex items-start gap-2">
+                    <span className="flex-shrink-0 w-6 pt-3 text-right text-xs font-bold text-gray-400 tabular-nums">
+                      {i + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <ProspectCard prospect={p} variant="urgent" />
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -136,13 +143,20 @@ export default function DashboardPage() {
             <div className="px-5 mt-6">
               <h2 className="font-nunito font-extrabold text-gray-800 mb-3">À rappeler aujourd&apos;hui</h2>
               <div className="space-y-3">
-                {todos.slice(0, 10).map((p) => (
-                  <ProspectCard key={p.id} prospect={p} />
+                {todos.slice(0, 10).map((p, i) => (
+                  <div key={p.id} className="flex items-start gap-2">
+                    <span className="flex-shrink-0 w-6 pt-3 text-right text-xs font-bold text-gray-400 tabular-nums">
+                      {urgents.length + i + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <ProspectCard prospect={p} />
+                    </div>
+                  </div>
                 ))}
                 {todos.length > 10 && (
                   <a
                     href="/app/rappels"
-                    className="block text-center text-sm font-bold text-bleu py-3 bg-white rounded-2xl"
+                    className="block text-center text-sm font-bold text-bleu py-3 bg-white rounded-2xl ml-8"
                   >
                     Voir les {todos.length - 10} autres rappels →
                   </a>

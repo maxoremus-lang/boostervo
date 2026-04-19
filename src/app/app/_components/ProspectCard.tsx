@@ -31,11 +31,9 @@ function formatPhone(raw: string): string {
 export default function ProspectCard({
   prospect,
   variant = "default",
-  index,
 }: {
   prospect: Prospect;
   variant?: "default" | "urgent";
-  index?: number;
 }) {
   const missed = missedCallsCount(prospect);
   const isUrgentCard = variant === "urgent" || prospect.isUrgent;
@@ -44,17 +42,10 @@ export default function ProspectCard({
   return (
     <Link
       href={`/app/rappels/${prospect.id}`}
-      className={`block bg-white rounded-2xl shadow-sm transition active:scale-[0.99] relative ${
+      className={`block bg-white rounded-2xl shadow-sm transition active:scale-[0.99] ${
         isUrgentCard ? "border-l-4 border-red-500 p-4" : "p-3.5"
       }`}
     >
-      {/* Numéro d'ordre (sur urgent uniquement) */}
-      {isUrgentCard && typeof index === "number" && (
-        <div className="absolute -left-3 -top-3 w-7 h-7 bg-red-600 text-white rounded-full flex items-center justify-center font-nunito font-extrabold text-sm shadow-md">
-          {index + 1}
-        </div>
-      )}
-
       <div className="flex justify-between items-start mb-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
