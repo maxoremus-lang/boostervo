@@ -19,7 +19,7 @@ export type CallEvent = {
 export type Prospect = {
   id: string;
   phone: string;               // caller phone (source de vérité)
-  isKnown: boolean;            // false = INCONNU (1er appel), true = CONNU (fiche remplie)
+  isKnown: boolean;            // false = INCONNU (1er appel), true = QUALIFIÉ (fiche remplie)
   name?: string;               // saisi après rappel
   vehicleInterest?: string;    // ex: "Peugeot 3008 GT 2021"
   vehiclePrice?: number;       // ex: 24990
