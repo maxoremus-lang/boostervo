@@ -83,18 +83,18 @@ export default function DashboardPage() {
       <div className="px-5 -mt-5">
         <div className="bg-white rounded-2xl shadow-md grid grid-cols-3 overflow-hidden">
           <Link
-            href="/app/rappels?filter=todo"
-            className="text-center p-4 border-r border-gray-100 active:bg-gray-50 transition"
-          >
-            <div className="text-2xl font-nunito font-extrabold text-orange">{toCallCount}</div>
-            <div className="text-[10px] text-gray-500 uppercase font-semibold">À rappeler</div>
-          </Link>
-          <Link
             href="/app/rappels?filter=urgent"
             className="text-center p-4 border-r border-gray-100 active:bg-gray-50 transition"
           >
             <div className="text-2xl font-nunito font-extrabold text-red-600">{urgentCount}</div>
             <div className="text-[10px] text-gray-500 uppercase font-semibold">Urgents</div>
+          </Link>
+          <Link
+            href="/app/rappels?filter=todo"
+            className="text-center p-4 border-r border-gray-100 active:bg-gray-50 transition"
+          >
+            <div className="text-2xl font-nunito font-extrabold text-orange">{toCallCount}</div>
+            <div className="text-[10px] text-gray-500 uppercase font-semibold">À rappeler</div>
           </Link>
           <Link
             href="/app/rappels?filter=done"
