@@ -51,6 +51,41 @@ type ApiResponse = {
   byStatus: Record<CallbackStatus, number>;
 };
 
+// Mapping statut précis → groupe parent (pour savoir quelle barre de sous-filtres afficher)
+const STATUS_TO_GROUP: Record<CallbackStatus, Filter> = {
+  pending: "todo",
+  postponed: "todo",
+  unreachable: "todo",
+  appointment: "in_progress",
+  test_drive: "in_progress",
+  quote_sent: "in_progress",
+  sold: "done",
+  not_interested: "done",
+};
+
+/** Chip de sous-filtre avec état actif/inactif */
+function SubFilterChip({
+  label, count, active, onClick, colorClasses, activeClasses,
+}: {
+  label: string;
+  count: number;
+  active: boolean;
+  onClick: () => void;
+  colorClasses: string;
+  activeClasses: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition active:opacity-60 ${
+        active ? activeClasses : colorClasses
+      }`}
+    >
+      {label} · {count}
+    </button>
+  );
+}
+
 export default function RappelsListPage() {
   const [activeFilter, setActiveFilter] = useState<Filter>("urgent");
   const [statusExact, setStatusExact] = useState<CallbackStatus | null>(null);
@@ -69,6 +104,9 @@ export default function RappelsListPage() {
     const s = params.get("status") as CallbackStatus | null;
     if (s && STATUS_LABELS[s]) {
       setStatusExact(s);
+      // On définit aussi le groupe parent pour afficher la bonne barre de sous-filtres
+      const group = STATUS_TO_GROUP[s];
+      if (group) setActiveFilter(group);
     } else {
       // Sinon filtre par groupe
       const f = params.get("filter");
@@ -235,69 +273,109 @@ export default function RappelsListPage() {
         })}
       </div>
 
-      {/* Sous-filtres pour "À faire" : À recontacter / Reporté / Injoignable */}
-      {!statusExact && activeFilter === "todo" && data?.byStatus && (
+      {/* Sous-filtres pour "À faire" : Tous / À recontacter / Reporté / Injoignable */}
+      {activeFilter === "todo" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
-          <button
-            onClick={() => { setStatusExact("pending"); setPeriod(null); }}
-            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-orange-50 text-orange-700 border border-orange-200 active:opacity-60"
-          >
-            🔔 À recontacter · {data.byStatus.pending}
-          </button>
-          <button
-            onClick={() => { setStatusExact("postponed"); setPeriod(null); }}
-            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-blue-50 text-blue-700 border border-blue-200 active:opacity-60"
-          >
-            ⏱ Reporté · {data.byStatus.postponed}
-          </button>
-          <button
-            onClick={() => { setStatusExact("unreachable"); setPeriod(null); }}
-            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-amber-50 text-amber-800 border border-amber-200 active:opacity-60"
-          >
-            📵 Injoignable · {data.byStatus.unreachable}
-          </button>
+          <SubFilterChip
+            label="Tous"
+            count={counts.todo}
+            active={!statusExact}
+            onClick={() => { setStatusExact(null); setPeriod(null); }}
+            colorClasses="bg-white text-gray-700 border border-gray-300"
+            activeClasses="bg-gray-800 text-white border-gray-800"
+          />
+          <SubFilterChip
+            label="🔔 À recontacter"
+            count={data.byStatus.pending}
+            active={statusExact === "pending"}
+            onClick={() => { setStatusExact(statusExact === "pending" ? null : "pending"); setPeriod(null); }}
+            colorClasses="bg-orange-50 text-orange-700 border border-orange-200"
+            activeClasses="bg-orange-600 text-white border-orange-600"
+          />
+          <SubFilterChip
+            label="⏱ Reporté"
+            count={data.byStatus.postponed}
+            active={statusExact === "postponed"}
+            onClick={() => { setStatusExact(statusExact === "postponed" ? null : "postponed"); setPeriod(null); }}
+            colorClasses="bg-blue-50 text-blue-700 border border-blue-200"
+            activeClasses="bg-blue-600 text-white border-blue-600"
+          />
+          <SubFilterChip
+            label="📵 Injoignable"
+            count={data.byStatus.unreachable}
+            active={statusExact === "unreachable"}
+            onClick={() => { setStatusExact(statusExact === "unreachable" ? null : "unreachable"); setPeriod(null); }}
+            colorClasses="bg-amber-50 text-amber-800 border border-amber-200"
+            activeClasses="bg-amber-600 text-white border-amber-600"
+          />
         </div>
       )}
 
-      {/* Sous-filtres pour "En cours" : RDV pris / Essai / Devis envoyé */}
-      {!statusExact && activeFilter === "in_progress" && data?.byStatus && (
+      {/* Sous-filtres pour "En cours" : Tous / RDV pris / Essai / Devis envoyé */}
+      {activeFilter === "in_progress" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
-          <button
-            onClick={() => { setStatusExact("appointment"); setPeriod(null); }}
-            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-violet-50 text-violet-700 border border-violet-200 active:opacity-60"
-          >
-            📅 RDV pris · {data.byStatus.appointment}
-          </button>
-          <button
-            onClick={() => { setStatusExact("test_drive"); setPeriod(null); }}
-            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-violet-50 text-violet-700 border border-violet-200 active:opacity-60"
-          >
-            🚗 Essai · {data.byStatus.test_drive}
-          </button>
-          <button
-            onClick={() => { setStatusExact("quote_sent"); setPeriod(null); }}
-            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-violet-50 text-violet-700 border border-violet-200 active:opacity-60"
-          >
-            📄 Devis envoyé · {data.byStatus.quote_sent}
-          </button>
+          <SubFilterChip
+            label="Tous"
+            count={counts.in_progress}
+            active={!statusExact}
+            onClick={() => { setStatusExact(null); setPeriod(null); }}
+            colorClasses="bg-white text-gray-700 border border-gray-300"
+            activeClasses="bg-gray-800 text-white border-gray-800"
+          />
+          <SubFilterChip
+            label="📅 RDV pris"
+            count={data.byStatus.appointment}
+            active={statusExact === "appointment"}
+            onClick={() => { setStatusExact(statusExact === "appointment" ? null : "appointment"); setPeriod(null); }}
+            colorClasses="bg-violet-50 text-violet-700 border border-violet-200"
+            activeClasses="bg-violet-600 text-white border-violet-600"
+          />
+          <SubFilterChip
+            label="🚗 Essai"
+            count={data.byStatus.test_drive}
+            active={statusExact === "test_drive"}
+            onClick={() => { setStatusExact(statusExact === "test_drive" ? null : "test_drive"); setPeriod(null); }}
+            colorClasses="bg-violet-50 text-violet-700 border border-violet-200"
+            activeClasses="bg-violet-600 text-white border-violet-600"
+          />
+          <SubFilterChip
+            label="📄 Devis envoyé"
+            count={data.byStatus.quote_sent}
+            active={statusExact === "quote_sent"}
+            onClick={() => { setStatusExact(statusExact === "quote_sent" ? null : "quote_sent"); setPeriod(null); }}
+            colorClasses="bg-violet-50 text-violet-700 border border-violet-200"
+            activeClasses="bg-violet-600 text-white border-violet-600"
+          />
         </div>
       )}
 
-      {/* Sous-filtres pour "Traités" : Vendus / Pas intéressés */}
-      {!statusExact && activeFilter === "done" && data?.byStatus && (
+      {/* Sous-filtres pour "Traités" : Tous / Vendus / Pas intéressés */}
+      {activeFilter === "done" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
-          <button
-            onClick={() => { setStatusExact("sold"); setPeriod(null); }}
-            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-emerald-50 text-emerald-800 border border-emerald-200 active:opacity-60"
-          >
-            ✅ Vendus · {data.byStatus.sold}
-          </button>
-          <button
-            onClick={() => { setStatusExact("not_interested"); setPeriod(null); }}
-            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-gray-100 text-gray-600 border border-gray-200 active:opacity-60"
-          >
-            ❌ Pas intéressés · {data.byStatus.not_interested}
-          </button>
+          <SubFilterChip
+            label="Tous"
+            count={counts.done}
+            active={!statusExact}
+            onClick={() => { setStatusExact(null); setPeriod(null); }}
+            colorClasses="bg-white text-gray-700 border border-gray-300"
+            activeClasses="bg-gray-800 text-white border-gray-800"
+          />
+          <SubFilterChip
+            label="✅ Vendus"
+            count={data.byStatus.sold}
+            active={statusExact === "sold"}
+            onClick={() => { setStatusExact(statusExact === "sold" ? null : "sold"); setPeriod(null); }}
+            colorClasses="bg-emerald-50 text-emerald-800 border border-emerald-200"
+            activeClasses="bg-emerald-600 text-white border-emerald-600"
+          />
+          <SubFilterChip
+            label="❌ Pas intéressés"
+            count={data.byStatus.not_interested}
+            active={statusExact === "not_interested"}
+            onClick={() => { setStatusExact(statusExact === "not_interested" ? null : "not_interested"); setPeriod(null); }}
+            colorClasses="bg-gray-100 text-gray-600 border border-gray-200"
+            activeClasses="bg-gray-800 text-white border-gray-800"
+          />
         </div>
       )}
 
