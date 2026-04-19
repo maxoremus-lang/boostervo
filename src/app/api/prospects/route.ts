@@ -37,6 +37,8 @@ export async function GET(req: NextRequest) {
   }
 
   // Construire le filtre principal
+  // NB: "todo" (À faire) exclut les urgents pour éviter le double comptage
+  // avec le filtre "urgent". Les urgents sont comptés/affichés uniquement dans leur propre bloc.
   let baseFilter: any = undefined;
   if (statusExact && VALID_STATUSES.includes(statusExact)) {
     // Filtre par statut précis (prend le pas sur filter)
@@ -44,7 +46,13 @@ export async function GET(req: NextRequest) {
   } else if (filter === "urgent") {
     baseFilter = { isUrgent: true, status: "pending" };
   } else if (filter === "todo") {
-    baseFilter = { status: { in: ["pending", "postponed", "unreachable"] } };
+    // pending + postponed + unreachable, mais SANS les urgents
+    baseFilter = {
+      AND: [
+        { status: { in: ["pending", "postponed", "unreachable"] } },
+        { NOT: { AND: [{ isUrgent: true }, { status: "pending" }] } },
+      ],
+    };
   } else if (filter === "in_progress") {
     baseFilter = { status: { in: ["appointment", "test_drive", "quote_sent"] } };
   } else if (filter === "done") {
@@ -97,9 +105,18 @@ export async function GET(req: NextRequest) {
   }));
 
   // Compteurs par groupe (filtres principaux)
+  // NB: todo exclut les urgents pour éviter le double comptage
   const counts = {
     urgent: await prisma.prospect.count({ where: { userId, isUrgent: true, status: "pending" } }),
-    todo: await prisma.prospect.count({ where: { userId, status: { in: ["pending", "postponed", "unreachable"] } } }),
+    todo: await prisma.prospect.count({
+      where: {
+        userId,
+        AND: [
+          { status: { in: ["pending", "postponed", "unreachable"] } },
+          { NOT: { AND: [{ isUrgent: true }, { status: "pending" }] } },
+        ],
+      },
+    }),
     in_progress: await prisma.prospect.count({ where: { userId, status: { in: ["appointment", "test_drive", "quote_sent"] } } }),
     done: await prisma.prospect.count({ where: { userId, status: { in: ["sold", "not_interested"] } } }),
     all: await prisma.prospect.count({ where: { userId } }),
