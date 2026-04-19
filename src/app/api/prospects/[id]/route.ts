@@ -26,7 +26,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json({
     id: prospect.id,
     phone: prospect.phone,
-    isKnown: !!(prospect.name && prospect.name.trim()),
+    // Qualifié = on l'a déjà eu au téléphone (≥ 1 appel décroché)
+    isKnown: prospect.callEvents.some((e) => e.type === "answered"),
     name: prospect.name,
     vehicleInterest: prospect.vehicleInterest,
     vehiclePrice: prospect.vehiclePrice,
