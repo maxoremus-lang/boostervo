@@ -212,6 +212,160 @@ export async function GET(req: NextRequest) {
     byDay.push({ day: dayLabels[dayStart.getDay()], count, isToday });
   }
 
+  // --- Note de réactivité (basée sur le % de rappels < 5 min) ---
+  function computeNote(rate: number): { letter: string; label: string; color: string } {
+    if (rate >= 80) return { letter: "A+", label: "Exceptionnel", color: "green" };
+    if (rate >= 60) return { letter: "A", label: "Très réactif", color: "green" };
+    if (rate >= 40) return { letter: "B", label: "Bon", color: "lime" };
+    if (rate >= 20) return { letter: "C", label: "Moyen", color: "yellow" };
+    if (rate >= 10) return { letter: "D", label: "Faible", color: "orange" };
+    return { letter: "E", label: "À travailler", color: "red" };
+  }
+  const note = computeNote(fastCallbackRate);
+
+  // --- Évolution vs période précédente (même durée, décalée) ---
+  let previousPeriod: {
+    avgDelayMs: number;
+    fastCallbackRate: number;
+    note: { letter: string; label: string; color: string };
+  } | null = null;
+  if (since) {
+    const end = until ?? now;
+    const duration = end.getTime() - since.getTime();
+    const prevUntil = new Date(since.getTime() - 1);
+    const prevSince = new Date(since.getTime() - duration);
+    const prevProspects = await prisma.prospect.findMany({
+      where: { userId },
+      include: {
+        callEvents: {
+          where: { createdAt: { gte: prevSince, lte: prevUntil } },
+          orderBy: { createdAt: "asc" },
+        },
+      },
+    });
+    const prevDelaysMs: number[] = [];
+    for (const p of prevProspects) {
+      let firstMissed: Date | null = null;
+      for (const ev of p.callEvents) {
+        if (ev.type === "missed") {
+          if (!firstMissed) firstMissed = ev.createdAt;
+        } else if (ev.type === "answered") {
+          if (firstMissed) {
+            const d = ev.createdAt.getTime() - firstMissed.getTime();
+            if (d > 0) prevDelaysMs.push(d);
+            firstMissed = null;
+          }
+        }
+      }
+    }
+    if (prevDelaysMs.length > 0) {
+      const prevAvg = Math.round(prevDelaysMs.reduce((a, b) => a + b, 0) / prevDelaysMs.length);
+      const prevFast = prevDelaysMs.filter((d) => d < 5 * MIN).length;
+      const prevRate = Math.round((prevFast / prevDelaysMs.length) * 100);
+      previousPeriod = {
+        avgDelayMs: prevAvg,
+        fastCallbackRate: prevRate,
+        note: computeNote(prevRate),
+      };
+    }
+  }
+
+  // --- Impact financier : distribution par tranche (4 buckets) avec RDV / Ventes / Marge ---
+  const IMPACT_BUCKETS = [
+    { key: "lt5min",    label: "< 5 min",      max: 5 * MIN },
+    { key: "5to30min",  label: "5 - 30 min",   max: 30 * MIN },
+    { key: "30minTo2h", label: "30 min - 2 h", max: 2 * HOUR },
+    { key: "gt2h",      label: "> 2 h",        max: Infinity },
+  ];
+  type ImpactBucket = { key: string; label: string; rappels: number; rdvs: number; ventes: number; marge: number };
+  const impactDistribution: ImpactBucket[] = IMPACT_BUCKETS.map((b) => ({
+    key: b.key, label: b.label, rappels: 0, rdvs: 0, ventes: 0, marge: 0,
+  }));
+  const QUALIFIED_RDV_STATUSES = ["appointment", "test_drive", "quote_sent"];
+
+  // Pour chaque prospect, on prend le premier délai (1ère séquence manqué→répondu)
+  // et on l'associe à une tranche. Ce prospect compte pour 1 rappel dans cette tranche.
+  // Son statut final détermine s'il compte aussi comme RDV ou vente.
+  for (const p of prospects) {
+    const sortedAsc = [...p.callEvents].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    let firstMissedDate: Date | null = null;
+    for (const ev of sortedAsc) {
+      if (ev.type === "missed") {
+        if (!firstMissedDate) firstMissedDate = ev.createdAt;
+      } else if (ev.type === "answered") {
+        if (firstMissedDate) {
+          const d = ev.createdAt.getTime() - firstMissedDate.getTime();
+          if (d > 0) {
+            const idx = IMPACT_BUCKETS.findIndex((b) => d < b.max);
+            const i = idx === -1 ? IMPACT_BUCKETS.length - 1 : idx;
+            impactDistribution[i].rappels++;
+            if (QUALIFIED_RDV_STATUSES.includes(p.status)) impactDistribution[i].rdvs++;
+            if (p.status === "sold") {
+              impactDistribution[i].ventes++;
+              impactDistribution[i].marge += MARGE_MOYENNE_PAR_VENTE;
+            }
+            break; // 1er round seulement
+          }
+          firstMissedDate = null;
+        }
+      }
+    }
+  }
+
+  const totalImpactCallbacks = impactDistribution.reduce((s, b) => s + b.rappels, 0);
+  const totalCurrentRdvs = impactDistribution.reduce((s, b) => s + b.rdvs, 0);
+  const totalCurrentSales = impactDistribution.reduce((s, b) => s + b.ventes, 0);
+  const totalCurrentMargin = totalCurrentSales * MARGE_MOYENNE_PAR_VENTE;
+
+  // Potentiel si tous les rappels avaient été <5min
+  const bestBucket = impactDistribution[0];
+  const bestRdvRate = bestBucket.rappels > 0 ? bestBucket.rdvs / bestBucket.rappels : 0;
+  const bestSalesRate = bestBucket.rappels > 0 ? bestBucket.ventes / bestBucket.rappels : 0;
+  const potentialRdvs = Math.round(totalImpactCallbacks * bestRdvRate);
+  const potentialSales = Math.round(totalImpactCallbacks * bestSalesRate);
+  const potentialMargin = potentialSales * MARGE_MOYENNE_PAR_VENTE;
+  const missedMargin = Math.max(0, potentialMargin - totalCurrentMargin);
+
+  // --- Derniers rappels effectués (avec leur délai et infos prospect) ---
+  type RecentCallback = {
+    prospectId: string;
+    name: string | null;
+    phone: string;
+    vehicleInterest: string | null;
+    answeredAt: string;
+    delayMs: number;
+  };
+  const recentCallbacks: RecentCallback[] = [];
+  for (const p of prospects) {
+    const sortedAsc = [...p.callEvents].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    let firstMissedDate: Date | null = null;
+    for (const ev of sortedAsc) {
+      if (ev.type === "missed") {
+        if (!firstMissedDate) firstMissedDate = ev.createdAt;
+      } else if (ev.type === "answered") {
+        if (firstMissedDate) {
+          const d = ev.createdAt.getTime() - firstMissedDate.getTime();
+          if (d > 0) {
+            recentCallbacks.push({
+              prospectId: p.id,
+              name: p.name,
+              phone: p.phone,
+              vehicleInterest: p.vehicleInterest,
+              answeredAt: ev.createdAt.toISOString(),
+              delayMs: d,
+            });
+          }
+          firstMissedDate = null;
+        }
+      }
+    }
+  }
+  recentCallbacks.sort((a, b) => new Date(b.answeredAt).getTime() - new Date(a.answeredAt).getTime());
+
   return NextResponse.json({
     period,
     marginRecovered,
@@ -232,6 +386,32 @@ export async function GET(req: NextRequest) {
       fastCallbacks,
       fastCallbackRate,
       distribution: delayDistribution,
+      note,
+      previousPeriod,
+      recentCallbacks: recentCallbacks.slice(0, 20), // le frontend affichera 7 + "voir les autres"
+    },
+    // Stats dédiées à l'impact financier
+    impactStats: {
+      totalCallbacks: totalImpactCallbacks,
+      distribution: impactDistribution,
+      current: {
+        rdvs: totalCurrentRdvs,
+        sales: totalCurrentSales,
+        margin: totalCurrentMargin,
+        rdvRate: totalImpactCallbacks > 0 ? Math.round((totalCurrentRdvs / totalImpactCallbacks) * 100) : 0,
+        salesRate: totalImpactCallbacks > 0 ? Math.round((totalCurrentSales / totalImpactCallbacks) * 100) : 0,
+      },
+      potential: {
+        rdvs: potentialRdvs,
+        sales: potentialSales,
+        margin: potentialMargin,
+      },
+      best: {
+        rdvRate: Math.round(bestRdvRate * 100),
+        salesRate: Math.round(bestSalesRate * 100),
+        sampleSize: bestBucket.rappels,
+      },
+      missedMargin,
     },
   });
 }
