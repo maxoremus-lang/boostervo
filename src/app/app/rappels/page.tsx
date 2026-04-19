@@ -235,23 +235,65 @@ export default function RappelsListPage() {
         })}
       </div>
 
+      {/* Sous-filtres pour "À faire" : À recontacter / Reporté / Injoignable */}
+      {!statusExact && activeFilter === "todo" && data?.byStatus && (
+        <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
+          <button
+            onClick={() => { setStatusExact("pending"); setPeriod(null); }}
+            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-orange-50 text-orange-700 border border-orange-200 active:opacity-60"
+          >
+            🔔 À recontacter · {data.byStatus.pending}
+          </button>
+          <button
+            onClick={() => { setStatusExact("postponed"); setPeriod(null); }}
+            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-blue-50 text-blue-700 border border-blue-200 active:opacity-60"
+          >
+            ⏱ Reporté · {data.byStatus.postponed}
+          </button>
+          <button
+            onClick={() => { setStatusExact("unreachable"); setPeriod(null); }}
+            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-amber-50 text-amber-800 border border-amber-200 active:opacity-60"
+          >
+            📵 Injoignable · {data.byStatus.unreachable}
+          </button>
+        </div>
+      )}
+
+      {/* Sous-filtres pour "En cours" : RDV pris / Essai / Devis envoyé */}
+      {!statusExact && activeFilter === "in_progress" && data?.byStatus && (
+        <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
+          <button
+            onClick={() => { setStatusExact("appointment"); setPeriod(null); }}
+            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-violet-50 text-violet-700 border border-violet-200 active:opacity-60"
+          >
+            📅 RDV pris · {data.byStatus.appointment}
+          </button>
+          <button
+            onClick={() => { setStatusExact("test_drive"); setPeriod(null); }}
+            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-violet-50 text-violet-700 border border-violet-200 active:opacity-60"
+          >
+            🚗 Essai · {data.byStatus.test_drive}
+          </button>
+          <button
+            onClick={() => { setStatusExact("quote_sent"); setPeriod(null); }}
+            className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-violet-50 text-violet-700 border border-violet-200 active:opacity-60"
+          >
+            📄 Devis envoyé · {data.byStatus.quote_sent}
+          </button>
+        </div>
+      )}
+
       {/* Sous-filtres pour "Traités" : Vendus / Pas intéressés */}
       {!statusExact && activeFilter === "done" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
           <button
-            onClick={() => {
-              setStatusExact("sold");
-              setPeriod(null);
-            }}
+            onClick={() => { setStatusExact("sold"); setPeriod(null); }}
             className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-emerald-50 text-emerald-800 border border-emerald-200 active:opacity-60"
           >
             ✅ Vendus · {data.byStatus.sold}
           </button>
           <button
-            onClick={() => {
-              setStatusExact("not_interested");
-              setPeriod(null);
-            }}
+            onClick={() => { setStatusExact("not_interested"); setPeriod(null); }}
             className="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition bg-gray-100 text-gray-600 border border-gray-200 active:opacity-60"
           >
             ❌ Pas intéressés · {data.byStatus.not_interested}
