@@ -235,7 +235,7 @@
                 </div>
               </div>
               <!-- Graphique SVG -->
-              <svg viewBox="0 0 320 180" class="w-full">
+              <svg viewBox="0 0 320 190" class="w-full">
                 <!-- Axes -->
                 <line x1="40" y1="20" x2="40" y2="150" stroke="#e5e7eb" stroke-width="1"/>
                 <line x1="40" y1="150" x2="310" y2="150" stroke="#e5e7eb" stroke-width="1"/>
@@ -248,33 +248,46 @@
                 <line x1="40" y1="60" x2="310" y2="60" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="2,3"/>
                 <line x1="40" y1="90" x2="310" y2="90" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="2,3"/>
 
-                <!-- Courbe RDV (violet) : 67%, 50%, 0%, 0% → y = 25, 60, 150, 150 -->
-                <path d="M 80 25 L 150 60 L 220 150 L 290 150" stroke="#8b5cf6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Zone grisée pour tranches à faible échantillon (< 3 rappels) -->
+                <rect x="115" y="20" width="195" height="130" fill="#f3f4f6" opacity="0.5"/>
+                <text x="212" y="38" fill="#9ca3af" font-size="9" font-style="italic" text-anchor="middle">Échantillon faible (&lt; 3 rappels)</text>
+
+                <!-- Courbe RDV (violet) : 67% (plein), 50%/0%/0% (grisé car < 3 rappels) -->
+                <!-- Segment "sûr" (trait plein) : premier point seulement -->
+                <!-- Segment "peu fiable" (pointillé) vers les points grisés -->
+                <path d="M 80 25 L 150 60 L 220 150 L 290 150" stroke="#c4b5fd" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4,4"/>
+                <!-- Points : premier plein, les autres gris -->
                 <circle cx="80"  cy="25"  r="5" fill="#8b5cf6"/><circle cx="80"  cy="25"  r="2" fill="white"/>
-                <circle cx="150" cy="60"  r="5" fill="#8b5cf6"/><circle cx="150" cy="60"  r="2" fill="white"/>
-                <circle cx="220" cy="150" r="5" fill="#8b5cf6"/><circle cx="220" cy="150" r="2" fill="white"/>
-                <circle cx="290" cy="150" r="5" fill="#8b5cf6"/><circle cx="290" cy="150" r="2" fill="white"/>
+                <circle cx="150" cy="60"  r="5" fill="#d4d4d8" stroke="#a1a1aa" stroke-width="1"/>
+                <circle cx="220" cy="150" r="5" fill="#d4d4d8" stroke="#a1a1aa" stroke-width="1"/>
+                <circle cx="290" cy="150" r="5" fill="#d4d4d8" stroke="#a1a1aa" stroke-width="1"/>
                 <text x="80"  y="17" fill="#8b5cf6" font-size="10" font-weight="700" text-anchor="middle">67%</text>
-                <text x="150" y="52" fill="#8b5cf6" font-size="10" font-weight="700" text-anchor="middle">50%</text>
+                <text x="150" y="52" fill="#9ca3af" font-size="9" font-weight="600" text-anchor="middle">50%*</text>
 
-                <!-- Courbe Ventes (vert) : 33%, 50%, 0%, 0% → y = 90, 60, 150, 150 -->
-                <path d="M 80 90 L 150 60 L 220 150 L 290 150" stroke="#10b981" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Courbe Ventes (vert) : 33% (plein), 50%/0%/0% (grisé) -->
+                <path d="M 80 90 L 150 60 L 220 150 L 290 150" stroke="#86efac" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4,4"/>
                 <circle cx="80"  cy="90"  r="5" fill="#10b981"/><circle cx="80"  cy="90"  r="2" fill="white"/>
-                <circle cx="150" cy="60"  r="5" fill="#10b981"/><circle cx="150" cy="60"  r="2" fill="white"/>
-                <circle cx="220" cy="150" r="5" fill="#10b981"/><circle cx="220" cy="150" r="2" fill="white"/>
-                <circle cx="290" cy="150" r="5" fill="#10b981"/><circle cx="290" cy="150" r="2" fill="white"/>
+                <circle cx="150" cy="60"  r="5" fill="#d4d4d8" stroke="#a1a1aa" stroke-width="1"/>
+                <circle cx="220" cy="150" r="5" fill="#d4d4d8" stroke="#a1a1aa" stroke-width="1"/>
+                <circle cx="290" cy="150" r="5" fill="#d4d4d8" stroke="#a1a1aa" stroke-width="1"/>
                 <text x="80"  y="102" fill="#10b981" font-size="10" font-weight="700" text-anchor="middle">33%</text>
-                <text x="220" y="142" fill="#6b7280" font-size="10" font-weight="700" text-anchor="middle">0%</text>
-                <text x="290" y="142" fill="#6b7280" font-size="10" font-weight="700" text-anchor="middle">0%</text>
 
-                <!-- X labels -->
-                <text x="80"  y="168" fill="#6b7280" font-size="9" text-anchor="middle">&lt; 5m</text>
-                <text x="150" y="168" fill="#6b7280" font-size="9" text-anchor="middle">5-30m</text>
-                <text x="220" y="168" fill="#6b7280" font-size="9" text-anchor="middle">30m-2h</text>
-                <text x="290" y="168" fill="#6b7280" font-size="9" text-anchor="middle">&gt; 2h</text>
+                <!-- X labels avec compteur de rappels -->
+                <text x="80"  y="168" fill="#374151" font-size="9" font-weight="700" text-anchor="middle">&lt; 5m</text>
+                <text x="80"  y="180" fill="#6b7280" font-size="8" text-anchor="middle">9 rappels</text>
+                <text x="150" y="168" fill="#9ca3af" font-size="9" text-anchor="middle">5-30m</text>
+                <text x="150" y="180" fill="#9ca3af" font-size="8" text-anchor="middle">2 rappels</text>
+                <text x="220" y="168" fill="#9ca3af" font-size="9" text-anchor="middle">30m-2h</text>
+                <text x="220" y="180" fill="#9ca3af" font-size="8" text-anchor="middle">1 rappel</text>
+                <text x="290" y="168" fill="#9ca3af" font-size="9" text-anchor="middle">&gt; 2h</text>
+                <text x="290" y="180" fill="#9ca3af" font-size="8" text-anchor="middle">1 rappel</text>
               </svg>
-              <p class="text-[11px] text-center text-gray-600 mt-2">
-                <strong>Au-delà de 30 min, aucun rappel n'aboutit à un RDV ni à une vente.</strong>
+              <p class="text-[11px] text-gray-500 mt-1 italic">
+                * Les points grisés s'appuient sur moins de 3 rappels — données peu fiables statistiquement.
+              </p>
+              <p class="text-[11px] text-center text-gray-600 mt-2 pt-2 border-t border-gray-100">
+                <strong>Tendance claire :</strong> sur votre seule tranche fiable (&lt; 5 min),
+                67% aboutissent en RDV et 33% en ventes.
               </p>
             </div>
           </div>
