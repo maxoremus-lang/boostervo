@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BoosterVO · Maquettes Stats Délai de Rappel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bleu: "#1B4F9B",
+            "bleu-dark": "#153d7a",
+            orange: "#FF6600",
+            "orange-dark": "#cc5200",
+            fond: "#f8f8f8",
+          },
+          fontFamily: {
+            nunito: ["Nunito", "sans-serif"],
+            opensans: ["Open Sans", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: "Open Sans", sans-serif; background: #e5e7eb; }
+    h1, h2, h3, h4, .font-nunito { font-family: "Nunito", sans-serif; }
+    .phone {
+      width: 375px; height: 760px; background: #ffffff;
+      border-radius: 42px;
+      box-shadow: 0 0 0 12px #111827, 0 0 0 14px #2d2d2d, 0 25px 50px -12px rgba(0,0,0,0.4);
+      overflow: hidden; position: relative; flex-shrink: 0;
+    }
+    .notch {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 150px; height: 28px; background: #111827;
+      border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; z-index: 50;
+    }
+    .status-bar {
+      height: 44px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; font-size: 14px; font-weight: 600; color: #111827;
+    }
+    .screen {
+      height: calc(760px - 44px); overflow-y: auto; overflow-x: hidden; background: #f8f8f8;
+    }
+    .screen::-webkit-scrollbar { display: none; }
+    .label { text-align: center; margin-top: 16px; font-family: "Nunito", sans-serif; font-weight: 800; color: #374151; max-width: 375px; }
+    .label small { display:block; color: #6b7280; font-weight: 400; font-size: 12px; margin-top: 4px; }
+
+    /* ---- Speedometer (Option A) ---- */
+    .gauge-wrapper { position: relative; width: 260px; height: 155px; margin: 0 auto; }
+    .gauge-wrapper svg { width: 100%; height: 100%; }
+    .gauge-needle { transform-origin: 130px 130px; transition: transform .6s ease; }
+
+    /* ---- Note énergie (Option B) ---- */
+    .note-bar { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; align-items: end; }
+    .note-cell { height: 44px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: "Nunito", sans-serif; font-weight: 900; color: white; font-size: 14px; }
+    .note-cell.active { height: 56px; box-shadow: 0 4px 10px rgba(0,0,0,0.25); transform: scale(1.05); }
+
+    /* ---- Donut rings (Option C) ---- */
+    .ring-container { position: relative; width: 220px; height: 220px; margin: 0 auto; }
+    .ring-container svg { position: absolute; inset: 0; }
+
+    /* ---- Histogram vertical ---- */
+    .histo-bar { flex: 1; background: #1B4F9B; border-radius: 4px 4px 0 0; transition: height .5s ease; }
+
+    /* progression */
+    .pulse-dot { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity:1 } 50% { opacity:.5 } }
+  </style>
+</head>
+<body>
+  <header class="py-8 px-6 text-center">
+    <h1 class="text-3xl font-nunito font-extrabold text-bleu">BoosterVO · <span class="text-orange">Stats Délai de Rappel</span></h1>
+    <p class="text-gray-600 mt-2 max-w-2xl mx-auto">4 options de design — choisissez celle qui vous parle le plus.</p>
+    <p class="text-xs text-gray-500 mt-1">Toutes incluent : <strong>comparaison vs période précédente</strong> + <strong>5 derniers rappels</strong></p>
+  </header>
+
+  <section class="flex flex-wrap justify-center items-start gap-8 px-6 pb-20">
+
+    <!-- ============ OPTION A — SPEEDOMÈTRE ============ -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span class="text-xs">100%</span></div>
+        <div class="screen">
+          <!-- Header -->
+          <div class="bg-bleu px-5 pt-5 pb-4 text-white">
+            <p class="text-xs uppercase opacity-70 font-semibold">◀ Statistiques</p>
+            <h2 class="text-xl font-nunito font-extrabold">Délai de rappel</h2>
+            <p class="text-xs opacity-80">7 derniers jours</p>
+          </div>
+
+          <!-- Filtre période -->
+          <div class="bg-white border-b border-gray-100 px-5 py-2.5 flex gap-2 text-xs">
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">Jour</button>
+            <button class="px-3 py-1 bg-orange text-white rounded-full font-bold">7 j</button>
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">30 j</button>
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">📅 Perso.</button>
+          </div>
+
+          <!-- Speedometer -->
+          <div class="bg-white mt-4 mx-5 rounded-2xl p-5 shadow-sm">
+            <div class="gauge-wrapper">
+              <svg viewBox="0 0 260 155">
+                <!-- arcs colorés -->
+                <path d="M 30 130 A 100 100 0 0 1 86 45" stroke="#10b981" stroke-width="22" fill="none" stroke-linecap="round"/>
+                <path d="M 86 45 A 100 100 0 0 1 174 45" stroke="#eab308" stroke-width="22" fill="none"/>
+                <path d="M 174 45 A 100 100 0 0 1 230 130" stroke="#ef4444" stroke-width="22" fill="none" stroke-linecap="round"/>
+                <!-- graduations -->
+                <text x="30" y="150" fill="#10b981" font-size="10" font-weight="700" text-anchor="middle">&lt; 5 min</text>
+                <text x="130" y="30" fill="#374151" font-size="10" font-weight="700" text-anchor="middle">30 min</text>
+                <text x="230" y="150" fill="#ef4444" font-size="10" font-weight="700" text-anchor="middle">&gt; 2 h</text>
+                <!-- aiguille : ~12 min → angle ~-60° depuis centre bas -->
+                <g class="gauge-needle" transform="rotate(-55 130 130)">
+                  <line x1="130" y1="130" x2="130" y2="50" stroke="#1B4F9B" stroke-width="4" stroke-linecap="round"/>
+                  <circle cx="130" cy="130" r="10" fill="#1B4F9B"/>
+                  <circle cx="130" cy="130" r="5" fill="white"/>
+                </g>
+              </svg>
+            </div>
+            <div class="text-center -mt-2">
+              <p class="text-5xl font-nunito font-extrabold text-bleu">12 <span class="text-2xl">min</span></p>
+              <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold mt-1">Délai moyen</p>
+              <p class="text-[11px] text-green-700 font-bold mt-1">⭐ Excellent réflexe commercial</p>
+            </div>
+          </div>
+
+          <!-- Évolution -->
+          <div class="mx-5 mt-3 bg-green-50 border border-green-200 rounded-xl p-3 flex items-center gap-3">
+            <span class="text-2xl">▼</span>
+            <div class="flex-1">
+              <p class="text-xs font-bold text-green-900">Vs 7 jours précédents</p>
+              <p class="text-[11px] text-green-700"><strong>-3 min</strong> (vous étiez à 15 min)</p>
+            </div>
+            <span class="text-green-600 font-bold text-xs">+20%</span>
+          </div>
+
+          <!-- 3 chiffres compacts -->
+          <div class="mx-5 mt-3 grid grid-cols-3 gap-2">
+            <div class="bg-white rounded-xl p-3 text-center shadow-sm">
+              <p class="text-2xl font-nunito font-extrabold text-green-600">9</p>
+              <p class="text-[10px] text-gray-500 uppercase font-semibold">⚡ &lt;5m</p>
+            </div>
+            <div class="bg-white rounded-xl p-3 text-center shadow-sm">
+              <p class="text-2xl font-nunito font-extrabold text-orange">3</p>
+              <p class="text-[10px] text-gray-500 uppercase font-semibold">🕐 &lt;30m</p>
+            </div>
+            <div class="bg-white rounded-xl p-3 text-center shadow-sm">
+              <p class="text-2xl font-nunito font-extrabold text-red-500">1</p>
+              <p class="text-[10px] text-gray-500 uppercase font-semibold">🐢 &gt;2h</p>
+            </div>
+          </div>
+
+          <!-- 5 derniers rappels -->
+          <div class="mx-5 mt-4 pb-6">
+            <p class="text-xs uppercase text-gray-500 font-semibold mb-2">5 derniers rappels</p>
+            <div class="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-green-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Laure Garcia</span><span class="text-xs font-bold text-green-700">2 min</span></div>
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-green-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Benoît Thomas</span><span class="text-xs font-bold text-green-700">4 min</span></div>
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-lime-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Claire Fournier</span><span class="text-xs font-bold text-lime-700">8 min</span></div>
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-orange-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Marc Blanc</span><span class="text-xs font-bold text-orange-700">45 min</span></div>
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-red-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Antoine Richard</span><span class="text-xs font-bold text-red-700">3 h 20</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="label">Option A — Speedomètre<small>Visuel impactant style tableau de bord auto</small></p>
+    </div>
+
+
+    <!-- ============ OPTION B — NOTE ÉNERGIE A→E ============ -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span class="text-xs">100%</span></div>
+        <div class="screen">
+          <div class="bg-bleu px-5 pt-5 pb-4 text-white">
+            <p class="text-xs uppercase opacity-70 font-semibold">◀ Statistiques</p>
+            <h2 class="text-xl font-nunito font-extrabold">Délai de rappel</h2>
+            <p class="text-xs opacity-80">7 derniers jours</p>
+          </div>
+
+          <div class="bg-white border-b border-gray-100 px-5 py-2.5 flex gap-2 text-xs">
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">Jour</button>
+            <button class="px-3 py-1 bg-orange text-white rounded-full font-bold">7 j</button>
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">30 j</button>
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">📅 Perso.</button>
+          </div>
+
+          <!-- Big note -->
+          <div class="mx-5 mt-5">
+            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white text-center shadow-lg">
+              <p class="text-xs uppercase font-bold opacity-90 tracking-wider">Votre note de réactivité</p>
+              <p class="text-7xl font-nunito font-black leading-none mt-2">A</p>
+              <p class="text-sm font-bold mt-1 opacity-95">Très réactif</p>
+            </div>
+          </div>
+
+          <!-- Note scale -->
+          <div class="mx-5 mt-4">
+            <div class="note-bar">
+              <div class="note-cell" style="background: #0d9f4c">A+</div>
+              <div class="note-cell active" style="background: #10b981">A</div>
+              <div class="note-cell" style="background: #84cc16">B</div>
+              <div class="note-cell" style="background: #eab308">C</div>
+              <div class="note-cell" style="background: #f97316">D</div>
+              <div class="note-cell" style="background: #ef4444">E</div>
+            </div>
+          </div>
+
+          <!-- 2 chiffres clés -->
+          <div class="mx-5 mt-4 bg-white rounded-2xl p-4 shadow-sm flex justify-around">
+            <div class="text-center">
+              <p class="text-3xl font-nunito font-extrabold text-bleu">12<span class="text-base">min</span></p>
+              <p class="text-[10px] text-gray-500 uppercase font-semibold">Délai moyen</p>
+            </div>
+            <div class="w-px bg-gray-200"></div>
+            <div class="text-center">
+              <p class="text-3xl font-nunito font-extrabold text-green-600">73%</p>
+              <p class="text-[10px] text-gray-500 uppercase font-semibold">Rappels &lt;5 min</p>
+            </div>
+          </div>
+
+          <!-- Évolution -->
+          <div class="mx-5 mt-3 bg-green-50 border border-green-200 rounded-xl p-3">
+            <p class="text-xs font-bold text-green-900">▼ Vs 7 jours précédents</p>
+            <p class="text-[11px] text-green-700 mt-0.5"><strong>-3 min</strong> · note <span class="line-through opacity-60">B</span> → <strong>A</strong></p>
+          </div>
+
+          <!-- Objectif -->
+          <div class="mx-5 mt-3 bg-yellow-50 border border-yellow-200 rounded-xl p-3">
+            <p class="text-xs font-bold text-yellow-900">🎯 Pour passer en A+</p>
+            <p class="text-[11px] text-yellow-800 mt-0.5">Rappelez <strong>5 prospects de plus en moins de 5 min</strong></p>
+          </div>
+
+          <!-- 5 derniers -->
+          <div class="mx-5 mt-4 pb-6">
+            <p class="text-xs uppercase text-gray-500 font-semibold mb-2">5 derniers rappels</p>
+            <div class="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
+              <div class="flex items-center gap-3 p-2.5"><span class="text-xs font-black text-green-600 w-5">A+</span><span class="text-sm font-semibold flex-1">Laure Garcia</span><span class="text-xs font-bold text-gray-600">2 min</span></div>
+              <div class="flex items-center gap-3 p-2.5"><span class="text-xs font-black text-green-600 w-5">A+</span><span class="text-sm font-semibold flex-1">Benoît Thomas</span><span class="text-xs font-bold text-gray-600">4 min</span></div>
+              <div class="flex items-center gap-3 p-2.5"><span class="text-xs font-black text-green-500 w-5">A</span><span class="text-sm font-semibold flex-1">Claire Fournier</span><span class="text-xs font-bold text-gray-600">8 min</span></div>
+              <div class="flex items-center gap-3 p-2.5"><span class="text-xs font-black text-orange-500 w-5">C</span><span class="text-sm font-semibold flex-1">Marc Blanc</span><span class="text-xs font-bold text-gray-600">45 min</span></div>
+              <div class="flex items-center gap-3 p-2.5"><span class="text-xs font-black text-red-500 w-5">E</span><span class="text-sm font-semibold flex-1">Antoine Richard</span><span class="text-xs font-bold text-gray-600">3 h 20</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="label">Option B — Note A→E<small>Style DPE, gamification douce, objectif concret</small></p>
+    </div>
+
+
+    <!-- ============ OPTION C — DONUT RINGS (iOS style) ============ -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span class="text-xs">100%</span></div>
+        <div class="screen">
+          <div class="bg-bleu px-5 pt-5 pb-4 text-white">
+            <p class="text-xs uppercase opacity-70 font-semibold">◀ Statistiques</p>
+            <h2 class="text-xl font-nunito font-extrabold">Délai de rappel</h2>
+            <p class="text-xs opacity-80">7 derniers jours</p>
+          </div>
+
+          <div class="bg-white border-b border-gray-100 px-5 py-2.5 flex gap-2 text-xs">
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">Jour</button>
+            <button class="px-3 py-1 bg-orange text-white rounded-full font-bold">7 j</button>
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">30 j</button>
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">📅 Perso.</button>
+          </div>
+
+          <!-- Rings -->
+          <div class="bg-white mx-5 mt-4 rounded-2xl p-5 shadow-sm">
+            <div class="ring-container">
+              <svg viewBox="0 0 220 220">
+                <!-- ring 1 (outer, <5min, 73%) -->
+                <circle cx="110" cy="110" r="95" fill="none" stroke="#dcfce7" stroke-width="14"/>
+                <circle cx="110" cy="110" r="95" fill="none" stroke="#10b981" stroke-width="14" stroke-linecap="round"
+                  stroke-dasharray="596.9" stroke-dashoffset="161.2"
+                  transform="rotate(-90 110 110)"/>
+                <!-- ring 2 (<30min, 91%) -->
+                <circle cx="110" cy="110" r="72" fill="none" stroke="#fef3c7" stroke-width="14"/>
+                <circle cx="110" cy="110" r="72" fill="none" stroke="#eab308" stroke-width="14" stroke-linecap="round"
+                  stroke-dasharray="452.4" stroke-dashoffset="40.7"
+                  transform="rotate(-90 110 110)"/>
+                <!-- ring 3 (<2h, 98%) -->
+                <circle cx="110" cy="110" r="49" fill="none" stroke="#fee2e2" stroke-width="14"/>
+                <circle cx="110" cy="110" r="49" fill="none" stroke="#ef4444" stroke-width="14" stroke-linecap="round"
+                  stroke-dasharray="307.9" stroke-dashoffset="6.2"
+                  transform="rotate(-90 110 110)"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <p class="text-4xl font-nunito font-extrabold text-bleu">12<span class="text-base">min</span></p>
+                <p class="text-[10px] text-gray-500 uppercase font-semibold tracking-wide">Délai moyen</p>
+              </div>
+            </div>
+            <div class="mt-5 space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                <span class="flex-1 text-sm font-semibold">Sous 5 minutes</span>
+                <span class="text-sm font-extrabold text-green-700">73%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                <span class="flex-1 text-sm font-semibold">Sous 30 minutes</span>
+                <span class="text-sm font-extrabold text-yellow-700">91%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                <span class="flex-1 text-sm font-semibold">Sous 2 heures</span>
+                <span class="text-sm font-extrabold text-red-700">98%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Évolution -->
+          <div class="mx-5 mt-3 bg-green-50 border border-green-200 rounded-xl p-3 flex items-center gap-3">
+            <span class="text-2xl">▼</span>
+            <div class="flex-1">
+              <p class="text-xs font-bold text-green-900">Vs 7 jours précédents</p>
+              <p class="text-[11px] text-green-700"><strong>-3 min</strong> (de 15 à 12 min)</p>
+            </div>
+          </div>
+
+          <!-- 5 derniers -->
+          <div class="mx-5 mt-4 pb-6">
+            <p class="text-xs uppercase text-gray-500 font-semibold mb-2">5 derniers rappels</p>
+            <div class="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-green-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Laure Garcia</span><span class="text-xs font-bold text-gray-600">2 min</span></div>
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-green-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Benoît Thomas</span><span class="text-xs font-bold text-gray-600">4 min</span></div>
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-green-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Claire Fournier</span><span class="text-xs font-bold text-gray-600">8 min</span></div>
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-yellow-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Marc Blanc</span><span class="text-xs font-bold text-gray-600">45 min</span></div>
+              <div class="flex items-center gap-3 p-3"><span class="w-2 h-2 bg-red-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Antoine Richard</span><span class="text-xs font-bold text-gray-600">3 h 20</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="label">Option C — Donut Rings<small>Style iOS Activity, minimaliste, élégant</small></p>
+    </div>
+
+
+    <!-- ============ OPTION D — DASHBOARD DENSE ============ -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span class="text-xs">100%</span></div>
+        <div class="screen">
+          <div class="bg-bleu px-5 pt-5 pb-4 text-white">
+            <p class="text-xs uppercase opacity-70 font-semibold">◀ Statistiques</p>
+            <h2 class="text-xl font-nunito font-extrabold">Délai de rappel</h2>
+            <p class="text-xs opacity-80">7 derniers jours</p>
+          </div>
+
+          <div class="bg-white border-b border-gray-100 px-5 py-2.5 flex gap-2 text-xs">
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">Jour</button>
+            <button class="px-3 py-1 bg-orange text-white rounded-full font-bold">7 j</button>
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">30 j</button>
+            <button class="px-3 py-1 bg-gray-100 rounded-full font-bold text-gray-600">📅 Perso.</button>
+          </div>
+
+          <!-- Hero -->
+          <div class="mx-5 mt-3 bg-gradient-to-br from-green-500 to-green-700 text-white rounded-2xl p-4 shadow-lg">
+            <p class="text-[10px] uppercase font-bold opacity-90 tracking-wider">Délai moyen</p>
+            <div class="flex items-baseline gap-3 mt-0.5">
+              <p class="text-5xl font-nunito font-extrabold">12 <span class="text-xl">min</span></p>
+              <p class="text-sm font-bold bg-white/20 px-2 py-0.5 rounded-full">▼ -3min</p>
+            </div>
+            <div class="mt-2 w-full h-1.5 bg-white/20 rounded-full overflow-hidden">
+              <div class="h-full bg-white" style="width:73%"></div>
+            </div>
+            <p class="text-[11px] opacity-95 mt-1">⭐ <strong>73%</strong> des rappels en moins de 5 min</p>
+          </div>
+
+          <!-- 4 cases compactes -->
+          <div class="mx-5 mt-3 grid grid-cols-4 gap-1.5">
+            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+              <p class="text-xl font-nunito font-extrabold text-green-600">9</p>
+              <p class="text-[9px] text-gray-500 font-semibold">&lt;5 min</p>
+            </div>
+            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+              <p class="text-xl font-nunito font-extrabold text-lime-600">2</p>
+              <p class="text-[9px] text-gray-500 font-semibold">&lt;30 min</p>
+            </div>
+            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+              <p class="text-xl font-nunito font-extrabold text-orange-500">1</p>
+              <p class="text-[9px] text-gray-500 font-semibold">&lt;2h</p>
+            </div>
+            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+              <p class="text-xl font-nunito font-extrabold text-red-500">0</p>
+              <p class="text-[9px] text-gray-500 font-semibold">&gt;24h</p>
+            </div>
+          </div>
+
+          <!-- Histogramme vertical -->
+          <div class="mx-5 mt-3 bg-white rounded-2xl p-4 shadow-sm">
+            <p class="text-xs uppercase text-gray-500 font-semibold mb-3">Répartition</p>
+            <div class="flex items-end justify-between gap-1 h-24">
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-green-500 rounded-t" style="height:78%"></div>
+                <span class="text-[8px] text-gray-500">&lt;1m</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-green-500 rounded-t" style="height:45%"></div>
+                <span class="text-[8px] text-gray-500">1-3m</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-green-500 rounded-t" style="height:30%"></div>
+                <span class="text-[8px] text-gray-500">3-5m</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-lime-500 rounded-t" style="height:20%"></div>
+                <span class="text-[8px] text-gray-500">5-10</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-lime-500 rounded-t" style="height:10%"></div>
+                <span class="text-[8px] text-gray-500">10-15</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-yellow-500 rounded-t" style="height:8%"></div>
+                <span class="text-[8px] text-gray-500">15-20</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-orange-500 rounded-t" style="height:5%"></div>
+                <span class="text-[8px] text-gray-500">20-1h</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-red-500 rounded-t" style="height:8%"></div>
+                <span class="text-[8px] text-gray-500">1-24</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-gray-200 rounded-t" style="height:2%"></div>
+                <span class="text-[8px] text-gray-400">&gt;24h</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 derniers -->
+          <div class="mx-5 mt-3 pb-6">
+            <p class="text-xs uppercase text-gray-500 font-semibold mb-2">5 derniers rappels</p>
+            <div class="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
+              <div class="flex items-center gap-3 p-2.5"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Laure G.</span><span class="text-xs font-bold text-green-700">2 min</span></div>
+              <div class="flex items-center gap-3 p-2.5"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Benoît T.</span><span class="text-xs font-bold text-green-700">4 min</span></div>
+              <div class="flex items-center gap-3 p-2.5"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Claire F.</span><span class="text-xs font-bold text-green-700">8 min</span></div>
+              <div class="flex items-center gap-3 p-2.5"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Marc B.</span><span class="text-xs font-bold text-orange-700">45 min</span></div>
+              <div class="flex items-center gap-3 p-2.5"><span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span><span class="text-sm font-semibold flex-1">Antoine R.</span><span class="text-xs font-bold text-red-700">3 h 20</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="label">Option D — Dashboard dense<small>Tous les chiffres d'un coup, style pro</small></p>
+    </div>
+
+  </section>
+
+  <footer class="pb-12 text-center text-sm text-gray-500 px-6 max-w-2xl mx-auto">
+    Toutes les 4 options gardent <strong>le sélecteur de période</strong> en haut, et ajoutent en bas
+    <strong>la comparaison vs période précédente</strong> + la <strong>liste des 5 derniers rappels</strong>.
+  </footer>
+
+</body>
+</html>
