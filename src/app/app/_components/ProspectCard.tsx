@@ -31,17 +31,22 @@ function formatPhone(raw: string): string {
 export default function ProspectCard({
   prospect,
   variant = "default",
+  contextParams,
 }: {
   prospect: Prospect;
   variant?: "default" | "urgent";
+  contextParams?: string; // ex: "filter=todo" ou "status=appointment&period=week"
 }) {
   const missed = missedCallsCount(prospect);
   const isUrgentCard = variant === "urgent" || prospect.isUrgent;
   const phoneFormatted = formatPhone(prospect.phone);
+  const detailHref = contextParams
+    ? `/app/rappels/${prospect.id}?${contextParams}`
+    : `/app/rappels/${prospect.id}`;
 
   return (
     <Link
-      href={`/app/rappels/${prospect.id}`}
+      href={detailHref}
       className={`block bg-white rounded-2xl shadow-sm transition active:scale-[0.99] ${
         isUrgentCard ? "border-l-4 border-red-500 p-4" : "p-3.5"
       }`}

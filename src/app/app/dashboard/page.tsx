@@ -130,7 +130,7 @@ export default function DashboardPage() {
                       {i + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <ProspectCard prospect={p} variant="urgent" />
+                      <ProspectCard prospect={p} variant="urgent" contextParams="filter=urgent" />
                     </div>
                   </div>
                 ))}
@@ -149,7 +149,7 @@ export default function DashboardPage() {
                       {urgents.length + i + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <ProspectCard prospect={p} />
+                      <ProspectCard prospect={p} contextParams="filter=todo" />
                     </div>
                   </div>
                 ))}

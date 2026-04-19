@@ -63,6 +63,45 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Navigation contextuelle (prev/next) depuis la liste d'origine
+  const [contextQuery, setContextQuery] = useState<string>("");
+  const [siblings, setSiblings] = useState<{ id: string }[] | null>(null);
+
+  // Parse ?filter=... ou ?status=... depuis l'URL au montage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const q = window.location.search.replace(/^\?/, "");
+    setContextQuery(q);
+    if (!q) return;
+
+    // Charger la liste correspondante pour calculer prev/next
+    const params = new URLSearchParams(q);
+    const apiParams = new URLSearchParams();
+    const status = params.get("status");
+    const filter = params.get("filter");
+    const period = params.get("period");
+    if (status) apiParams.set("status", status);
+    else if (filter) apiParams.set("filter", filter);
+    if (period) apiParams.set("period", period);
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/prospects?${apiParams.toString()}`);
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!cancelled) {
+          setSiblings(json.prospects?.map((p: { id: string }) => ({ id: p.id })) ?? []);
+        }
+      } catch {
+        /* silencieux */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -92,6 +131,16 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
     };
   }, [params.id]);
 
+  // Calcul prev/next dans la liste contextuelle
+  const currentIndex = siblings?.findIndex((p) => p.id === params.id) ?? -1;
+  const prevId = currentIndex > 0 ? siblings?.[currentIndex - 1].id : null;
+  const nextId =
+    currentIndex >= 0 && siblings && currentIndex < siblings.length - 1
+      ? siblings[currentIndex + 1].id
+      : null;
+  const backHref = contextQuery ? `/app/rappels?${contextQuery}` : "/app/rappels";
+  const buildDetailHref = (id: string) => (contextQuery ? `/app/rappels/${id}?${contextQuery}` : `/app/rappels/${id}`);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-500">
@@ -119,7 +168,7 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
       {/* Header */}
       <div className="bg-bleu px-5 pt-6 pb-5 text-white">
         <div className="flex items-center justify-between mb-4 gap-2">
-          <Link href="/app/rappels" className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center shrink-0" aria-label="Retour">
+          <Link href={backHref} className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center shrink-0" aria-label="Retour à la liste">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
@@ -129,8 +178,53 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
             {prospect.isUrgent && prospect.status === "pending" && <UrgentBadge />}
             {prospect.status !== "pending" && <StatusBadge status={prospect.status} />}
           </div>
-          <SearchButton />
+          {/* Navigation contextuelle : flèche suivante si on vient d'une liste */}
+          {nextId ? (
+            <Link
+              href={buildDetailHref(nextId)}
+              className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center shrink-0 active:opacity-70"
+              aria-label="Rappel suivant"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          ) : siblings ? (
+            <div className="w-9 h-9 shrink-0 opacity-30 flex items-center justify-center" aria-label="Fin de liste">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          ) : (
+            <SearchButton />
+          )}
         </div>
+        {/* Indicateur de position dans la liste */}
+        {siblings && currentIndex >= 0 && siblings.length > 1 && (
+          <div className="flex items-center justify-center gap-4 text-[11px] text-white/70 -mt-2 mb-2">
+            {prevId ? (
+              <Link href={buildDetailHref(prevId)} className="flex items-center gap-1 active:opacity-60">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Précédent
+              </Link>
+            ) : (
+              <span className="opacity-40">Précédent</span>
+            )}
+            <span className="font-semibold">{currentIndex + 1} / {siblings.length}</span>
+            {nextId ? (
+              <Link href={buildDetailHref(nextId)} className="flex items-center gap-1 active:opacity-60">
+                Suivant
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            ) : (
+              <span className="opacity-40">Suivant</span>
+            )}
+          </div>
+        )}
         {prospect.isKnown ? (
           <>
             <h1 className="text-2xl font-nunito font-extrabold">{prospect.name}</h1>
