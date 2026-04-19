@@ -159,7 +159,7 @@ export default function RappelsListPage() {
             <p className="text-xs opacity-80">
               {statusExact
                 ? `${prospects.length} prospect${prospects.length > 1 ? "s" : ""}`
-                : `${counts.all} rappels · ${counts.todo} à faire · ${unknownCount} inconnus`}
+                : `${counts.all} rappels · ${counts.todo} à faire · ${unknownCount} non qualifiés`}
             </p>
           </div>
           <SearchButton />
