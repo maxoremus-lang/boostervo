@@ -77,11 +77,14 @@ function SubFilterChip({
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition active:opacity-60 ${
-        active ? activeClasses : colorClasses
+      style={{ WebkitTapHighlightColor: "transparent" }}
+      className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
+        active
+          ? `${activeClasses} shadow-md`
+          : `${colorClasses} hover:opacity-80`
       }`}
     >
-      {label} · {count}
+      <span className={active ? "text-white" : ""}>{label} · {count}</span>
     </button>
   );
 }
