@@ -28,29 +28,54 @@ export async function GET(req: NextRequest) {
 
   const userId = (session.user as any).id;
   const periodParam = (req.nextUrl.searchParams.get("period") || "week") as Period;
+  const fromParam = req.nextUrl.searchParams.get("from");
+  const toParam = req.nextUrl.searchParams.get("to");
   const period: Period = ["day", "week", "month", "all"].includes(periodParam) ? periodParam : "week";
 
-  // Calcul de la borne de période
+  // Calcul des bornes de période
   const now = new Date();
   let since: Date | null = null;
-  if (period === "day") {
-    since = new Date(now);
-    since.setHours(0, 0, 0, 0);
-  } else if (period === "week") {
-    since = new Date(now);
-    since.setDate(now.getDate() - 7);
-  } else if (period === "month") {
-    since = new Date(now);
-    since.setDate(now.getDate() - 30);
+  let until: Date | null = null;
+
+  // Priorité aux dates personnalisées si elles sont fournies
+  if (fromParam || toParam) {
+    if (fromParam) {
+      const d = new Date(fromParam + "T00:00:00");
+      if (!isNaN(d.getTime())) since = d;
+    }
+    if (toParam) {
+      const d = new Date(toParam + "T23:59:59");
+      if (!isNaN(d.getTime())) until = d;
+    }
+  } else {
+    if (period === "day") {
+      since = new Date(now);
+      since.setHours(0, 0, 0, 0);
+    } else if (period === "week") {
+      since = new Date(now);
+      since.setDate(now.getDate() - 7);
+    } else if (period === "month") {
+      since = new Date(now);
+      since.setDate(now.getDate() - 30);
+    }
+    // "all" → since null → pas de filtre temporel
   }
-  // "all" → since null → pas de filtre temporel
+
+  const eventsTimeFilter = since || until
+    ? {
+        createdAt: {
+          ...(since ? { gte: since } : {}),
+          ...(until ? { lte: until } : {}),
+        },
+      }
+    : undefined;
 
   // Prospects + CallEvents filtrés par période pour les KPI de performance
   const prospects = await prisma.prospect.findMany({
     where: { userId },
     include: {
       callEvents: {
-        where: since ? { createdAt: { gte: since } } : undefined,
+        where: eventsTimeFilter,
         orderBy: { createdAt: "desc" },
       },
     },
@@ -104,12 +129,19 @@ export async function GET(req: NextRequest) {
   const marginRecovered = salesCount * MARGE_MOYENNE_PAR_VENTE;
 
   // --- Répartition par statut (sur les prospects actifs dans la période) ---
-  // On filtre sur updatedAt >= since, sauf pour period=all où on prend tout.
+  const statusWhereTime = since || until
+    ? {
+        updatedAt: {
+          ...(since ? { gte: since } : {}),
+          ...(until ? { lte: until } : {}),
+        },
+      }
+    : {};
   const statusRows = await prisma.prospect.groupBy({
     by: ["status"],
     where: {
       userId,
-      ...(since ? { updatedAt: { gte: since } } : {}),
+      ...statusWhereTime,
     },
     _count: { _all: true },
   });

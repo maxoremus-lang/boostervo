@@ -6,7 +6,7 @@ import BottomNav from "../../_components/BottomNav";
 import SearchButton from "../../_components/SearchButton";
 import SearchBar from "../../_components/SearchBar";
 
-type Period = "day" | "week" | "month" | "all";
+type Period = "day" | "week" | "month" | "custom";
 
 type StatsResponse = {
   period: Period;
@@ -20,19 +20,28 @@ type StatsResponse = {
   byDay: { day: string; count: number; isToday?: boolean }[];
 };
 
-const periodLabels: Record<Period, string> = {
+const periodLabels: Record<Exclude<Period, "custom">, string> = {
   day: "Jour",
   week: "7 j",
   month: "30 j",
-  all: "Tous",
 };
 
-const periodSubtitle: Record<Period, string> = {
+const periodSubtitle: Record<Exclude<Period, "custom">, string> = {
   day: "Aujourd'hui",
   week: "7 derniers jours",
   month: "30 derniers jours",
-  all: "Depuis le début",
 };
+
+/** Formate YYYY-MM-DD → 12 avr. 26 */
+function formatDateFr(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(iso + "T00:00:00");
+  if (isNaN(d.getTime())) return iso;
+  const day = d.getDate();
+  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
+  const year2 = String(d.getFullYear()).slice(-2);
+  return `${day} ${monthShort}. ${year2}`;
+}
 
 /**
  * Formate un délai en minutes vers "45 min" / "1h30" / "2j 4h".
@@ -53,16 +62,35 @@ function formatDelay(minutes: number): string {
 
 export default function StatsGeneralPage() {
   const [period, setPeriod] = useState<Period>("week");
+  const [customFrom, setCustomFrom] = useState<string>("");
+  const [customTo, setCustomTo] = useState<string>("");
+  const [showCustomPanel, setShowCustomPanel] = useState(false);
   const [stats, setStats] = useState<StatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const customActive = period === "custom" && (customFrom || customTo);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     (async () => {
       try {
-        const res = await fetch(`/api/stats?period=${period}`);
+        let url = "/api/stats";
+        if (period === "custom") {
+          const params = new URLSearchParams();
+          if (customFrom) params.set("from", customFrom);
+          if (customTo) params.set("to", customTo);
+          if (!customFrom && !customTo) {
+            setStats(null);
+            setLoading(false);
+            return;
+          }
+          url += `?${params.toString()}`;
+        } else {
+          url += `?period=${period}`;
+        }
+        const res = await fetch(url);
         if (!res.ok) {
           if (!cancelled) {
             setError("Erreur de chargement");
@@ -86,7 +114,18 @@ export default function StatsGeneralPage() {
     return () => {
       cancelled = true;
     };
-  }, [period]);
+  }, [period, customFrom, customTo]);
+
+  const headerSubtitle =
+    period === "custom"
+      ? customFrom && customTo
+        ? `Du ${formatDateFr(customFrom)} au ${formatDateFr(customTo)}`
+        : customFrom
+          ? `Depuis le ${formatDateFr(customFrom)}`
+          : customTo
+            ? `Jusqu'au ${formatDateFr(customTo)}`
+            : "Période personnalisée"
+      : periodSubtitle[period];
 
   const maxCount = stats ? Math.max(...stats.byDay.map((d) => d.count), 1) : 1;
   const appointmentShare = stats && stats.callbacksDone > 0
@@ -109,24 +148,69 @@ export default function StatsGeneralPage() {
           <SearchButton />
         </div>
         <h1 className="text-xl font-nunito font-extrabold">Stats générales</h1>
-        <p className="text-xs opacity-80">{periodSubtitle[period]}</p>
+        <p className="text-xs opacity-80">{headerSubtitle}</p>
       </div>
 
       <SearchBar />
 
       {/* Sélecteur période */}
-      <div className="flex gap-2 px-5 py-3 bg-white border-b border-gray-100 overflow-x-auto">
-        {(Object.keys(periodLabels) as Period[]).map((p) => (
+      <div className="px-5 py-3 bg-white border-b border-gray-100">
+        <div className="flex gap-2 overflow-x-auto">
+          {(Object.keys(periodLabels) as Array<Exclude<Period, "custom">>).map((p) => (
+            <button
+              key={p}
+              onClick={() => { setPeriod(p); setShowCustomPanel(false); }}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${
+                period === p ? "bg-orange text-white" : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {periodLabels[p]}
+            </button>
+          ))}
           <button
-            key={p}
-            onClick={() => setPeriod(p)}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${
-              period === p ? "bg-orange text-white" : "bg-gray-100 text-gray-600"
+            onClick={() => { setPeriod("custom"); setShowCustomPanel(true); }}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition inline-flex items-center gap-1.5 ${
+              period === "custom" ? "bg-orange text-white" : "bg-gray-100 text-gray-600"
             }`}
           >
-            {periodLabels[p]}
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Personnalisée
           </button>
-        ))}
+        </div>
+
+        {/* Panneau date début / date fin */}
+        {(showCustomPanel || period === "custom") && (
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Date début</label>
+              <input
+                type="date"
+                value={customFrom}
+                onChange={(e) => { setCustomFrom(e.target.value); setPeriod("custom"); }}
+                className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Date fin</label>
+              <input
+                type="date"
+                value={customTo}
+                onChange={(e) => { setCustomTo(e.target.value); setPeriod("custom"); }}
+                className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm"
+              />
+            </div>
+            {customActive && (
+              <button
+                onClick={() => { setCustomFrom(""); setCustomTo(""); setPeriod("week"); setShowCustomPanel(false); }}
+                className="col-span-2 text-[11px] text-gray-500 underline text-left mt-0.5"
+              >
+                Réinitialiser
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {loading ? (
