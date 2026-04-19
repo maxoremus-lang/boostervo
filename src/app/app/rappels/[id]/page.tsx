@@ -29,6 +29,45 @@ function formatDate(iso: string) {
   return `${weekdayCap}. ${day} ${monthShort}. ${year2} · ${time}`;
 }
 
+/** Formatte un délai en ms en texte court et lisible : "12 min", "2 h 14", "3 j" */
+function formatDelay(ms: number): string {
+  const minutes = Math.round(ms / 60000);
+  if (minutes < 1) return "moins d'1 min";
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMin = minutes % 60;
+  if (hours < 24) {
+    return remainingMin === 0 ? `${hours} h` : `${hours} h ${String(remainingMin).padStart(2, "0")}`;
+  }
+  const days = Math.floor(hours / 24);
+  const remainingH = hours % 24;
+  return remainingH === 0 ? `${days} j` : `${days} j ${remainingH} h`;
+}
+
+/**
+ * Pour chaque event "answered", calcule le délai depuis le premier "missed"
+ * de la séquence non encore rappelée qui le précède.
+ * Retourne une Map { answeredEventId → delayMs }
+ */
+function computeCallbackDelays(events: { id: string; at: string; type: string }[]): Map<string, number> {
+  const delays = new Map<string, number>();
+  // Trier par ordre chronologique ASC
+  const sorted = [...events].sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
+  let firstMissedOfRound: { at: string } | null = null;
+  for (const ev of sorted) {
+    if (ev.type === "missed") {
+      if (!firstMissedOfRound) firstMissedOfRound = { at: ev.at };
+    } else if (ev.type === "answered") {
+      if (firstMissedOfRound) {
+        const delay = new Date(ev.at).getTime() - new Date(firstMissedOfRound.at).getTime();
+        if (delay > 0) delays.set(ev.id, delay);
+        firstMissedOfRound = null;
+      }
+    }
+  }
+  return delays;
+}
+
 function formatEventDate(iso: string) {
   const d = new Date(iso);
   const now = new Date();
@@ -323,23 +362,37 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
           {prospect.callEvents.length === 0 ? (
             <p className="text-sm text-gray-400 italic">Aucun appel enregistré</p>
           ) : (
-            prospect.callEvents.map((ev) => (
-              <div key={ev.id} className="flex gap-3">
-                <div
-                  className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                    ev.type === "answered" ? "bg-green-500" : "bg-red-500"
-                  }`}
-                />
-                <div className="flex-1">
-                  <p className="text-sm font-semibold">{ev.type === "answered" ? "Rappel effectué" : "Appel manqué"}</p>
-                  <p className="text-xs text-gray-500">
-                    {formatEventDate(ev.at)} · {formatRelativeTime(ev.at)}
-                    {ev.ringSec && ` · sonné ${ev.ringSec}s`}
-                    {ev.durationSec && ` · durée ${Math.round(ev.durationSec / 60)}min ${ev.durationSec % 60}s`}
-                  </p>
-                </div>
-              </div>
-            ))
+            (() => {
+              const delays = computeCallbackDelays(prospect.callEvents);
+              return prospect.callEvents.map((ev) => {
+                const delayMs = delays.get(ev.id);
+                return (
+                  <div key={ev.id} className="flex gap-3">
+                    <div
+                      className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                        ev.type === "answered" ? "bg-green-500" : "bg-red-500"
+                      }`}
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">{ev.type === "answered" ? "Rappel effectué" : "Appel manqué"}</p>
+                      <p className="text-xs text-gray-500">
+                        {formatEventDate(ev.at)} · {formatRelativeTime(ev.at)}
+                        {ev.ringSec && ` · sonné ${ev.ringSec}s`}
+                        {ev.durationSec && ` · durée ${Math.round(ev.durationSec / 60)}min ${ev.durationSec % 60}s`}
+                      </p>
+                      {delayMs !== undefined && (
+                        <p className="text-[11px] text-green-700 font-semibold mt-0.5 inline-flex items-center gap-1 bg-green-50 px-2 py-0.5 rounded-full">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          Rappelé en {formatDelay(delayMs)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              });
+            })()
           )}
         </div>
       </div>
