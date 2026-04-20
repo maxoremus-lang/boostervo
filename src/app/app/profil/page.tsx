@@ -6,6 +6,7 @@ import BottomNav from "../_components/BottomNav";
 import SearchButton from "../_components/SearchButton";
 import SearchBar from "../_components/SearchBar";
 import { useNotificationRinger } from "../_components/NotificationRinger";
+import { usePushSubscription } from "../_components/usePushSubscription";
 
 type Me = {
   id: string;
@@ -26,9 +27,9 @@ export default function ProfilPage() {
   const [me, setMe] = useState<Me | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [pushEnabled, setPushEnabled] = useState(true);
 
   const { prefs, updatePrefs, playPreview } = useNotificationRinger();
+  const push = usePushSubscription();
 
   useEffect(() => {
     let cancelled = false;
@@ -105,7 +106,7 @@ export default function ProfilPage() {
         {/* Notifications */}
         <div className="bg-white rounded-2xl shadow-sm p-1">
           <p className="text-xs font-bold text-gray-500 uppercase tracking-wide px-3 pt-3">Notifications</p>
-          <Toggle label="Notifications push" value={pushEnabled} onChange={setPushEnabled} />
+          <PushToggle push={push} />
           <Toggle
             label="Son des alertes"
             value={prefs.soundEnabled}
@@ -164,9 +165,6 @@ export default function ProfilPage() {
             </p>
           </div>
 
-          <p className="text-[10px] text-gray-400 px-3 pb-3 mt-1 italic">
-            Les notifications push seront activées dans une prochaine version.
-          </p>
         </div>
 
         {/* Actions */}
@@ -200,6 +198,73 @@ function Row({ label, value }: { label: string; value: string }) {
     <div className="px-4 py-3">
       <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">{label}</p>
       <p className="text-sm font-semibold mt-0.5">{value}</p>
+    </div>
+  );
+}
+
+function PushToggle({ push }: { push: ReturnType<typeof usePushSubscription> }) {
+  const { state, busy, error, enable, disable } = push;
+
+  // Rendu du switch visuel (reprend le style du Toggle)
+  const Switch = ({ on, onClick, disabled }: { on: boolean; onClick: () => void; disabled?: boolean }) => (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`w-11 h-6 rounded-full transition relative shrink-0 ${on ? "bg-orange" : "bg-gray-300"} ${disabled ? "opacity-40" : ""}`}
+      aria-pressed={on}
+    >
+      <span
+        className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition shadow ${
+          on ? "left-5" : "left-0.5"
+        }`}
+      />
+    </button>
+  );
+
+  let helper: string | null = null;
+  let on = false;
+  let disabled = busy;
+  let onClick = () => {};
+
+  switch (state) {
+    case "loading":
+      helper = "Chargement…";
+      disabled = true;
+      break;
+    case "unsupported":
+      helper = "Votre navigateur ne supporte pas les notifications push.";
+      disabled = true;
+      break;
+    case "needs-install-ios":
+      helper = "Sur iPhone, installez d'abord l'app sur l'écran d'accueil (Partager → Sur l'écran d'accueil) pour activer les notifications.";
+      disabled = true;
+      break;
+    case "unregistered":
+      helper = "Service Worker non enregistré — rechargez la page.";
+      disabled = true;
+      break;
+    case "denied":
+      helper = "Notifications refusées. Allez dans les réglages du navigateur pour réautoriser.";
+      disabled = true;
+      break;
+    case "disabled":
+      on = false;
+      onClick = () => enable();
+      break;
+    case "enabled":
+      on = true;
+      onClick = () => disable();
+      break;
+  }
+
+  return (
+    <div className="px-3 py-2.5">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-semibold">Notifications push</span>
+        <Switch on={on} onClick={onClick} disabled={disabled} />
+      </div>
+      {helper && <p className="text-[11px] text-gray-500 mt-1.5">{helper}</p>}
+      {error && <p className="text-[11px] text-red-600 mt-1.5">{error}</p>}
     </div>
   );
 }

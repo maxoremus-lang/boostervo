@@ -23,6 +23,21 @@ model User {
   updatedAt    DateTime @updatedAt
 
   prospects Prospect[]
+  pushSubscriptions PushSubscription[]
+}
+
+model PushSubscription {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint   String   @unique
+  p256dh     String   // clé publique client
+  auth       String   // secret auth
+  userAgent  String?  // optionnel, pour debug multi-device
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Prospect {

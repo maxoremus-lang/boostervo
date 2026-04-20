@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../lib/prisma";
+import { sendPushToUser } from "../../../../../lib/webPush";
 
 /**
  * POST /api/webhooks/twilio/status
@@ -101,6 +102,20 @@ export async function POST(req: NextRequest) {
         },
       });
       console.log(`[Twilio Status] ❌ MISSED CALL from ${normalizedPhone} — missed count: ${missedCount}, urgent: ${missedCount >= 2}`);
+
+      // Push notification (si l'utilisateur a activé le son des alertes)
+      if (user.soundEnabled !== false) {
+        const title = missedCount >= 2 ? "Appel manqué urgent" : "Nouvel appel manqué";
+        const body = prospect.name
+          ? `${prospect.name} · ${normalizedPhone}`
+          : `Appel de ${normalizedPhone}`;
+        sendPushToUser(user.id, {
+          title,
+          body,
+          url: `/app/rappels/${prospect.id}`,
+          tag: `missed-${prospect.id}`,
+        }).catch((e) => console.warn("[Twilio Status] push error", e));
+      }
     }
 
     if (isAnswered) {

@@ -1,8 +1,8 @@
-// BoosterVO Rappels · Service Worker (MVP)
+// BoosterVO Rappels · Service Worker
 // - Cache app shell pour accès hors-ligne basique
-// - À étendre avec Web Push quand le backend sera prêt
+// - Web Push + notificationclick pour routing vers la fiche du rappel
 
-const CACHE_NAME = "boostervo-rappels-v2";
+const CACHE_NAME = "boostervo-rappels-v3";
 const APP_SHELL = [
   "/app/manifest.json",
   "/app/icon-192.png",
@@ -27,16 +27,13 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
-  // Ne pas toucher les requêtes API / Next.js internes
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/_next/")) {
     return;
   }
-  // Stratégie : network-first, fallback sur cache si offline
   if (event.request.method !== "GET") return;
   event.respondWith(
     fetch(event.request)
       .then((res) => {
-        // Cache les ressources statiques /app/*
         if (url.pathname.startsWith("/app/") && res.ok) {
           const copy = res.clone();
           caches.open(CACHE_NAME).then((c) => c.put(event.request, copy));
@@ -47,21 +44,53 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Préparation Web Push (à activer quand VAPID configuré côté backend)
+// ===== Web Push =====
 self.addEventListener("push", (event) => {
-  const data = event.data ? event.data.json() : { title: "BoosterVO", body: "Nouveau rappel" };
+  let data = { title: "BoosterVO", body: "Nouvel appel manqué", url: "/app/rappels" };
+  try {
+    if (event.data) data = { ...data, ...event.data.json() };
+  } catch (err) {
+    console.warn("[SW] push payload invalide", err);
+  }
   event.waitUntil(
-    self.registration.showNotification(data.title || "BoosterVO", {
+    self.registration.showNotification(data.title, {
       body: data.body,
       icon: "/app/icon-192.png",
       badge: "/app/icon-192.png",
-      data: data.url ? { url: data.url } : undefined,
+      tag: data.tag || "boostervo-missed",
+      renotify: true,
+      data: { url: data.url },
     })
   );
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = event.notification.data?.url || "/app/dashboard";
-  event.waitUntil(self.clients.openWindow(target));
+  const target = event.notification.data?.url || "/app/rappels";
+  event.waitUntil(
+    (async () => {
+      const allClients = await self.clients.matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      });
+      // Essayer de focuser un onglet déjà ouvert de l'app
+      for (const client of allClients) {
+        const url = new URL(client.url);
+        if (url.pathname.startsWith("/app")) {
+          // Naviguer l'onglet existant vers la cible puis lui donner le focus
+          await client.focus();
+          if ("navigate" in client) {
+            try {
+              await client.navigate(target);
+            } catch {
+              /* certains navigateurs bloquent navigate cross-scope — fallback openWindow */
+            }
+          }
+          return;
+        }
+      }
+      // Aucun onglet ouvert → nouvelle fenêtre
+      await self.clients.openWindow(target);
+    })()
+  );
 });
