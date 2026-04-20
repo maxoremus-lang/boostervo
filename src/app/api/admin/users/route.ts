@@ -4,7 +4,7 @@ import { hash } from "bcryptjs";
 import { authOptions } from "../../../../lib/auth";
 import { prisma } from "../../../../lib/prisma";
 
-const VALID_ROLES = ["admin", "negotiant"] as const;
+const VALID_ROLES = ["admin", "negotiant", "invite", "partenaire"] as const;
 
 async function requireAdmin() {
   const session = await getServerSession(authOptions);
@@ -57,7 +57,10 @@ export async function POST(req: NextRequest) {
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
   const password = typeof body.password === "string" ? body.password : "";
   const name = typeof body.name === "string" ? body.name.trim() : "";
-  const dealership = typeof body.dealership === "string" ? body.dealership.trim() : "";
+  const dealership =
+    typeof body.dealership === "string" && body.dealership.trim() !== ""
+      ? body.dealership.trim()
+      : null;
   const twilioNumber =
     typeof body.twilioNumber === "string" && body.twilioNumber.trim() !== ""
       ? body.twilioNumber.trim()
@@ -75,7 +78,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Mot de passe : 8 caractères minimum" }, { status: 400 });
   }
   if (!name) return NextResponse.json({ error: "Nom requis" }, { status: 400 });
-  if (!dealership) return NextResponse.json({ error: "Concession requise" }, { status: 400 });
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {

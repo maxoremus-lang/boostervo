@@ -7,11 +7,20 @@ type AdminUser = {
   id: string;
   email: string;
   name: string;
-  dealership: string;
+  dealership: string | null;
   twilioNumber: string | null;
   forwardPhone: string | null;
   role: string;
   createdAt: string;
+};
+
+type Role = "negotiant" | "admin" | "invite" | "partenaire";
+
+const ROLE_LABELS: Record<Role, string> = {
+  negotiant: "Négociant",
+  admin: "Administrateur",
+  invite: "Invité",
+  partenaire: "Partenaire",
 };
 
 type FormState = {
@@ -21,7 +30,7 @@ type FormState = {
   dealership: string;
   twilioNumber: string;
   forwardPhone: string;
-  role: "negotiant" | "admin";
+  role: Role;
 };
 
 const EMPTY_FORM: FormState = {
@@ -157,11 +166,10 @@ export default function AdminUsersPage() {
             required
           />
           <Field
-            label="Concession *"
+            label="Concession"
             value={form.dealership}
             onChange={(v) => setForm({ ...form, dealership: v })}
             placeholder="Concession Lyon Est"
-            required
           />
           <Field
             label="Numéro Twilio"
@@ -179,11 +187,13 @@ export default function AdminUsersPage() {
             <label className="block text-xs font-semibold text-gray-600 mb-1">Rôle</label>
             <select
               value={form.role}
-              onChange={(e) => setForm({ ...form, role: e.target.value as "negotiant" | "admin" })}
+              onChange={(e) => setForm({ ...form, role: e.target.value as Role })}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-bleu bg-white"
             >
               <option value="negotiant">Négociant</option>
               <option value="admin">Administrateur</option>
+              <option value="invite">Invité</option>
+              <option value="partenaire">Partenaire</option>
             </select>
           </div>
 
@@ -216,16 +226,18 @@ export default function AdminUsersPage() {
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold truncate">{u.name}</p>
                       <p className="text-xs text-gray-500 truncate">{u.email}</p>
-                      <p className="text-xs text-gray-500 truncate">{u.dealership}</p>
+                      {u.dealership && (
+                        <p className="text-xs text-gray-500 truncate">{u.dealership}</p>
+                      )}
                       {(u.twilioNumber || u.forwardPhone) && (
                         <p className="text-[11px] text-gray-400 mt-0.5 truncate">
                           {u.twilioNumber ?? "—"} → {u.forwardPhone ?? "—"}
                         </p>
                       )}
                     </div>
-                    {u.role === "admin" && (
-                      <span className="text-[10px] font-bold text-bleu bg-bleu/10 px-2 py-0.5 rounded-full shrink-0">
-                        ADMIN
+                    {u.role !== "negotiant" && (
+                      <span className="text-[10px] font-bold text-bleu bg-bleu/10 px-2 py-0.5 rounded-full shrink-0 uppercase">
+                        {ROLE_LABELS[u.role as Role] ?? u.role}
                       </span>
                     )}
                   </div>

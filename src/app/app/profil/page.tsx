@@ -13,7 +13,7 @@ type Me = {
   id: string;
   email: string;
   name: string;
-  dealership: string;
+  dealership: string | null;
   twilioNumber: string | null;
   forwardPhone: string | null;
   role: string;
@@ -98,7 +98,7 @@ export default function ProfilPage() {
               <Row label="Email" value={me.email} />
               <Row label="Numéro BoosterVO" value={me.twilioNumber ?? "Non configuré"} />
               <Row label="Numéro de transfert" value={me.forwardPhone ?? "Non configuré"} />
-              <Row label="Concession" value={me.dealership} />
+              {me.dealership && <Row label="Concession" value={me.dealership} />}
               {me.role === "admin" && <Row label="Rôle" value="Administrateur" />}
             </>
           ) : null}

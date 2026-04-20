@@ -13,10 +13,10 @@ model User {
   email        String   @unique
   passwordHash String
   name         String
-  dealership   String
+  dealership   String?
   twilioNumber String?  // Numéro Twilio assigné au négociant
   forwardPhone String?  // Numéro réel où transférer les appels
-  role         String   @default("negotiant") // "admin" | "negotiant"
+  role         String   @default("negotiant") // "admin" | "negotiant" | "invite" | "partenaire"
   notificationSound String  @default("cloche")   // "cloche" | "sonnette"
   soundEnabled      Boolean @default(true)
   createdAt    DateTime @default(now())

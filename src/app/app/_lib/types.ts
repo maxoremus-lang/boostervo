@@ -36,7 +36,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  dealership: string;
+  dealership: string | null;
   twilioNumber: string;        // numéro Twilio assigné
 };
 
