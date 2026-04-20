@@ -160,7 +160,7 @@ export default function ProfilPage() {
               })}
             </div>
             <p className="text-[11px] text-gray-500 mt-2 px-1">
-              La sonnerie retentit 3 fois (toutes les 10 s) à chaque nouvel appel manqué. Elle s'arrête quand vous ouvrez le rappel.
+              La sonnerie retentit 3 fois (toutes les 10 s) à chaque nouvel appel manqué. Elle s&apos;arrête quand vous ouvrez le rappel.
             </p>
           </div>
 
