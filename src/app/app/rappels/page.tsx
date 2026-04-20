@@ -229,7 +229,7 @@ export default function RappelsListPage() {
         <div className="flex justify-between items-start gap-3">
           <div className="flex-1 min-w-0">
             <h1 className="text-xl font-nunito font-extrabold">
-              Mes rappels
+              Vos rappels
               {statusExact && (
                 <span className="font-semibold opacity-90"> — {STATUS_LABELS[statusExact]}</span>
               )}
