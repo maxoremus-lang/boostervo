@@ -19,22 +19,7 @@ async function main() {
     },
   });
 
-  // Compte négociant de test
-  const nego = await prisma.user.upsert({
-    where: { email: "jean.martin@concession-lyon.fr" },
-    update: {},
-    create: {
-      email: "jean.martin@concession-lyon.fr",
-      passwordHash: hashSync("demo1234", 12),
-      name: "Jean Martin",
-      dealership: "Concession Lyon Est",
-      role: "negotiant",
-      twilioNumber: "+33159168772",
-      forwardPhone: "+33600000000", // À remplacer par le vrai numéro
-    },
-  });
-
-  console.log("Seeded users:", admin.email, nego.email);
+  console.log("Seeded users:", admin.email);
 }
 
 main()

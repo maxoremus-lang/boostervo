@@ -12,15 +12,22 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.formData();
     const callSid = body.get("CallSid") as string;
-    // DialCallStatus est le statut du leg (renvoi vers le mobile)
+    // DialCallStatus = résultat du leg de renvoi vers le mobile du négociant.
+    // Seule cette valeur doit produire un événement. Les webhooks du
+    // statusCallback parent (avec CallStatus seul) sont ignorés pour éviter
+    // de logger un faux "answered" quand le parent call se termine.
     const dialStatus = body.get("DialCallStatus") as string;
-    // CallStatus est le statut du parent call (fallback)
-    const callStatus = dialStatus || (body.get("CallStatus") as string);
     const from = body.get("From") as string;
     const to = body.get("To") as string;
-    const duration = body.get("DialCallDuration") as string || body.get("CallDuration") as string;
+    const duration = body.get("DialCallDuration") as string;
 
-    console.log(`[Twilio Status] SID:${callSid} from:${from} to:${to} dialStatus:${dialStatus} callStatus:${callStatus} duration:${duration}`);
+    if (!dialStatus) {
+      console.log(`[Twilio Status] SID:${callSid} ignoré (pas de DialCallStatus — statusCallback parent)`);
+      return twimlResponse();
+    }
+
+    const callStatus = dialStatus;
+    console.log(`[Twilio Status] SID:${callSid} from:${from} to:${to} dialStatus:${dialStatus} duration:${duration}`);
 
     if (!from || !to) {
       return twimlResponse();
