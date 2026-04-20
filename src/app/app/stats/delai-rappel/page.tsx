@@ -10,6 +10,8 @@ type Period = "day" | "week" | "month" | "custom";
 
 type Note = { letter: string; label: string; color: string };
 
+type DistributionBucket = { key: string; label: string; count: number };
+
 type RecentCallback = {
   prospectId: string;
   name: string | null;
@@ -25,6 +27,7 @@ type StatsResponse = {
     avgDelayMs: number;
     fastCallbacks: number;
     fastCallbackRate: number;
+    distribution: DistributionBucket[];
     note: Note;
     previousPeriod: {
       avgDelayMs: number;
@@ -53,34 +56,48 @@ const prevPeriodLabel: Record<Exclude<Period, "custom">, string> = {
   month: "que les 30 jours précédents",
 };
 
-/** Échelle de notes A+ → E */
-const NOTE_SCALE: { letter: string; bg: string }[] = [
-  { letter: "A+", bg: "bg-[#0d9f4c]" },
-  { letter: "A",  bg: "bg-green-500" },
-  { letter: "B",  bg: "bg-lime-500" },
-  { letter: "C",  bg: "bg-yellow-500" },
-  { letter: "D",  bg: "bg-orange-500" },
-  { letter: "E",  bg: "bg-red-500" },
+/** Couleur de fond (gradient) du hero "Délai moyen" selon la perf */
+function heroBgGradient(avgMs: number): string {
+  const MIN = 60 * 1000;
+  if (avgMs < 5 * MIN)       return "from-green-500 to-green-700";
+  if (avgMs < 30 * MIN)      return "from-lime-500 to-lime-700";
+  if (avgMs < 2 * 60 * MIN)  return "from-orange-500 to-orange-dark";
+  return "from-red-500 to-red-700";
+}
+
+/** Catégorie de délai (pour la pastille des rappels récents + libellé des tuiles) */
+type DelayCategory = "fast" | "ok" | "slow" | "verySlow";
+
+function delayCategory(ms: number): DelayCategory {
+  const MIN = 60 * 1000;
+  if (ms < 5 * MIN)      return "fast";
+  if (ms < 30 * MIN)     return "ok";
+  if (ms < 2 * 60 * MIN) return "slow";
+  return "verySlow";
+}
+
+/** Pastille colorée par catégorie (vert / vert clair / orange / rouge) */
+const CATEGORY_DOT_BG: Record<DelayCategory, string> = {
+  fast:     "bg-green-500",
+  ok:       "bg-lime-500",
+  slow:     "bg-orange-500",
+  verySlow: "bg-red-500",
+};
+
+/** Couleur de texte des valeurs dans les 4 tuiles */
+const CATEGORY_TEXT: Record<DelayCategory, string> = {
+  fast:     "text-green-600",
+  ok:       "text-lime-600",
+  slow:     "text-orange-500",
+  verySlow: "text-red-500",
+};
+
+const BUCKET_KEYS_ORDER: Array<{ key: string; cat: DelayCategory }> = [
+  { key: "lt5min",  cat: "fast" },
+  { key: "lt30min", cat: "ok" },
+  { key: "lt2h",    cat: "slow" },
+  { key: "gte2h",   cat: "verySlow" },
 ];
-
-function noteBgGradient(color: string): string {
-  switch (color) {
-    case "green": return "from-green-500 to-green-700";
-    case "lime":  return "from-lime-500 to-lime-700";
-    case "yellow":return "from-yellow-500 to-yellow-700";
-    case "orange":return "from-orange-500 to-orange-dark";
-    case "red":   return "from-red-500 to-red-700";
-    default:      return "from-gray-500 to-gray-700";
-  }
-}
-
-function noteTextColor(letter: string): string {
-  if (letter === "A+" || letter === "A") return "text-green-600";
-  if (letter === "B") return "text-lime-600";
-  if (letter === "C") return "text-yellow-600";
-  if (letter === "D") return "text-orange-500";
-  return "text-red-500";
-}
 
 /** Formatte un délai en ms */
 function formatDelay(ms: number): string {
@@ -106,17 +123,6 @@ function formatDateFr(iso: string): string {
   const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
   const year2 = String(d.getFullYear()).slice(-2);
   return `${day} ${monthShort}. ${year2}`;
-}
-
-/** Note affichée pour un délai donné */
-function delayToNoteLetter(ms: number): string {
-  const MIN = 60 * 1000;
-  if (ms < 2 * MIN) return "A+";
-  if (ms < 5 * MIN) return "A";
-  if (ms < 15 * MIN) return "B";
-  if (ms < 30 * MIN) return "C";
-  if (ms < 60 * MIN) return "D";
-  return "E";
 }
 
 export default function StatsDelaiRappelPage() {
@@ -177,10 +183,11 @@ export default function StatsDelaiRappelPage() {
   }, [period, customFrom, customTo]);
 
   const d = stats?.delayStats;
+  const DEFAULT_CALLS = 5;
   const callbacksToShow = expanded
     ? d?.recentCallbacks ?? []
-    : (d?.recentCallbacks ?? []).slice(0, 7);
-  const remainingCount = (d?.recentCallbacks.length ?? 0) - 7;
+    : (d?.recentCallbacks ?? []).slice(0, DEFAULT_CALLS);
+  const remainingCount = (d?.recentCallbacks.length ?? 0) - DEFAULT_CALLS;
 
   const headerSubtitle =
     period === "custom"
@@ -285,50 +292,59 @@ export default function StatsDelaiRappelPage() {
         </div>
       ) : (
         <>
-          {/* Hero : Note de réactivité */}
+          {/* Hero : Délai moyen */}
           <div className="mx-5 mt-5">
-            <div className={`bg-gradient-to-br ${noteBgGradient(d.note.color)} rounded-2xl p-6 text-white text-center shadow-lg`}>
-              <p className="text-xs uppercase font-bold opacity-90 tracking-wider">Votre note de réactivité</p>
-              <p className="text-7xl font-nunito font-black leading-none mt-2">{d.note.letter}</p>
-              <p className="text-sm font-bold mt-1 opacity-95">{d.note.label}</p>
+            <div className={`bg-gradient-to-br ${heroBgGradient(d.avgDelayMs)} rounded-2xl p-5 text-white shadow-lg`}>
+              <div className="flex items-center justify-between">
+                <p className="text-xs uppercase font-bold opacity-90 tracking-wider">Délai moyen</p>
+              </div>
+              <div className="flex items-baseline gap-3 mt-2">
+                <p className="text-5xl font-nunito font-black leading-none">
+                  {formatDelay(d.avgDelayMs).replace(/ (min|h|s|j)/, "")}
+                </p>
+                <p className="text-xl font-nunito font-bold opacity-95">
+                  {formatDelay(d.avgDelayMs).match(/(min|h|s|j)/)?.[0] ?? ""}
+                </p>
+                {deltaMs !== null && (
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/20 backdrop-blur-sm`}>
+                    <span>{isFaster ? "▼" : isSlower ? "▲" : "="}</span>
+                    <span>{isFaster ? "-" : isSlower ? "+" : ""}{formatDelay(Math.abs(deltaMs))}</span>
+                  </span>
+                )}
+              </div>
+              {/* Progress bar = fastCallbackRate */}
+              <div className="mt-4 h-2 bg-white/25 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-white rounded-full transition-all"
+                  style={{ width: `${Math.min(100, Math.max(0, d.fastCallbackRate))}%` }}
+                />
+              </div>
+              <p className="text-xs mt-3 font-semibold flex items-center gap-1.5 opacity-95">
+                <span>⭐</span>
+                <strong className="font-extrabold">{d.fastCallbackRate}%</strong>
+                <span>des rappels en moins de 5 min</span>
+              </p>
             </div>
           </div>
 
-          {/* Échelle des notes */}
-          <div className="mx-5 mt-4">
-            <div className="grid grid-cols-6 gap-1 items-end">
-              {NOTE_SCALE.map((n) => {
-                const active = n.letter === d.note.letter;
-                return (
-                  <div
-                    key={n.letter}
-                    className={`${n.bg} rounded flex items-center justify-center font-nunito font-black text-white transition ${
-                      active ? "h-14 shadow-lg scale-105 ring-2 ring-white" : "h-11 opacity-80"
-                    }`}
-                  >
-                    <span className={active ? "text-base" : "text-sm"}>{n.letter}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* 2 chiffres clés */}
-          <div className="mx-5 mt-4 bg-white rounded-2xl p-4 shadow-sm flex justify-around">
-            <div className="text-center">
-              <p className="text-3xl font-nunito font-extrabold text-bleu">{formatDelay(d.avgDelayMs)}</p>
-              <p className="text-[10px] text-gray-500 uppercase font-semibold">Délai moyen</p>
-            </div>
-            <div className="w-px bg-gray-200"></div>
-            <div className="text-center">
-              <p className="text-3xl font-nunito font-extrabold text-green-600">{d.fastCallbackRate}%</p>
-              <p className="text-[10px] text-gray-500 uppercase font-semibold">Rappels &lt;5 min</p>
-            </div>
+          {/* 4 tuiles de distribution */}
+          <div className="mx-5 mt-4 grid grid-cols-4 gap-2">
+            {BUCKET_KEYS_ORDER.map(({ key, cat }) => {
+              const b = d.distribution.find((x) => x.key === key);
+              const count = b?.count ?? 0;
+              const label = b?.label ?? "";
+              return (
+                <div key={key} className="bg-white rounded-xl p-3 text-center shadow-sm">
+                  <p className={`text-xl font-nunito font-extrabold ${CATEGORY_TEXT[cat]}`}>{count}</p>
+                  <p className="text-[10px] text-gray-500 font-semibold mt-0.5">{label}</p>
+                </div>
+              );
+            })}
           </div>
 
           {/* Évolution vs période précédente */}
           {d.previousPeriod && deltaMs !== null && period !== "custom" && (
-            <div className={`mx-5 mt-3 border rounded-xl p-3 flex items-center gap-3 ${
+            <div className={`mx-5 mt-4 border rounded-xl p-3 flex items-center gap-3 ${
               isFaster ? "bg-green-50 border-green-200" : isSlower ? "bg-red-50 border-red-200" : "bg-gray-50 border-gray-200"
             }`}>
               <span className={`text-2xl ${isFaster ? "text-green-600" : isSlower ? "text-red-600" : "text-gray-400"}`}>
@@ -345,12 +361,7 @@ export default function StatsDelaiRappelPage() {
                 </p>
                 <p className={`text-[11px] mt-0.5 ${isFaster ? "text-green-700" : isSlower ? "text-red-700" : "text-gray-600"}`}>
                   <strong>{isFaster ? "-" : "+"}{formatDelay(Math.abs(deltaMs))}</strong>
-                  {" · note "}
-                  {d.note.letter !== d.previousPeriod.note.letter ? (
-                    <><span className="line-through opacity-60">{d.previousPeriod.note.letter}</span> → <strong>{d.note.letter}</strong></>
-                  ) : (
-                    <strong>{d.note.letter}</strong>
-                  )}
+                  {" "}({formatDelay(d.previousPeriod.avgDelayMs)} → <strong>{formatDelay(d.avgDelayMs)}</strong>)
                 </p>
               </div>
             </div>
@@ -361,19 +372,18 @@ export default function StatsDelaiRappelPage() {
             <p className="text-xs uppercase text-gray-500 font-semibold mb-2">
               {expanded
                 ? `${d.recentCallbacks.length} derniers rappels`
-                : `${Math.min(7, d.recentCallbacks.length)} derniers rappels`}
+                : `${Math.min(DEFAULT_CALLS, d.recentCallbacks.length)} derniers rappels`}
             </p>
             <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
               {callbacksToShow.map((c) => {
-                const noteL = delayToNoteLetter(c.delayMs);
-                const noteColor = noteTextColor(noteL);
+                const cat = delayCategory(c.delayMs);
                 return (
                   <Link
                     key={c.prospectId + c.answeredAt}
                     href={`/app/rappels/${c.prospectId}`}
                     className="flex items-center gap-3 p-2.5 active:bg-gray-50"
                   >
-                    <span className={`text-xs font-black ${noteColor} w-6`}>{noteL}</span>
+                    <span className={`w-2.5 h-2.5 rounded-full ${CATEGORY_DOT_BG[cat]} flex-shrink-0`} aria-hidden="true"></span>
                     <span className="text-sm font-semibold flex-1 truncate">
                       {c.name ?? c.phone}
                     </span>
@@ -390,13 +400,6 @@ export default function StatsDelaiRappelPage() {
                 Voir les {remainingCount} autre{remainingCount > 1 ? "s" : ""} rappel{remainingCount > 1 ? "s" : ""} →
               </button>
             )}
-          </div>
-
-          <div className="px-5 mt-5 mb-6">
-            <p className="text-[11px] text-gray-400 italic text-center">
-              Note calculée selon le % de rappels en moins de 5 min
-              (A+ ≥ 80%, A ≥ 60%, B ≥ 40%, C ≥ 20%, D ≥ 10%, E &lt; 10%).
-            </p>
           </div>
         </>
       )}

@@ -134,20 +134,15 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // --- Distribution des délais par tranches (9 buckets) ---
+  // --- Distribution des délais par tranches (4 buckets, mutuellement exclusifs) ---
   const MIN = 60 * 1000;
   const HOUR = 60 * MIN;
   const DAY = 24 * HOUR;
   const buckets = [
-    { key: "lt1min",    label: "< 1 min",      max: 1 * MIN },
-    { key: "1to3min",   label: "1-3 min",      max: 3 * MIN },
-    { key: "3to5min",   label: "3-5 min",      max: 5 * MIN },
-    { key: "5to10min",  label: "5-10 min",     max: 10 * MIN },
-    { key: "10to15min", label: "10-15 min",    max: 15 * MIN },
-    { key: "15to20min", label: "15-20 min",    max: 20 * MIN },
-    { key: "20minTo1h", label: "20 min - 1 h", max: 1 * HOUR },
-    { key: "1hTo24h",   label: "1 - 24 h",     max: 24 * HOUR },
-    { key: "gt24h",     label: "> 24 h",       max: Infinity },
+    { key: "lt5min",   label: "<5 min",  max: 5 * MIN },
+    { key: "lt30min",  label: "<30 min", max: 30 * MIN },
+    { key: "lt2h",     label: "<2h",     max: 2 * HOUR },
+    { key: "gte2h",    label: ">24h",    max: Infinity },
   ];
   const delayDistribution = buckets.map((b) => ({ key: b.key, label: b.label, count: 0 }));
   for (const d of allDelaysMs) {
