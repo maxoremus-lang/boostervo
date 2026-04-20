@@ -12,8 +12,8 @@ export default function StatsHubPage() {
       <div className="bg-bleu px-5 pt-6 pb-5 text-white">
         <div className="flex justify-between items-start gap-3">
           <div className="flex-1">
-            <h1 className="text-xl font-nunito font-extrabold">Mes statistiques</h1>
-            <p className="text-xs opacity-80">Choisis une vue pour commencer</p>
+            <h1 className="text-xl font-nunito font-extrabold">Vos statistiques</h1>
+            <p className="text-xs opacity-80">Choisissez une vue pour commencer</p>
           </div>
           <SearchButton />
         </div>
