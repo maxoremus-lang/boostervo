@@ -160,7 +160,7 @@ export async function GET(req: NextRequest) {
   const conversionRate = callbacksDone > 0 ? Math.round(((appointmentsCount + salesCount) / callbacksDone) * 100) : 0;
 
   // Marge récupérée (estimation simplifiée : marge moyenne × ventes)
-  const MARGE_MOYENNE_PAR_VENTE = 2500; // €
+  const MARGE_MOYENNE_PAR_VENTE = 800; // €
   const marginRecovered = salesCount * MARGE_MOYENNE_PAR_VENTE;
 
   // --- Répartition par statut (sur les prospects actifs dans la période) ---
