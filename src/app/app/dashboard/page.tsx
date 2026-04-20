@@ -52,6 +52,7 @@ export default function DashboardPage() {
   }, []);
 
   const userName = (session?.user?.name as string | undefined) ?? "…";
+  const firstName = userName.split(" ")[0];
   const prospects = data?.prospects ?? [];
 
   // Listes affichées dans le corps du dashboard (pending uniquement, les actifs à rappeler)
@@ -64,14 +65,27 @@ export default function DashboardPage() {
   const urgentCount = data?.counts.urgent ?? 0; // isUrgent=true && status=pending
   const doneCount = data?.counts.done ?? 0; // sold + not_interested
 
+  // Phrase d'orientation dynamique sous le titre d'écran
+  let orientationPhrase = "Chargement…";
+  if (!loading && !error) {
+    if (urgentCount > 0) {
+      orientationPhrase = `${urgentCount} ${urgentCount > 1 ? "rappels urgents" : "rappel urgent"} à traiter en priorité`;
+    } else if (toCallCount > 0) {
+      orientationPhrase = `${toCallCount} ${toCallCount > 1 ? "rappels à faire" : "rappel à faire"} aujourd'hui`;
+    } else {
+      orientationPhrase = "Tout est à jour, beau travail !";
+    }
+  }
+
   return (
     <div className="pb-24">
       {/* Header */}
       <div className="bg-bleu px-5 pt-6 pb-8 text-white">
-        <div className="flex justify-between items-center">
-          <div>
-            <p className="text-xs opacity-80">Bonjour,</p>
-            <h1 className="text-xl font-nunito font-extrabold">{userName}</h1>
+        <div className="flex justify-between items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs opacity-80">Bonjour {firstName} 👋</p>
+            <h1 className="text-2xl font-nunito font-extrabold mt-0.5">Tes rappels du jour</h1>
+            <p className="text-sm opacity-90 mt-1">{orientationPhrase}</p>
           </div>
           <SearchButton />
         </div>
