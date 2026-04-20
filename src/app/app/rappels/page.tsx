@@ -316,12 +316,9 @@ export default function RappelsListPage() {
         })}
       </div>
 
-      {/* Sous-filtres pour "À faire" : Tous / À recontacter / Reporté / Injoignable */}
+      {/* Sous-filtres pour "À faire" : À recontacter / Reporté / Injoignable */}
       {activeFilter === "todo" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
-          <SubFilterChip color="gray" label="Tous"
-            active={!statusExact}
-            onClick={() => { setStatusExact(null); setPeriod(null); }} />
           <SubFilterChip color="orange" label="🔔 À recontacter" count={data.byStatus.pending}
             active={statusExact === "pending"}
             onClick={() => { setStatusExact(statusExact === "pending" ? null : "pending"); setPeriod(null); }} />
@@ -334,12 +331,9 @@ export default function RappelsListPage() {
         </div>
       )}
 
-      {/* Sous-filtres pour "En cours" : Tous / RDV pris / Essai / Devis envoyé */}
+      {/* Sous-filtres pour "En cours" : RDV pris / Essai / Devis envoyé */}
       {activeFilter === "in_progress" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
-          <SubFilterChip color="gray" label="Tous"
-            active={!statusExact}
-            onClick={() => { setStatusExact(null); setPeriod(null); }} />
           <SubFilterChip color="violet" label="📅 RDV pris" count={data.byStatus.appointment}
             active={statusExact === "appointment"}
             onClick={() => { setStatusExact(statusExact === "appointment" ? null : "appointment"); setPeriod(null); }} />
@@ -352,12 +346,9 @@ export default function RappelsListPage() {
         </div>
       )}
 
-      {/* Sous-filtres pour "Traités" : Tous / Vendus / Pas intéressés */}
+      {/* Sous-filtres pour "Traités" : Vendus / Pas intéressés */}
       {activeFilter === "done" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
-          <SubFilterChip color="gray" label="Tous"
-            active={!statusExact}
-            onClick={() => { setStatusExact(null); setPeriod(null); }} />
           <SubFilterChip color="emerald" label="✅ Vendus" count={data.byStatus.sold}
             active={statusExact === "sold"}
             onClick={() => { setStatusExact(statusExact === "sold" ? null : "sold"); setPeriod(null); }} />
