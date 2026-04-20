@@ -84,8 +84,10 @@ export async function GET(req: NextRequest) {
   const result = prospects.map((p) => ({
     id: p.id,
     phone: p.phone,
-    // Qualifié = on l'a déjà eu au téléphone (≥ 1 appel décroché)
-    isKnown: p.callEvents.some((e) => e.type === "answered"),
+    // Qualifié = on l'a déjà eu au téléphone (≥ 1 appel décroché) OU la fiche a un nom
+    isKnown:
+      p.callEvents.some((e) => e.type === "answered") ||
+      !!(p.name && p.name.trim()),
     name: p.name,
     vehicleInterest: p.vehicleInterest,
     vehiclePrice: p.vehiclePrice,
