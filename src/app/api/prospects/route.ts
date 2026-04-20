@@ -84,10 +84,15 @@ export async function GET(req: NextRequest) {
   const result = prospects.map((p) => ({
     id: p.id,
     phone: p.phone,
-    // Qualifié = on l'a déjà eu au téléphone (≥ 1 appel décroché) OU la fiche a un nom
+    // Qualifié = au moins un champ de la fiche est renseigné
+    // (indépendant des événements d'appel Twilio)
     isKnown:
-      p.callEvents.some((e) => e.type === "answered") ||
-      !!(p.name && p.name.trim()),
+      !!(p.name && p.name.trim()) ||
+      !!(p.vehicleInterest && p.vehicleInterest.trim()) ||
+      p.vehiclePrice !== null ||
+      p.budget !== null ||
+      !!(p.notes && p.notes.trim()) ||
+      p.appointmentAt !== null,
     name: p.name,
     vehicleInterest: p.vehicleInterest,
     vehiclePrice: p.vehiclePrice,

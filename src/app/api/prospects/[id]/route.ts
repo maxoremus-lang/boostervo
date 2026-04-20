@@ -26,10 +26,15 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json({
     id: prospect.id,
     phone: prospect.phone,
-    // Qualifié = on l'a déjà eu au téléphone (≥ 1 appel décroché) OU la fiche a un nom
+    // Qualifié = au moins un champ de la fiche est renseigné
+    // (indépendant des événements d'appel Twilio)
     isKnown:
-      prospect.callEvents.some((e) => e.type === "answered") ||
-      !!(prospect.name && prospect.name.trim()),
+      !!(prospect.name && prospect.name.trim()) ||
+      !!(prospect.vehicleInterest && prospect.vehicleInterest.trim()) ||
+      prospect.vehiclePrice !== null ||
+      prospect.budget !== null ||
+      !!(prospect.notes && prospect.notes.trim()) ||
+      prospect.appointmentAt !== null,
     name: prospect.name,
     vehicleInterest: prospect.vehicleInterest,
     vehiclePrice: prospect.vehiclePrice,

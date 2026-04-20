@@ -19,7 +19,7 @@ export type CallEvent = {
 export type Prospect = {
   id: string;
   phone: string;               // caller phone (source de vérité)
-  isKnown: boolean;            // false = NON QUALIFIÉ, true = QUALIFIÉ (≥1 appel décroché OU nom saisi sur la fiche)
+  isKnown: boolean;            // false = NON QUALIFIÉ, true = QUALIFIÉ (au moins un champ de la fiche renseigné : nom, véhicule, prix, budget, notes ou RDV)
   name?: string;               // saisi après rappel
   vehicleInterest?: string;    // ex: "Peugeot 3008 GT 2021"
   vehiclePrice?: number;       // ex: 24990
