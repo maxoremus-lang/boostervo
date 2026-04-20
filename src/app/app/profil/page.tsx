@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import BottomNav from "../_components/BottomNav";
 import SearchButton from "../_components/SearchButton";
 import SearchBar from "../_components/SearchBar";
+import { useNotificationRinger } from "../_components/NotificationRinger";
 
 type Me = {
   id: string;
@@ -16,12 +17,18 @@ type Me = {
   role: string;
 };
 
+const SOUND_OPTIONS: { key: "cloche" | "sonnette"; label: string; description: string }[] = [
+  { key: "cloche", label: "Cloche", description: "Tintement clair" },
+  { key: "sonnette", label: "Sonnette", description: "Sonnette d'entrée" },
+];
+
 export default function ProfilPage() {
   const [me, setMe] = useState<Me | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pushEnabled, setPushEnabled] = useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+
+  const { prefs, updatePrefs, playPreview } = useNotificationRinger();
 
   useEffect(() => {
     let cancelled = false;
@@ -99,7 +106,64 @@ export default function ProfilPage() {
         <div className="bg-white rounded-2xl shadow-sm p-1">
           <p className="text-xs font-bold text-gray-500 uppercase tracking-wide px-3 pt-3">Notifications</p>
           <Toggle label="Notifications push" value={pushEnabled} onChange={setPushEnabled} />
-          <Toggle label="Son des alertes" value={soundEnabled} onChange={setSoundEnabled} />
+          <Toggle
+            label="Son des alertes"
+            value={prefs.soundEnabled}
+            onChange={(v) => updatePrefs({ soundEnabled: v })}
+          />
+
+          {/* Sélecteur de sonnerie */}
+          <div className={`px-3 pb-3 pt-1 ${prefs.soundEnabled ? "" : "opacity-40 pointer-events-none"}`}>
+            <p className="text-[11px] text-gray-500 uppercase tracking-wide font-semibold mb-2 px-1">
+              Sonnerie
+            </p>
+            <div className="space-y-2">
+              {SOUND_OPTIONS.map((opt) => {
+                const selected = prefs.notificationSound === opt.key;
+                return (
+                  <div
+                    key={opt.key}
+                    className={`flex items-center gap-2 rounded-xl border p-2 ${
+                      selected ? "border-orange bg-orange/5" : "border-gray-200 bg-white"
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => updatePrefs({ notificationSound: opt.key })}
+                      className="flex-1 flex items-center gap-3 text-left"
+                      aria-pressed={selected}
+                    >
+                      <span
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                          selected ? "border-orange" : "border-gray-300"
+                        }`}
+                      >
+                        {selected && <span className="w-2.5 h-2.5 bg-orange rounded-full" />}
+                      </span>
+                      <span className="flex-1">
+                        <span className="block text-sm font-semibold">{opt.label}</span>
+                        <span className="block text-[11px] text-gray-500">{opt.description}</span>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => playPreview(opt.key)}
+                      className="w-9 h-9 rounded-full bg-bleu/10 text-bleu flex items-center justify-center active:opacity-70"
+                      aria-label={`Écouter ${opt.label}`}
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M6 4l10 6-10 6V4z" />
+                      </svg>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-[11px] text-gray-500 mt-2 px-1">
+              La sonnerie retentit 3 fois (toutes les 10 s) à chaque nouvel appel manqué. Elle s'arrête quand vous ouvrez le rappel.
+            </p>
+          </div>
+
           <p className="text-[10px] text-gray-400 px-3 pb-3 mt-1 italic">
             Les notifications push seront activées dans une prochaine version.
           </p>

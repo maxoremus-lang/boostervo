@@ -2,6 +2,7 @@
 
 import { SessionProvider } from "next-auth/react";
 import { createContext, useContext, useState } from "react";
+import NotificationRingerProvider from "./NotificationRinger";
 
 // ============ Search Context ============
 type SearchContextValue = {
@@ -33,7 +34,9 @@ function SearchProvider({ children }: { children: React.ReactNode }) {
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <SearchProvider>{children}</SearchProvider>
+      <NotificationRingerProvider>
+        <SearchProvider>{children}</SearchProvider>
+      </NotificationRingerProvider>
     </SessionProvider>
   );
 }

@@ -17,6 +17,8 @@ model User {
   twilioNumber String?  // Numéro Twilio assigné au négociant
   forwardPhone String?  // Numéro réel où transférer les appels
   role         String   @default("negotiant") // "admin" | "negotiant"
+  notificationSound String  @default("cloche")   // "cloche" | "sonnette"
+  soundEnabled      Boolean @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

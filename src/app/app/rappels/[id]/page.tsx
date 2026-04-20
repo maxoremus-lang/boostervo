@@ -6,6 +6,7 @@ import BottomNav from "../../_components/BottomNav";
 import SearchButton from "../../_components/SearchButton";
 import SearchBar from "../../_components/SearchBar";
 import { StatusBadge, UrgentBadge, NewBadge, KnownBadge } from "../../_components/Badge";
+import { useNotificationRinger } from "../../_components/NotificationRinger";
 import type { Prospect } from "../../_lib/types";
 import { formatRelativeTime, missedCallsCount } from "../../_lib/mockData";
 
@@ -111,6 +112,12 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
   const [prospect, setProspect] = useState<Prospect | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { stopRinging } = useNotificationRinger();
+
+  // Si une sonnerie d'alerte est en cours pour ce prospect, on la coupe dès l'ouverture
+  useEffect(() => {
+    stopRinging(params.id);
+  }, [params.id, stopRinging]);
 
   // Navigation contextuelle (prev/next) depuis la liste d'origine
   const [contextQuery, setContextQuery] = useState<string>("");
