@@ -63,28 +63,68 @@ const STATUS_TO_GROUP: Record<CallbackStatus, Filter> = {
   not_interested: "done",
 };
 
-/** Chip de sous-filtre avec état actif/inactif */
+/** Palette de couleurs pour les chips de sous-filtres (inline styles pour éviter tout souci de purge Tailwind/cache SW) */
+type ChipColor = "gray" | "orange" | "blue" | "amber" | "violet" | "emerald" | "muted";
+const CHIP_PALETTE: Record<ChipColor, { inactive: React.CSSProperties; active: React.CSSProperties }> = {
+  gray: {
+    inactive: { background: "#FFFFFF", color: "#374151", border: "1px solid #D1D5DB" },
+    active:   { background: "#1F2937", color: "#FFFFFF", border: "1px solid #1F2937" },
+  },
+  orange: {
+    inactive: { background: "#FFF7ED", color: "#C2410C", border: "1px solid #FED7AA" },
+    active:   { background: "#EA580C", color: "#FFFFFF", border: "1px solid #EA580C" },
+  },
+  blue: {
+    inactive: { background: "#EFF6FF", color: "#1D4ED8", border: "1px solid #BFDBFE" },
+    active:   { background: "#2563EB", color: "#FFFFFF", border: "1px solid #2563EB" },
+  },
+  amber: {
+    inactive: { background: "#FFFBEB", color: "#92400E", border: "1px solid #FDE68A" },
+    active:   { background: "#D97706", color: "#FFFFFF", border: "1px solid #D97706" },
+  },
+  violet: {
+    inactive: { background: "#F5F3FF", color: "#6D28D9", border: "1px solid #DDD6FE" },
+    active:   { background: "#7C3AED", color: "#FFFFFF", border: "1px solid #7C3AED" },
+  },
+  emerald: {
+    inactive: { background: "#ECFDF5", color: "#065F46", border: "1px solid #A7F3D0" },
+    active:   { background: "#059669", color: "#FFFFFF", border: "1px solid #059669" },
+  },
+  muted: {
+    inactive: { background: "#F3F4F6", color: "#4B5563", border: "1px solid #E5E7EB" },
+    active:   { background: "#1F2937", color: "#FFFFFF", border: "1px solid #1F2937" },
+  },
+};
+
 function SubFilterChip({
-  label, count, active, onClick, colorClasses, activeClasses,
+  label, count, active, onClick, color,
 }: {
   label: string;
   count: number;
   active: boolean;
   onClick: () => void;
-  colorClasses: string;
-  activeClasses: string;
+  color: ChipColor;
 }) {
+  const palette = CHIP_PALETTE[color];
+  const baseStyle = active ? palette.active : palette.inactive;
   return (
     <button
       onClick={onClick}
-      style={{ WebkitTapHighlightColor: "transparent" }}
-      className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
-        active
-          ? `${activeClasses} shadow-md`
-          : `${colorClasses} hover:opacity-80`
-      }`}
+      style={{
+        ...baseStyle,
+        padding: "6px 16px",
+        borderRadius: "9999px",
+        fontSize: "12px",
+        fontWeight: 700,
+        whiteSpace: "nowrap",
+        transition: "background-color 150ms, color 150ms, border-color 150ms",
+        boxShadow: active ? "0 2px 8px rgba(0,0,0,0.18)" : "none",
+        WebkitTapHighlightColor: "transparent",
+        WebkitAppearance: "none",
+        cursor: "pointer",
+      }}
     >
-      <span className={active ? "text-white" : ""}>{label} · {count}</span>
+      {label} · {count}
     </button>
   );
 }
@@ -279,106 +319,51 @@ export default function RappelsListPage() {
       {/* Sous-filtres pour "À faire" : Tous / À recontacter / Reporté / Injoignable */}
       {activeFilter === "todo" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
-          <SubFilterChip
-            label="Tous"
-            count={counts.todo}
+          <SubFilterChip color="gray" label="Tous" count={counts.todo}
             active={!statusExact}
-            onClick={() => { setStatusExact(null); setPeriod(null); }}
-            colorClasses="bg-white text-gray-700 border border-gray-300"
-            activeClasses="bg-gray-800 text-white border-gray-800"
-          />
-          <SubFilterChip
-            label="🔔 À recontacter"
-            count={data.byStatus.pending}
+            onClick={() => { setStatusExact(null); setPeriod(null); }} />
+          <SubFilterChip color="orange" label="🔔 À recontacter" count={data.byStatus.pending}
             active={statusExact === "pending"}
-            onClick={() => { setStatusExact(statusExact === "pending" ? null : "pending"); setPeriod(null); }}
-            colorClasses="bg-orange-50 text-orange-700 border border-orange-200"
-            activeClasses="bg-orange-600 text-white border-orange-600"
-          />
-          <SubFilterChip
-            label="⏱ Reporté"
-            count={data.byStatus.postponed}
+            onClick={() => { setStatusExact(statusExact === "pending" ? null : "pending"); setPeriod(null); }} />
+          <SubFilterChip color="blue" label="⏱ Reporté" count={data.byStatus.postponed}
             active={statusExact === "postponed"}
-            onClick={() => { setStatusExact(statusExact === "postponed" ? null : "postponed"); setPeriod(null); }}
-            colorClasses="bg-blue-50 text-blue-700 border border-blue-200"
-            activeClasses="bg-blue-600 text-white border-blue-600"
-          />
-          <SubFilterChip
-            label="📵 Injoignable"
-            count={data.byStatus.unreachable}
+            onClick={() => { setStatusExact(statusExact === "postponed" ? null : "postponed"); setPeriod(null); }} />
+          <SubFilterChip color="amber" label="📵 Injoignable" count={data.byStatus.unreachable}
             active={statusExact === "unreachable"}
-            onClick={() => { setStatusExact(statusExact === "unreachable" ? null : "unreachable"); setPeriod(null); }}
-            colorClasses="bg-amber-50 text-amber-800 border border-amber-200"
-            activeClasses="bg-amber-600 text-white border-amber-600"
-          />
+            onClick={() => { setStatusExact(statusExact === "unreachable" ? null : "unreachable"); setPeriod(null); }} />
         </div>
       )}
 
       {/* Sous-filtres pour "En cours" : Tous / RDV pris / Essai / Devis envoyé */}
       {activeFilter === "in_progress" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
-          <SubFilterChip
-            label="Tous"
-            count={counts.in_progress}
+          <SubFilterChip color="gray" label="Tous" count={counts.in_progress}
             active={!statusExact}
-            onClick={() => { setStatusExact(null); setPeriod(null); }}
-            colorClasses="bg-white text-gray-700 border border-gray-300"
-            activeClasses="bg-gray-800 text-white border-gray-800"
-          />
-          <SubFilterChip
-            label="📅 RDV pris"
-            count={data.byStatus.appointment}
+            onClick={() => { setStatusExact(null); setPeriod(null); }} />
+          <SubFilterChip color="violet" label="📅 RDV pris" count={data.byStatus.appointment}
             active={statusExact === "appointment"}
-            onClick={() => { setStatusExact(statusExact === "appointment" ? null : "appointment"); setPeriod(null); }}
-            colorClasses="bg-violet-50 text-violet-700 border border-violet-200"
-            activeClasses="bg-violet-600 text-white border-violet-600"
-          />
-          <SubFilterChip
-            label="🚗 Essai"
-            count={data.byStatus.test_drive}
+            onClick={() => { setStatusExact(statusExact === "appointment" ? null : "appointment"); setPeriod(null); }} />
+          <SubFilterChip color="violet" label="🚗 Essai" count={data.byStatus.test_drive}
             active={statusExact === "test_drive"}
-            onClick={() => { setStatusExact(statusExact === "test_drive" ? null : "test_drive"); setPeriod(null); }}
-            colorClasses="bg-violet-50 text-violet-700 border border-violet-200"
-            activeClasses="bg-violet-600 text-white border-violet-600"
-          />
-          <SubFilterChip
-            label="📄 Devis envoyé"
-            count={data.byStatus.quote_sent}
+            onClick={() => { setStatusExact(statusExact === "test_drive" ? null : "test_drive"); setPeriod(null); }} />
+          <SubFilterChip color="violet" label="📄 Devis envoyé" count={data.byStatus.quote_sent}
             active={statusExact === "quote_sent"}
-            onClick={() => { setStatusExact(statusExact === "quote_sent" ? null : "quote_sent"); setPeriod(null); }}
-            colorClasses="bg-violet-50 text-violet-700 border border-violet-200"
-            activeClasses="bg-violet-600 text-white border-violet-600"
-          />
+            onClick={() => { setStatusExact(statusExact === "quote_sent" ? null : "quote_sent"); setPeriod(null); }} />
         </div>
       )}
 
       {/* Sous-filtres pour "Traités" : Tous / Vendus / Pas intéressés */}
       {activeFilter === "done" && data?.byStatus && (
         <div className="flex px-5 py-2 bg-gray-50 border-b border-gray-100 gap-2 overflow-x-auto">
-          <SubFilterChip
-            label="Tous"
-            count={counts.done}
+          <SubFilterChip color="gray" label="Tous" count={counts.done}
             active={!statusExact}
-            onClick={() => { setStatusExact(null); setPeriod(null); }}
-            colorClasses="bg-white text-gray-700 border border-gray-300"
-            activeClasses="bg-gray-800 text-white border-gray-800"
-          />
-          <SubFilterChip
-            label="✅ Vendus"
-            count={data.byStatus.sold}
+            onClick={() => { setStatusExact(null); setPeriod(null); }} />
+          <SubFilterChip color="emerald" label="✅ Vendus" count={data.byStatus.sold}
             active={statusExact === "sold"}
-            onClick={() => { setStatusExact(statusExact === "sold" ? null : "sold"); setPeriod(null); }}
-            colorClasses="bg-emerald-50 text-emerald-800 border border-emerald-200"
-            activeClasses="bg-emerald-600 text-white border-emerald-600"
-          />
-          <SubFilterChip
-            label="❌ Pas intéressés"
-            count={data.byStatus.not_interested}
+            onClick={() => { setStatusExact(statusExact === "sold" ? null : "sold"); setPeriod(null); }} />
+          <SubFilterChip color="muted" label="❌ Pas intéressés" count={data.byStatus.not_interested}
             active={statusExact === "not_interested"}
-            onClick={() => { setStatusExact(statusExact === "not_interested" ? null : "not_interested"); setPeriod(null); }}
-            colorClasses="bg-gray-100 text-gray-600 border border-gray-200"
-            activeClasses="bg-gray-800 text-white border-gray-800"
-          />
+            onClick={() => { setStatusExact(statusExact === "not_interested" ? null : "not_interested"); setPeriod(null); }} />
         </div>
       )}
 

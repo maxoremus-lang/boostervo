@@ -2,7 +2,7 @@
 // - Cache app shell pour accès hors-ligne basique
 // - À étendre avec Web Push quand le backend sera prêt
 
-const CACHE_NAME = "boostervo-rappels-v1";
+const CACHE_NAME = "boostervo-rappels-v2";
 const APP_SHELL = [
   "/app/manifest.json",
   "/app/icon-192.png",
