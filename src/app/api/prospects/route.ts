@@ -36,6 +36,17 @@ export async function GET(req: NextRequest) {
     sinceFilter = { updatedAt: { gte: since } };
   }
 
+  // Définition centrale de "urgent" :
+  //   statut = pending ET ( flag DB isUrgent OU au moins un missed call < 1h )
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+  const urgentCondition = {
+    status: "pending",
+    OR: [
+      { isUrgent: true },
+      { callEvents: { some: { type: "missed", createdAt: { gte: oneHourAgo } } } },
+    ],
+  };
+
   // Construire le filtre principal
   // NB: "todo" (À faire) exclut les urgents pour éviter le double comptage
   // avec le filtre "urgent". Les urgents sont comptés/affichés uniquement dans leur propre bloc.
@@ -44,13 +55,13 @@ export async function GET(req: NextRequest) {
     // Filtre par statut précis (prend le pas sur filter)
     baseFilter = { status: statusExact };
   } else if (filter === "urgent") {
-    baseFilter = { isUrgent: true, status: "pending" };
+    baseFilter = urgentCondition;
   } else if (filter === "todo") {
     // pending + postponed + unreachable, mais SANS les urgents
     baseFilter = {
       AND: [
         { status: { in: ["pending", "postponed", "unreachable"] } },
-        { NOT: { AND: [{ isUrgent: true }, { status: "pending" }] } },
+        { NOT: urgentCondition },
       ],
     };
   } else if (filter === "in_progress") {
@@ -99,7 +110,11 @@ export async function GET(req: NextRequest) {
     budget: p.budget,
     notes: p.notes,
     status: p.status,
-    isUrgent: p.isUrgent,
+    // Urgent dynamique : flag DB OU dernier missed < 1h (uniquement si pending)
+    isUrgent:
+      p.status === "pending" &&
+      (p.isUrgent ||
+        p.callEvents.some((e) => e.type === "missed" && e.createdAt >= oneHourAgo)),
     appointmentAt: p.appointmentAt?.toISOString() ?? null,
     lastActivityAt: p.callEvents[0]?.createdAt.toISOString() ?? p.updatedAt.toISOString(),
     callEvents: p.callEvents.map((e) => ({
@@ -114,13 +129,13 @@ export async function GET(req: NextRequest) {
   // Compteurs par groupe (filtres principaux)
   // NB: todo exclut les urgents pour éviter le double comptage
   const counts = {
-    urgent: await prisma.prospect.count({ where: { userId, isUrgent: true, status: "pending" } }),
+    urgent: await prisma.prospect.count({ where: { userId, ...urgentCondition } }),
     todo: await prisma.prospect.count({
       where: {
         userId,
         AND: [
           { status: { in: ["pending", "postponed", "unreachable"] } },
-          { NOT: { AND: [{ isUrgent: true }, { status: "pending" }] } },
+          { NOT: urgentCondition },
         ],
       },
     }),

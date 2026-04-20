@@ -23,6 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ error: "Prospect introuvable" }, { status: 404 });
   }
 
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
   return NextResponse.json({
     id: prospect.id,
     phone: prospect.phone,
@@ -41,7 +42,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     budget: prospect.budget,
     notes: prospect.notes,
     status: prospect.status,
-    isUrgent: prospect.isUrgent,
+    // Urgent dynamique : flag DB OU dernier missed < 1h (uniquement si pending)
+    isUrgent:
+      prospect.status === "pending" &&
+      (prospect.isUrgent ||
+        prospect.callEvents.some((e) => e.type === "missed" && e.createdAt >= oneHourAgo)),
     appointmentAt: prospect.appointmentAt?.toISOString() ?? null,
     postponedUntil: prospect.postponedUntil?.toISOString() ?? null,
     lastActivityAt: prospect.callEvents[0]?.createdAt.toISOString() ?? prospect.updatedAt.toISOString(),
