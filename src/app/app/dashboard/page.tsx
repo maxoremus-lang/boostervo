@@ -84,7 +84,7 @@ export default function DashboardPage() {
         <div className="flex justify-between items-start gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-xs opacity-80">Bonjour {firstName} 👋</p>
-            <h1 className="text-2xl font-nunito font-extrabold mt-0.5">Tes rappels du jour</h1>
+            <h1 className="text-2xl font-nunito font-extrabold mt-0.5">Vos rappels du jour</h1>
             <p className="text-sm opacity-90 mt-1">{orientationPhrase}</p>
           </div>
           <SearchButton />
