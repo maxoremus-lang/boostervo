@@ -298,15 +298,12 @@ export default function StatsDelaiRappelPage() {
               <div className="flex items-center justify-between">
                 <p className="text-xs uppercase font-bold opacity-90 tracking-wider">Délai moyen</p>
               </div>
-              <div className="flex items-baseline gap-3 mt-2">
+              <div className="flex items-center gap-3 mt-2 flex-wrap">
                 <p className="text-5xl font-nunito font-black leading-none">
-                  {formatDelay(d.avgDelayMs).replace(/ (min|h|s|j)/, "")}
-                </p>
-                <p className="text-xl font-nunito font-bold opacity-95">
-                  {formatDelay(d.avgDelayMs).match(/(min|h|s|j)/)?.[0] ?? ""}
+                  {formatDelay(d.avgDelayMs)}
                 </p>
                 {deltaMs !== null && (
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/20 backdrop-blur-sm`}>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/20 backdrop-blur-sm">
                     <span>{isFaster ? "▼" : isSlower ? "▲" : "="}</span>
                     <span>{isFaster ? "-" : isSlower ? "+" : ""}{formatDelay(Math.abs(deltaMs))}</span>
                   </span>
