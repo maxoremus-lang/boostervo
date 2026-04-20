@@ -204,6 +204,30 @@ function Row({ label, value }: { label: string; value: string }) {
 
 function PushToggle({ push }: { push: ReturnType<typeof usePushSubscription> }) {
   const { state, busy, error, enable, disable } = push;
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<string | null>(null);
+
+  const sendTest = async () => {
+    setTesting(true);
+    setTestResult(null);
+    try {
+      const res = await fetch("/api/push/test", { method: "POST" });
+      if (!res.ok) {
+        setTestResult("Erreur lors de l'envoi");
+        return;
+      }
+      const data = await res.json();
+      setTestResult(
+        data.delivered > 0
+          ? `Envoyé à ${data.delivered} appareil${data.delivered > 1 ? "s" : ""}`
+          : "Aucun appareil abonné",
+      );
+    } catch {
+      setTestResult("Erreur réseau");
+    } finally {
+      setTesting(false);
+    }
+  };
 
   // Rendu du switch visuel (reprend le style du Toggle)
   const Switch = ({ on, onClick, disabled }: { on: boolean; onClick: () => void; disabled?: boolean }) => (
@@ -265,6 +289,19 @@ function PushToggle({ push }: { push: ReturnType<typeof usePushSubscription> }) 
       </div>
       {helper && <p className="text-[11px] text-gray-500 mt-1.5">{helper}</p>}
       {error && <p className="text-[11px] text-red-600 mt-1.5">{error}</p>}
+      {state === "enabled" && (
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={sendTest}
+            disabled={testing}
+            className="text-[12px] font-semibold text-bleu underline underline-offset-2 disabled:opacity-50"
+          >
+            {testing ? "Envoi…" : "Envoyer un push de test"}
+          </button>
+          {testResult && <p className="text-[11px] text-gray-500 mt-1">{testResult}</p>}
+        </div>
+      )}
     </div>
   );
 }
