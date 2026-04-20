@@ -91,6 +91,16 @@ export async function GET(req: NextRequest) {
     orderBy: [{ isUrgent: "desc" }, { updatedAt: "desc" }],
   });
 
+  // Pour le filtre "urgent", trier par date du dernier missed call décroissant
+  // (le plus récent en premier). callEvents est déjà ordonné desc par createdAt.
+  if (filter === "urgent") {
+    prospects.sort((a, b) => {
+      const aLast = a.callEvents.find((e) => e.type === "missed")?.createdAt.getTime() ?? 0;
+      const bLast = b.callEvents.find((e) => e.type === "missed")?.createdAt.getTime() ?? 0;
+      return bLast - aLast;
+    });
+  }
+
   // Transformer pour le frontend
   const result = prospects.map((p) => ({
     id: p.id,
