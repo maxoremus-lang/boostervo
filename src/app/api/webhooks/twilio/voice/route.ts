@@ -39,15 +39,21 @@ export async function POST(req: NextRequest) {
 
     // TwiML : transférer vers le téléphone du négociant
     // action= reçoit DialCallStatus (no-answer, busy, completed) après la tentative
-    const actionUrl = new URL("/api/webhooks/twilio/status", "https://boostervo.fr");
+    const baseUrl = process.env.APP_URL || process.env.NEXTAUTH_URL;
+    if (!baseUrl) {
+      console.error("[Twilio Voice] APP_URL/NEXTAUTH_URL non configuré");
+      return new NextResponse("<Response><Say>Erreur de configuration serveur.</Say></Response>", {
+        status: 500,
+        headers: { "Content-Type": "text/xml" },
+      });
+    }
+    const actionUrl = new URL("/api/webhooks/twilio/status", baseUrl);
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Dial callerId="${to}" timeout="15" action="${actionUrl.toString()}" method="POST">
     ${user.forwardPhone}
   </Dial>
 </Response>`;
-
-    console.log(`[Twilio Voice] ${from} → ${to} (forwarding to ${user.forwardPhone}), SID: ${callSid}`);
 
     return new NextResponse(twiml, {
       headers: { "Content-Type": "text/xml" },

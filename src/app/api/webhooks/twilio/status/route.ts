@@ -23,12 +23,10 @@ export async function POST(req: NextRequest) {
     const duration = body.get("DialCallDuration") as string;
 
     if (!dialStatus) {
-      console.log(`[Twilio Status] SID:${callSid} ignoré (pas de DialCallStatus — statusCallback parent)`);
       return twimlResponse();
     }
 
     const callStatus = dialStatus;
-    console.log(`[Twilio Status] SID:${callSid} from:${from} to:${to} dialStatus:${dialStatus} duration:${duration}`);
 
     if (!from || !to) {
       return twimlResponse();
@@ -40,10 +38,6 @@ export async function POST(req: NextRequest) {
     const isVoicemail = callStatus === "completed" && durationSec > 0 && durationSec <= 5;
     const isMissed = ["no-answer", "busy", "failed", "canceled"].includes(callStatus) || isVoicemail;
     const isAnswered = callStatus === "completed" && !isVoicemail;
-
-    if (isVoicemail) {
-      console.log(`[Twilio Status] 📞 Voicemail detected (duration ${durationSec}s ≤ 5s) — treating as missed`);
-    }
 
     // Si ni manqué ni décroché, on ignore
     if (!isMissed && !isAnswered) {
@@ -101,8 +95,6 @@ export async function POST(req: NextRequest) {
           isUrgent: missedCount >= 2,
         },
       });
-      console.log(`[Twilio Status] ❌ MISSED CALL from ${normalizedPhone} — missed count: ${missedCount}, urgent: ${missedCount >= 2}`);
-
       // Push notification (si l'utilisateur a activé le son des alertes)
       if (user.soundEnabled !== false) {
         const title = missedCount >= 2 ? "Appel manqué urgent" : "Nouvel appel manqué";
@@ -125,7 +117,6 @@ export async function POST(req: NextRequest) {
           data: { isUrgent: false },
         });
       }
-      console.log(`[Twilio Status] ✅ ANSWERED from ${normalizedPhone} — duration: ${duration}s`);
     }
 
     return twimlResponse();
