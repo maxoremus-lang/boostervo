@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Prospect } from "../_lib/types";
 import { formatRelativeWithDate, missedCallsCount } from "../_lib/mockData";
 import { StatusBadge, UrgentBadge, NewBadge, KnownBadge } from "./Badge";
+import { useCall } from "./Providers";
 
 function PhoneIcon() {
   return (
@@ -69,6 +70,7 @@ export default function ProspectCard({
   const missed = missedCallsCount(prospect);
   const isUrgentCard = variant === "urgent" || prospect.isUrgent;
   const phoneFormatted = formatPhone(prospect.phone);
+  const { startCall } = useCall();
   // Dernier appel manqué (pour afficher heure + durée sonnerie sur toutes les cartes)
   const lastMissed = [...prospect.callEvents]
     .filter((e) => e.type === "missed")
@@ -137,12 +139,24 @@ export default function ProspectCard({
 
       {isUrgentCard && (
         <div className="flex gap-2 mt-3" onClick={(e) => e.stopPropagation()}>
-          <a
-            href={`tel:${prospect.phone.replace(/\s/g, "")}`}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              startCall({
+                prospectId: prospect.id,
+                prospectPhone: prospect.phone,
+                prospectName: prospect.name ?? null,
+                prospectVehicle: prospect.vehicleInterest ?? null,
+                prospectPrice: prospect.vehiclePrice ?? null,
+                prospectNotes: prospect.notes ?? null,
+              });
+            }}
             className="flex-1 bg-orange hover:bg-orange-dark text-white text-sm font-bold py-2 rounded-lg flex items-center justify-center gap-1.5 transition"
           >
             <PhoneIcon /> Rappeler
-          </a>
+          </button>
           <button className="px-3 bg-gray-100 text-gray-700 text-sm font-bold py-2 rounded-lg">⋯</button>
         </div>
       )}

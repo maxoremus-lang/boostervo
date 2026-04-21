@@ -7,6 +7,7 @@ import SearchButton from "../../_components/SearchButton";
 import SearchBar from "../../_components/SearchBar";
 import { StatusBadge, UrgentBadge, NewBadge, KnownBadge } from "../../_components/Badge";
 import { useNotificationRinger } from "../../_components/NotificationRinger";
+import { useCall } from "../../_components/Providers";
 import type { Prospect } from "../../_lib/types";
 import { formatRelativeTime, missedCallsCount } from "../../_lib/mockData";
 
@@ -124,6 +125,7 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { stopRinging } = useNotificationRinger();
+  const { startCall } = useCall();
 
   // Si une sonnerie d'alerte est en cours pour ce prospect, on la coupe dès l'ouverture
   useEffect(() => {
@@ -227,8 +229,15 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
     );
   }
 
-  const telHref = `tel:${prospect.phone.replace(/\s/g, "")}`;
   const missed = missedCallsCount(prospect);
+  const triggerCall = () => startCall({
+    prospectId: prospect.id,
+    prospectPhone: prospect.phone,
+    prospectName: prospect.name ?? null,
+    prospectVehicle: prospect.vehicleInterest ?? null,
+    prospectPrice: prospect.vehiclePrice ?? null,
+    prospectNotes: prospect.notes ?? null,
+  });
 
   return (
     <div className="pb-24">
@@ -310,12 +319,13 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
 
       {/* Boutons principaux */}
       <div className="px-5 -mt-3 space-y-2">
-        <a
-          href={telHref}
+        <button
+          type="button"
+          onClick={triggerCall}
           className="w-full bg-orange hover:bg-orange-dark text-white font-nunito font-extrabold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-lg transition"
         >
           <PhoneIcon /> Rappeler {prospect.isKnown ? "" : "maintenant"}
-        </a>
+        </button>
         <Link
           href={`/app/rappels/${prospect.id}/fiche`}
           className="w-full bg-white border-2 border-bleu text-bleu font-nunito font-bold py-3 rounded-2xl flex items-center justify-center gap-2"
