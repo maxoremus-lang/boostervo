@@ -13,22 +13,33 @@ function PhoneIcon() {
   );
 }
 
-/** Formatte un événement d'appel : "Aujourd'hui · 14h30", "Hier · 09h12", "12 avr. · 16h45" */
+/** Retourne "YYYY-MM-DD" en heure de Paris — sert à comparer 2 Dates sur le même jour calendaire Paris. */
+function parisDayKey(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(d);
+}
+
+/** Formatte un événement d'appel EN HEURE DE PARIS : "Aujourd'hui · 14h30", "Hier · 09h12", "12 avr. · 16h45" */
 function formatCallTime(iso: string): string {
   const d = new Date(iso);
   const now = new Date();
-  const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }).replace(":", "h");
+  const time = d
+    .toLocaleTimeString("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit", hour12: false })
+    .replace(":", "h");
 
-  const isSameDay = d.toDateString() === now.toDateString();
-  if (isSameDay) return `Aujourd'hui · ${time}`;
+  const dKey = parisDayKey(d);
+  const todayKey = parisDayKey(now);
+  if (dKey === todayKey) return `Aujourd'hui · ${time}`;
 
-  const yesterday = new Date(now);
-  yesterday.setDate(now.getDate() - 1);
-  if (d.toDateString() === yesterday.toDateString()) return `Hier · ${time}`;
+  const yesterdayKey = parisDayKey(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+  if (dKey === yesterdayKey) return `Hier · ${time}`;
 
-  const day = d.getDate();
-  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
-  return `${day} ${monthShort} · ${time}`;
+  const dayMonth = d
+    .toLocaleDateString("fr-FR", { timeZone: "Europe/Paris", day: "numeric", month: "short" })
+    .replace(".", "");
+  return `${dayMonth} · ${time}`;
 }
 
 /** Formatte un n° de tel type +33612345678 → 06 12 34 56 78 */

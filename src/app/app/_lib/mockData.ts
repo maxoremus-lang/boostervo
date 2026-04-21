@@ -212,21 +212,32 @@ export function formatRelativeTime(iso: string): string {
   return `il y a ${diffD}j`;
 }
 
-// Formatte "il y a 3j · 26 avr. 26" — relatif + date absolue
-// Pour aujourd'hui on affiche juste le relatif (sinon "il y a 45 min · 17 avr. 26" est redondant)
+/** Clé "YYYY-MM-DD" du jour Paris — sert à comparer "même jour" indépendamment de la TZ serveur. */
+function parisDayKey(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(d);
+}
+
+// Formatte "il y a 3j · 26 avr. 26" — relatif + date absolue (tout en heure de Paris)
+// Pour aujourd'hui on affiche juste le relatif.
 export function formatRelativeWithDate(iso: string): string {
   const d = new Date(iso);
   const now = new Date();
   const relative = formatRelativeTime(iso);
 
-  const isToday = d.toDateString() === now.toDateString();
-  if (isToday) return relative;
+  if (parisDayKey(d) === parisDayKey(now)) return relative;
 
-  // Format "26 avr. 26" (jour court, mois court, année à 2 chiffres)
-  const day = d.getDate();
-  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
-  const year2 = String(d.getFullYear()).slice(-2);
-  return `${relative} · ${day} ${monthShort}. ${year2}`;
+  // Format "26 avr. 26" en TZ Paris
+  const parts = new Intl.DateTimeFormat("fr-FR", {
+    timeZone: "Europe/Paris",
+    day: "numeric", month: "short", year: "2-digit",
+  }).formatToParts(d);
+  const day = parts.find(p => p.type === "day")?.value ?? "";
+  const month = (parts.find(p => p.type === "month")?.value ?? "").replace(".", "");
+  const year = parts.find(p => p.type === "year")?.value ?? "";
+  return `${relative} · ${day} ${month}. ${year}`;
 }
 
 export function missedCallsCount(p: Prospect): number {

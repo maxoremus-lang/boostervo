@@ -57,6 +57,71 @@ const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const minutesAgo = (m) => new Date(Date.now() - m * 60_000);
 
+// ==== Business hours (heures d'ouverture concessions VO, TZ Europe/Paris) ====
+const BUSINESS_START_MIN = 9 * 60 + 15;   // 09h15
+const BUSINESS_END_MIN   = 19 * 60 + 45;  // 19h45
+// 0 = dimanche, 1 = lundi, …, 6 = samedi. Dimanche exclu.
+const BUSINESS_DAYS = new Set([1, 2, 3, 4, 5, 6]);
+
+const PARIS_TIME_FMT = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Europe/Paris',
+  hour12: false,
+  hour: '2-digit',
+  minute: '2-digit',
+  weekday: 'short',
+});
+
+/** Minutes depuis minuit à Paris pour une Date donnée. */
+function parisMinutesOfDay(date) {
+  const parts = PARIS_TIME_FMT.formatToParts(date);
+  const h = parseInt(parts.find(p => p.type === 'hour').value, 10);
+  const m = parseInt(parts.find(p => p.type === 'minute').value, 10);
+  return h * 60 + m;
+}
+
+/** Jour de la semaine à Paris (0 = dim, 6 = sam). */
+function parisDayOfWeek(date) {
+  const w = PARIS_TIME_FMT.formatToParts(date).find(p => p.type === 'weekday').value;
+  const map = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  return map[w];
+}
+
+/** True si la Date tombe en heures d'ouverture concession à Paris. */
+function isBusinessTimeParis(date) {
+  if (!BUSINESS_DAYS.has(parisDayOfWeek(date))) return false;
+  const m = parisMinutesOfDay(date);
+  return m >= BUSINESS_START_MIN && m <= BUSINESS_END_MIN;
+}
+
+/**
+ * Tire une Date dans la fenêtre [minOffsetMin, maxOffsetMin] minutes avant maintenant,
+ * contrainte aux heures d'ouverture concession (lundi-samedi 9h15-19h45 Paris).
+ * Rejet par échantillonnage ; en cas d'échec (très rare), retourne null.
+ */
+function sampleBusinessDate(minOffsetMin, maxOffsetMin) {
+  for (let i = 0; i < 300; i++) {
+    const offset = rand(minOffsetMin, maxOffsetMin);
+    const d = new Date(Date.now() - offset * 60_000);
+    if (isBusinessTimeParis(d)) return d;
+  }
+  return null;
+}
+
+/**
+ * Tire une paire (missed, answered) en heures d'ouverture, avec delayMin fixé.
+ * answered dans [answeredMinAgoRange], missed = answered - delayMin.
+ */
+function samplePairedBusinessDates(answeredMinRange, delayMin) {
+  for (let i = 0; i < 300; i++) {
+    const answeredOffset = rand(answeredMinRange[0], answeredMinRange[1]);
+    const answered = new Date(Date.now() - answeredOffset * 60_000);
+    if (!isBusinessTimeParis(answered)) continue;
+    const missed = new Date(answered.getTime() - delayMin * 60_000);
+    if (isBusinessTimeParis(missed)) return { missed, answered };
+  }
+  return null;
+}
+
 function randomPhone(used) {
   const two = () => String(rand(10, 99));
   for (let i = 0; i < 50; i++) {
@@ -215,17 +280,28 @@ async function main() {
   let totalDelayMin = 0, delayObservations = 0;
 
   // === GROUPE A : Dashboard (missed only) ===
+  let skippedA = 0;
   for (const g of DASHBOARD_GROUPS) {
     for (let i = 0; i < g.count; i++) {
+      const lastMissedDate = sampleBusinessDate(g.lastMissedMinRange[0], g.lastMissedMinRange[1]);
+      if (!lastMissedDate) { skippedA++; continue; }
+
       const phone = randomPhone(usedPhones);
       // Groupe A : aucun answered → jamais qualifié (name null)
       const fiche = fillFiche(g.status, false);
-      const lastMissedMin = rand(g.lastMissedMinRange[0], g.lastMissedMinRange[1]);
 
-      const events = [{ type: "missed", createdAt: minutesAgo(lastMissedMin), ringSec: rand(12, 28) }];
+      const events = [{ type: "missed", createdAt: lastMissedDate, ringSec: rand(12, 28) }];
       if (Math.random() < g.extraMissed.proba) {
-        const o = rand(g.extraMissed.offsetMinRange[0], g.extraMissed.offsetMinRange[1]);
-        events.unshift({ type: "missed", createdAt: minutesAgo(lastMissedMin + o), ringSec: rand(12, 28) });
+        // Extra missed : une Date antérieure à lastMissedDate, elle aussi en heures d'ouverture
+        let earlier = null;
+        for (let k = 0; k < 50; k++) {
+          const o = rand(g.extraMissed.offsetMinRange[0], g.extraMissed.offsetMinRange[1]);
+          const cand = new Date(lastMissedDate.getTime() - o * 60_000);
+          if (isBusinessTimeParis(cand)) { earlier = cand; break; }
+        }
+        if (earlier) {
+          events.unshift({ type: "missed", createdAt: earlier, ringSec: rand(12, 28) });
+        }
       }
 
       await createProspectAndEvents({
@@ -236,25 +312,28 @@ async function main() {
       eventsCount += events.length;
     }
   }
+  if (skippedA > 0) console.log(`   (groupe A : ${skippedA} prospects sautés car plage hors ouverture)`);
 
   // === GROUPE B : Impact (missed + answered) ===
+  let skippedB = 0;
   for (const bucket of IMPACT_BUCKETS) {
     // On mélange le pool de statuts pour varier l'ordre d'apparition en base
     const pool = [...bucket.statusPool].sort(() => Math.random() - 0.5);
     for (let i = 0; i < bucket.count; i++) {
-      const phone = randomPhone(usedPhones);
       const status = pool[i % pool.length];
-      const fiche = fillFiche(status);
       const delayMin = rand(bucket.delayMinRange[0], bucket.delayMinRange[1]);
 
-      // Le "answered" est daté entre 1h et 20 jours dans le passé pour rester
-      // dans la fenêtre stats par défaut mais varier l'ancienneté.
-      const answeredAgoMin = rand(60, 20 * 24 * 60);
-      const missedAgoMin = answeredAgoMin + delayMin;
+      // answered entre 1h et 20 jours dans le passé, missed = answered - delayMin.
+      // Les deux doivent tomber en heures d'ouverture Paris.
+      const pair = samplePairedBusinessDates([60, 20 * 24 * 60], delayMin);
+      if (!pair) { skippedB++; continue; }
+
+      const phone = randomPhone(usedPhones);
+      const fiche = fillFiche(status);
 
       const events = [
-        { type: "missed",   createdAt: minutesAgo(missedAgoMin),   ringSec: rand(12, 28) },
-        { type: "answered", createdAt: minutesAgo(answeredAgoMin), durationSec: rand(90, 480) },
+        { type: "missed",   createdAt: pair.missed,   ringSec: rand(12, 28) },
+        { type: "answered", createdAt: pair.answered, durationSec: rand(90, 480) },
       ];
 
       const appointmentAt = status === "appointment" ? pickAppointmentDate() : null;
@@ -270,6 +349,7 @@ async function main() {
       delayObservations++;
     }
   }
+  if (skippedB > 0) console.log(`   (groupe B : ${skippedB} prospects sautés car paire hors ouverture)`);
 
   // === STATS ===
   const statuses = await prisma.prospect.groupBy({

@@ -18,16 +18,27 @@ function PhoneIcon({ className = "w-6 h-6" }: { className?: string }) {
   );
 }
 
+/** Clé "YYYY-MM-DD" du jour Paris pour comparaison TZ-safe. */
+function parisDayKey(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(d);
+}
+
 function formatDate(iso: string) {
   const d = new Date(iso);
-  const weekday = d.toLocaleDateString("fr-FR", { weekday: "short" }).replace(".", "");
-  const day = d.getDate();
-  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
-  const year2 = String(d.getFullYear()).slice(-2);
-  const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  const parts = new Intl.DateTimeFormat("fr-FR", {
+    timeZone: "Europe/Paris",
+    weekday: "short", day: "numeric", month: "short", year: "2-digit",
+    hour: "2-digit", minute: "2-digit", hour12: false,
+  }).formatToParts(d);
+  const get = (t: string) => parts.find(p => p.type === t)?.value ?? "";
+  const weekday = get("weekday").replace(".", "");
   const weekdayCap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const month = get("month").replace(".", "");
   // Ex: "Mar. 19 avr. 26 · 14:32"
-  return `${weekdayCap}. ${day} ${monthShort}. ${year2} · ${time}`;
+  return `${weekdayCap}. ${get("day")} ${month}. ${get("year")} · ${get("hour")}:${get("minute")}`;
 }
 
 /** Formatte un délai en ms en texte court et lisible : "12 min", "2 h 14", "3 j" */
@@ -82,29 +93,29 @@ function computeCallbackAnalysis(events: { id: string; at: string; type: string 
 function formatEventDate(iso: string) {
   const d = new Date(iso);
   const now = new Date();
-  const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 
-  const day = d.getDate();
-  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
-  const year2 = String(d.getFullYear()).slice(-2);
-  const dateShort = `${day} ${monthShort}. ${year2}`; // "12 avr. 26"
+  const parts = new Intl.DateTimeFormat("fr-FR", {
+    timeZone: "Europe/Paris",
+    weekday: "short", day: "numeric", month: "short", year: "2-digit",
+    hour: "2-digit", minute: "2-digit", hour12: false,
+  }).formatToParts(d);
+  const get = (t: string) => parts.find(p => p.type === t)?.value ?? "";
+  const time = `${get("hour")}:${get("minute")}`;
+  const month = get("month").replace(".", "");
+  const dateShort = `${get("day")} ${month}. ${get("year")}`;
+  const weekday = get("weekday").replace(".", "");
+  const weekdayCap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
 
-  const isSameDay = d.toDateString() === now.toDateString();
-  if (isSameDay) return `Aujourd'hui · ${time}`;
+  const dKey = parisDayKey(d);
+  const todayKey = parisDayKey(now);
+  if (dKey === todayKey) return `Aujourd'hui · ${time}`;
 
-  const yesterday = new Date(now);
-  yesterday.setDate(now.getDate() - 1);
-  if (d.toDateString() === yesterday.toDateString()) return `Hier · ${dateShort} · ${time}`;
+  const yesterdayKey = parisDayKey(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+  if (dKey === yesterdayKey) return `Hier · ${dateShort} · ${time}`;
 
   const diffDays = Math.floor((now.getTime() - d.getTime()) / (24 * 60 * 60 * 1000));
-  if (diffDays < 7) {
-    const weekday = d.toLocaleDateString("fr-FR", { weekday: "short" }).replace(".", "");
-    const weekdayCap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    // Ex: "Mer. 15 avr. 26 · 14:32"
-    return `${weekdayCap}. ${dateShort} · ${time}`;
-  }
+  if (diffDays < 7) return `${weekdayCap}. ${dateShort} · ${time}`;
 
-  // Ex: "12 avr. 26 · 14:32"
   return `${dateShort} · ${time}`;
 }
 
