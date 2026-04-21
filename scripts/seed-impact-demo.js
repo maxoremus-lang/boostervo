@@ -53,12 +53,12 @@ const BUCKETS = [
   },
   {
     label: "> 2 h",
-    count: 18,
+    count: 80,
     delayMin: () => 3 * 60 + Math.floor(Math.random() * 10 * 60), // 3-13h
     statuses: [
-      ...Array(1).fill("sold"),           // 5% ventes
-      ...Array(2).fill("appointment"),    // +11% RDV (→ 17% RDV)
-      ...Array(15).fill("not_interested"),
+      ...Array(2).fill("sold"),           // ~2% ventes
+      ...Array(3).fill("appointment"),    // ~6% RDV total
+      ...Array(75).fill("not_interested"),
     ],
   },
 ];
