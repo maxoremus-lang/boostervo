@@ -70,10 +70,11 @@ function randomPhone(used) {
   throw new Error("randomPhone: trop de collisions");
 }
 
-function fillFiche(status) {
-  // Prospects "actifs" (autre que pending non répondu) ont leur fiche remplie
-  const isFilled = status !== "pending" || Math.random() > 0.3;
-  if (!isFilled) return { name: null, vehicle: null, budget: null, notes: null };
+function fillFiche(status, hasAnswered = true) {
+  // Règle métier : la fiche n'est remplie que quand on a parlé au prospect
+  // (answered). Tant qu'on n'a eu que des missed, name = null ⇒ prospect
+  // "non qualifié" dans l'app.
+  if (!hasAnswered) return { name: null, vehicle: null, budget: null, notes: null };
 
   const vehicle = pick(VEHICLES);
   const budget = Math.random() < 0.6 ? vehicle.price + rand(-2000, 3000) : null;
@@ -217,7 +218,8 @@ async function main() {
   for (const g of DASHBOARD_GROUPS) {
     for (let i = 0; i < g.count; i++) {
       const phone = randomPhone(usedPhones);
-      const fiche = fillFiche(g.status);
+      // Groupe A : aucun answered → jamais qualifié (name null)
+      const fiche = fillFiche(g.status, false);
       const lastMissedMin = rand(g.lastMissedMinRange[0], g.lastMissedMinRange[1]);
 
       const events = [{ type: "missed", createdAt: minutesAgo(lastMissedMin), ringSec: rand(12, 28) }];
