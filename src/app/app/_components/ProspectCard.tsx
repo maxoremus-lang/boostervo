@@ -13,6 +13,24 @@ function PhoneIcon() {
   );
 }
 
+/** Formatte un événement d'appel : "Aujourd'hui · 14h30", "Hier · 09h12", "12 avr. · 16h45" */
+function formatCallTime(iso: string): string {
+  const d = new Date(iso);
+  const now = new Date();
+  const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }).replace(":", "h");
+
+  const isSameDay = d.toDateString() === now.toDateString();
+  if (isSameDay) return `Aujourd'hui · ${time}`;
+
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (d.toDateString() === yesterday.toDateString()) return `Hier · ${time}`;
+
+  const day = d.getDate();
+  const monthShort = d.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
+  return `${day} ${monthShort} · ${time}`;
+}
+
 /** Formatte un n° de tel type +33612345678 → 06 12 34 56 78 */
 function formatPhone(raw: string): string {
   const digits = raw.replace(/\D/g, "");
@@ -40,6 +58,10 @@ export default function ProspectCard({
   const missed = missedCallsCount(prospect);
   const isUrgentCard = variant === "urgent" || prospect.isUrgent;
   const phoneFormatted = formatPhone(prospect.phone);
+  // Dernier appel manqué (pour afficher heure + durée sonnerie sur toutes les cartes)
+  const lastMissed = [...prospect.callEvents]
+    .filter((e) => e.type === "missed")
+    .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())[0];
   const detailHref = contextParams
     ? `/app/rappels/${prospect.id}?${contextParams}`
     : `/app/rappels/${prospect.id}`;
@@ -72,6 +94,12 @@ export default function ProspectCard({
               ) : (
                 <p className="text-xs text-gray-500">{formatRelativeWithDate(prospect.lastActivityAt)}</p>
               )}
+              {lastMissed && (
+                <p className="text-[11px] text-gray-400 mt-0.5">
+                  {formatCallTime(lastMissed.at)}
+                  {lastMissed.ringSec ? ` · sonné ${lastMissed.ringSec}s` : ""}
+                </p>
+              )}
             </>
           ) : (
             <>
@@ -83,6 +111,12 @@ export default function ProspectCard({
               )}
               {missed <= 1 && (
                 <p className="text-xs text-gray-500">{formatRelativeWithDate(prospect.lastActivityAt)}</p>
+              )}
+              {lastMissed && (
+                <p className="text-[11px] text-gray-400 mt-0.5">
+                  {formatCallTime(lastMissed.at)}
+                  {lastMissed.ringSec ? ` · sonné ${lastMissed.ringSec}s` : ""}
+                </p>
               )}
             </>
           )}
