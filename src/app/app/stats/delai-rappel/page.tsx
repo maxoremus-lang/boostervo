@@ -61,7 +61,7 @@ function heroBgGradient(avgMs: number): string {
   const MIN = 60 * 1000;
   if (avgMs < 5 * MIN)       return "from-green-500 to-green-700";
   if (avgMs < 30 * MIN)      return "from-lime-500 to-lime-700";
-  if (avgMs < 2 * 60 * MIN)  return "from-orange-500 to-orange-dark";
+  if (avgMs < 2 * 60 * MIN)  return "from-orange to-orange-dark";
   return "from-red-500 to-red-700";
 }
 
