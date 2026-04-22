@@ -88,13 +88,23 @@ export default function CallScreen({
         device.on("error", (err: any) => {
           if (cancelled) return;
           console.error("[CallScreen] Device error", err);
+          const parts = [err?.name, err?.code, err?.message].filter(Boolean).join(" · ");
           setStatus("error");
-          setErrorMsg(err?.message || "Erreur inattendue");
+          setErrorMsg(parts || "Erreur device inattendue");
+        });
+
+        step = "H: device.register()";
+        await new Promise<void>((resolve, reject) => {
+          const onReg = () => { device.off("error", onErr); resolve(); };
+          const onErr = (err: any) => { device.off("registered", onReg); reject(err); };
+          device.once("registered", onReg);
+          device.once("error", onErr);
+          device.register().catch(reject);
         });
 
         setStatus("ready");
 
-        step = "H: device.connect()";
+        step = "I: device.connect()";
         const call = await device.connect({
           params: { To: prospectPhone, prospectId },
         });
@@ -138,11 +148,17 @@ export default function CallScreen({
           e?.name,
           e?.code,
           e?.message,
+          e?.description,
+          e?.explanation,
         ].filter(Boolean);
         let detail = parts.join(" · ");
-        if (!detail) {
-          try { detail = typeof e === "string" ? e : JSON.stringify(e); } catch { detail = String(e); }
+        if (!detail && e && typeof e === "object") {
+          try {
+            const keys = Object.getOwnPropertyNames(e);
+            detail = keys.map((k) => `${k}=${JSON.stringify((e as any)[k])}`).join("; ");
+          } catch { detail = String(e); }
         }
+        if (!detail) detail = typeof e === "string" ? e : String(e);
         setErrorMsg(`[${step}] ${detail || "erreur inconnue"}`);
       }
     })();
