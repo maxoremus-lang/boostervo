@@ -122,7 +122,16 @@ export default function CallScreen({
         if (cancelled) return;
         console.error("[CallScreen] Init error", e);
         setStatus("error");
-        setErrorMsg(e?.message || "Impossible d'initialiser l'appel");
+        const parts = [
+          e?.name,
+          e?.code,
+          e?.message,
+        ].filter(Boolean);
+        let detail = parts.join(" · ");
+        if (!detail) {
+          try { detail = typeof e === "string" ? e : JSON.stringify(e); } catch { detail = String(e); }
+        }
+        setErrorMsg(detail || "Impossible d'initialiser l'appel (erreur inconnue)");
       }
     })();
 
