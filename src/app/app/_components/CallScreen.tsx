@@ -43,6 +43,7 @@ export default function CallScreen({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [elapsedSec, setElapsedSec] = useState(0);
   const [muted, setMuted] = useState(false);
+  const [minimized, setMinimized] = useState(false);
 
   // Références stables pour éviter les re-render du SDK
   const deviceRef = useRef<any>(null);
@@ -122,6 +123,7 @@ export default function CallScreen({
           if (cancelled) return;
           answeredAtRef.current = Date.now();
           setStatus("in_progress");
+          setMinimized(true); // auto-bascule en bandeau pour libérer la fiche
           tickerRef.current = setInterval(() => {
             if (answeredAtRef.current) {
               setElapsedSec(Math.floor((Date.now() - answeredAtRef.current) / 1000));
@@ -205,12 +207,66 @@ export default function CallScreen({
     return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   })();
 
+  // Mode bandeau : appel en cours, interface minimale, fiche client visible derrière
+  if (minimized && (status === "in_progress" || status === "ringing")) {
+    return (
+      <div className="fixed bottom-0 inset-x-0 z-50 bg-bleu text-white shadow-[0_-8px_24px_rgba(0,0,0,0.25)]">
+        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+          <button
+            onClick={() => setMinimized(false)}
+            className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0"
+            aria-label="Agrandir l'appel"
+          >
+            <span className="text-lg">⤢</span>
+          </button>
+          <div className="flex-1 min-w-0">
+            <p className="font-nunito font-extrabold text-sm truncate">
+              {prospectName || prospectPhone}
+            </p>
+            <p className="text-xs opacity-80">
+              {status === "in_progress" ? formattedElapsed : "La ligne sonne…"}
+            </p>
+          </div>
+          {status === "in_progress" && (
+            <button
+              onClick={toggleMute}
+              className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                muted ? "bg-white text-bleu" : "bg-white/20 text-white"
+              }`}
+              aria-label={muted ? "Réactiver le micro" : "Couper le micro"}
+            >
+              {muted ? "🎙️" : "🔇"}
+            </button>
+          )}
+          <button
+            onClick={hangUp}
+            className="w-11 h-11 rounded-full bg-red-600 flex items-center justify-center active:bg-red-700 shrink-0"
+            aria-label="Raccrocher"
+          >
+            <svg className="w-5 h-5 text-white rotate-[135deg]" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-50 bg-bleu text-white flex flex-col">
       {/* Header */}
-      <div className="px-5 pt-6 pb-4 text-center">
+      <div className="px-5 pt-6 pb-4 text-center relative">
+        {(status === "ringing" || status === "in_progress") && (
+          <button
+            onClick={() => setMinimized(true)}
+            className="absolute right-4 top-5 w-9 h-9 rounded-full bg-white/15 flex items-center justify-center"
+            aria-label="Réduire"
+          >
+            <span className="text-lg">⤡</span>
+          </button>
+        )}
         <p className="text-xs uppercase tracking-wider opacity-80 font-bold">
-          {statusLabel[status]} <span className="opacity-60">· build v2</span>
+          {statusLabel[status]}
         </p>
         {status === "in_progress" && (
           <p className="text-2xl font-nunito font-extrabold mt-1">{formattedElapsed}</p>
