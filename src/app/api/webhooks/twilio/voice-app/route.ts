@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
     const body = await req.formData();
     const toParam = body.get("To") as string;               // numéro prospect (passé par le client)
     const prospectId = body.get("prospectId") as string;    // passé par le client
-    const identity = body.get("From") as string;            // identity du jeton = userId
+    const fromRaw = body.get("From") as string;             // Twilio envoie "client:<identity>"
+    const identity = fromRaw?.startsWith("client:") ? fromRaw.slice("client:".length) : fromRaw;
 
     if (!toParam || !identity) {
       const errTwiml = `<?xml version="1.0" encoding="UTF-8"?>
