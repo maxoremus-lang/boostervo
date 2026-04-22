@@ -118,12 +118,12 @@ export default function CallScreen({
         }
         callRef.current = call;
         setStatus("ringing");
+        setMinimized(true); // bascule direct en bandeau pour laisser la fiche visible
 
         call.on("accept", () => {
           if (cancelled) return;
           answeredAtRef.current = Date.now();
           setStatus("in_progress");
-          setMinimized(true); // auto-bascule en bandeau pour libérer la fiche
           tickerRef.current = setInterval(() => {
             if (answeredAtRef.current) {
               setElapsedSec(Math.floor((Date.now() - answeredAtRef.current) / 1000));
@@ -175,6 +175,37 @@ export default function CallScreen({
       try { deviceRef.current?.destroy?.(); } catch {}
     };
   }, [prospectId, prospectPhone, onClose]);
+
+  // Ringback audio pendant la sonnerie (tonalité européenne : 1s beep / 3s silence)
+  useEffect(() => {
+    if (status !== "ringing") return;
+    const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    let stopped = false;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const playBeep = () => {
+      if (stopped) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = 440;
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.05);
+      gain.gain.setValueAtTime(0.18, ctx.currentTime + 0.95);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 1);
+      timeoutId = setTimeout(playBeep, 4000); // 1s beep + 3s silence
+    };
+    playBeep();
+    return () => {
+      stopped = true;
+      if (timeoutId) clearTimeout(timeoutId);
+      try { ctx.close(); } catch {}
+    };
+  }, [status]);
 
   const hangUp = () => {
     try { callRef.current?.disconnect?.(); } catch {}
