@@ -54,19 +54,31 @@ export default function CallScreen({
   useEffect(() => {
     let cancelled = false;
 
+    let step = "start";
     (async () => {
       try {
-        // Récupère le token d'accès
+        step = "A: fetch /api/twilio/token";
         const res = await fetch("/api/twilio/token", { method: "POST" });
+        step = `B: token response status=${res.status}`;
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
           throw new Error(data?.error || `Token HTTP ${res.status}`);
         }
+        step = "C: parse token JSON";
         const { token } = await res.json();
         if (cancelled) return;
+        step = `D: token length=${token?.length ?? 0}`;
 
-        // Import dynamique pour éviter le SSR
+        step = "E: check mic permission";
+        try {
+          const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          micStream.getTracks().forEach((t) => t.stop());
+        } catch (micErr: any) {
+          throw new Error(`Micro refusé ou indisponible: ${micErr?.name || ""} ${micErr?.message || micErr}`);
+        }
+        step = "F: import @twilio/voice-sdk";
         const { Device } = await import("@twilio/voice-sdk");
+        step = "G: new Device()";
         const device = new Device(token, {
           codecPreferences: ["opus", "pcmu"] as any,
           logLevel: "warn" as any,
@@ -82,7 +94,7 @@ export default function CallScreen({
 
         setStatus("ready");
 
-        // Lance l'appel
+        step = "H: device.connect()";
         const call = await device.connect({
           params: { To: prospectPhone, prospectId },
         });
@@ -131,7 +143,7 @@ export default function CallScreen({
         if (!detail) {
           try { detail = typeof e === "string" ? e : JSON.stringify(e); } catch { detail = String(e); }
         }
-        setErrorMsg(detail || "Impossible d'initialiser l'appel (erreur inconnue)");
+        setErrorMsg(`[${step}] ${detail || "erreur inconnue"}`);
       }
     })();
 
