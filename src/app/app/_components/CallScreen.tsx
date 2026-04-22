@@ -179,7 +179,7 @@ export default function CallScreen({
       {/* Header */}
       <div className="px-5 pt-6 pb-4 text-center">
         <p className="text-xs uppercase tracking-wider opacity-80 font-bold">
-          {statusLabel[status]}
+          {statusLabel[status]} <span className="opacity-60">· build v2</span>
         </p>
         {status === "in_progress" && (
           <p className="text-2xl font-nunito font-extrabold mt-1">{formattedElapsed}</p>
