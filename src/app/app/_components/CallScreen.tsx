@@ -81,8 +81,11 @@ export default function CallScreen({
         step = "G: new Device()";
         const device = new Device(token, {
           codecPreferences: ["opus", "pcmu"] as any,
-          logLevel: "warn" as any,
+          logLevel: "debug" as any,
+          edge: "roaming" as any,
         });
+        console.log("[CallScreen] token length:", token?.length);
+        console.log("[CallScreen] Device created, calling register()...");
         deviceRef.current = device;
 
         device.on("error", (err: any) => {
