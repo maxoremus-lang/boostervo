@@ -53,7 +53,13 @@ export async function GET(req: NextRequest) {
   let baseFilter: any = undefined;
   if (statusExact && VALID_STATUSES.includes(statusExact)) {
     // Filtre par statut précis (prend le pas sur filter)
-    baseFilter = { status: statusExact };
+    // NB: pour "pending", on exclut les urgents — ils ont leur propre onglet
+    // et ne doivent jamais apparaître en doublon dans "À recontacter".
+    if (statusExact === "pending") {
+      baseFilter = { AND: [{ status: "pending" }, { NOT: urgentCondition }] };
+    } else {
+      baseFilter = { status: statusExact };
+    }
   } else if (filter === "urgent") {
     baseFilter = urgentCondition;
   } else if (filter === "todo") {
@@ -155,6 +161,8 @@ export async function GET(req: NextRequest) {
   };
 
   // Compteurs par statut précis (pour les sous-filtres)
+  // NB: "pending" exclut les urgents — ils sont comptés à part dans counts.urgent
+  // et ne doivent pas gonfler le chip "À recontacter" dans l'onglet "À faire".
   const statusRows = await prisma.prospect.groupBy({
     by: ["status"],
     where: { userId },
@@ -168,6 +176,9 @@ export async function GET(req: NextRequest) {
   for (const row of statusRows) {
     byStatus[row.status] = row._count._all;
   }
+  byStatus.pending = await prisma.prospect.count({
+    where: { userId, AND: [{ status: "pending" }, { NOT: urgentCondition }] },
+  });
 
   return NextResponse.json({ prospects: result, counts, byStatus });
 }

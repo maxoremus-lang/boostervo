@@ -164,6 +164,8 @@ export async function GET(req: NextRequest) {
   const marginRecovered = salesCount * MARGE_MOYENNE_PAR_VENTE;
 
   // --- Répartition par statut (sur les prospects actifs dans la période) ---
+  // NB: "pending" exclut les urgents — ils sont comptés à part (byStatus.urgent)
+  // pour rester cohérent avec le filtre "À faire" de l'app (urgents dans leur propre onglet, pas dupliqués).
   const statusWhereTime = since || until
     ? {
         updatedAt: {
@@ -172,6 +174,14 @@ export async function GET(req: NextRequest) {
         },
       }
     : {};
+  const oneHourAgoStats = new Date(Date.now() - 60 * 60 * 1000);
+  const urgentConditionStats = {
+    status: "pending",
+    OR: [
+      { isUrgent: true },
+      { callEvents: { some: { type: "missed", createdAt: { gte: oneHourAgoStats } } } },
+    ],
+  };
   const statusRows = await prisma.prospect.groupBy({
     by: ["status"],
     where: {
@@ -184,6 +194,13 @@ export async function GET(req: NextRequest) {
   for (const row of statusRows) {
     byStatus[row.status] = row._count._all;
   }
+  byStatus.pending = await prisma.prospect.count({
+    where: { userId, ...statusWhereTime, AND: [{ status: "pending" }, { NOT: urgentConditionStats }] },
+  });
+  const urgentCount = await prisma.prospect.count({
+    where: { userId, ...statusWhereTime, ...urgentConditionStats },
+  });
+  byStatus.urgent = urgentCount;
   const byStatusTotal = Object.values(byStatus).reduce((a, b) => a + b, 0);
 
   // --- Graph par jour (toujours basé sur les 7 derniers jours pour la lisibilité) ---

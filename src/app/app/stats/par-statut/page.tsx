@@ -11,7 +11,7 @@ type Period = "day" | "week" | "month" | "custom";
 
 type StatsResponse = {
   period: Period;
-  byStatus: Record<CallbackStatus, number>;
+  byStatus: Record<CallbackStatus, number> & { urgent?: number };
   byStatusTotal: number;
 };
 
@@ -217,6 +217,33 @@ export default function StatsParStatutPage() {
         <p className="text-center text-red-600 text-sm py-12">{error ?? "Aucune donnée"}</p>
       ) : (
         <>
+          {/* Bandeau "Urgents" (hors groupes — apparaissent dans leur propre onglet de l'app) */}
+          {(stats.byStatus.urgent ?? 0) > 0 && (
+            <div className="px-5 pt-5">
+              <Link
+                href={(() => {
+                  const p = new URLSearchParams();
+                  p.set("filter", "urgent");
+                  if (period === "custom") {
+                    if (customFrom) p.set("customFrom", customFrom);
+                    if (customTo) p.set("customTo", customTo);
+                  } else {
+                    p.set("period", period);
+                  }
+                  p.set("from", "stats");
+                  return `/app/rappels?${p.toString()}`;
+                })()}
+                className="flex items-center justify-between bg-red-50 border border-red-200 rounded-2xl p-3 active:opacity-70 transition"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse" />
+                  <span className="text-xs uppercase font-bold text-red-700">Urgents</span>
+                </div>
+                <span className="text-2xl font-nunito font-extrabold text-red-700">{stats.byStatus.urgent ?? 0}</span>
+              </Link>
+            </div>
+          )}
+
           {/* Vue haute : résumé par groupe */}
           <div className="px-5 pt-5">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
