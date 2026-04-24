@@ -48,28 +48,16 @@ export async function GET(req: NextRequest) {
   };
 
   // Construire le filtre principal
-  // NB: "todo" (À faire) exclut les urgents pour éviter le double comptage
-  // avec le filtre "urgent". Les urgents sont comptés/affichés uniquement dans leur propre bloc.
+  // "urgent" est un sous-ensemble de "pending" (flag de priorité, pas un statut).
+  // "todo" et statusExact=pending incluent donc les urgents : le filtre "urgent"
+  // reste disponible comme raccourci focus, mais sans exclusivité.
   let baseFilter: any = undefined;
   if (statusExact && VALID_STATUSES.includes(statusExact)) {
-    // Filtre par statut précis (prend le pas sur filter)
-    // NB: pour "pending", on exclut les urgents — ils ont leur propre onglet
-    // et ne doivent jamais apparaître en doublon dans "À recontacter".
-    if (statusExact === "pending") {
-      baseFilter = { AND: [{ status: "pending" }, { NOT: urgentCondition }] };
-    } else {
-      baseFilter = { status: statusExact };
-    }
+    baseFilter = { status: statusExact };
   } else if (filter === "urgent") {
     baseFilter = urgentCondition;
   } else if (filter === "todo") {
-    // pending + postponed + unreachable, mais SANS les urgents
-    baseFilter = {
-      AND: [
-        { status: { in: ["pending", "postponed", "unreachable"] } },
-        { NOT: urgentCondition },
-      ],
-    };
+    baseFilter = { status: { in: ["pending", "postponed", "unreachable"] } };
   } else if (filter === "in_progress") {
     baseFilter = { status: { in: ["appointment", "test_drive", "quote_sent"] } };
   } else if (filter === "done") {
@@ -143,10 +131,10 @@ export async function GET(req: NextRequest) {
     })),
   }));
 
-  // Compteurs par groupe (filtres principaux)
-  // NB: todo exclut les urgents pour éviter le double comptage.
-  // Les compteurs respectent la même période que la liste (sinceFilter) pour que
-  // les chips de sous-filtre et les onglets collent à la liste affichée.
+  // Compteurs par groupe (filtres principaux).
+  // "urgent" est un sous-ensemble de "todo" (et de byStatus.pending) : c'est un
+  // raccourci focus, pas une catégorie exclusive. La somme todo+in_progress+done
+  // = all, peu importe le nombre d'urgents.
   const periodFilter = sinceFilter ?? {};
   const counts = {
     urgent: await prisma.prospect.count({ where: { userId, ...periodFilter, ...urgentCondition } }),
@@ -154,10 +142,7 @@ export async function GET(req: NextRequest) {
       where: {
         userId,
         ...periodFilter,
-        AND: [
-          { status: { in: ["pending", "postponed", "unreachable"] } },
-          { NOT: urgentCondition },
-        ],
+        status: { in: ["pending", "postponed", "unreachable"] },
       },
     }),
     in_progress: await prisma.prospect.count({ where: { userId, ...periodFilter, status: { in: ["appointment", "test_drive", "quote_sent"] } } }),
@@ -166,7 +151,6 @@ export async function GET(req: NextRequest) {
   };
 
   // Compteurs par statut précis (pour les sous-filtres) — même période que la liste.
-  // NB: "pending" exclut les urgents — ils sont comptés à part dans counts.urgent.
   const statusRows = await prisma.prospect.groupBy({
     by: ["status"],
     where: { userId, ...periodFilter },
@@ -180,9 +164,6 @@ export async function GET(req: NextRequest) {
   for (const row of statusRows) {
     byStatus[row.status] = row._count._all;
   }
-  byStatus.pending = await prisma.prospect.count({
-    where: { userId, ...periodFilter, AND: [{ status: "pending" }, { NOT: urgentCondition }] },
-  });
 
   return NextResponse.json({ prospects: result, counts, byStatus });
 }

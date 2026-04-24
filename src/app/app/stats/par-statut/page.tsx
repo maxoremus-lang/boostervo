@@ -257,8 +257,7 @@ export default function StatsParStatutPage() {
               <div className="grid grid-cols-3 gap-3">
                 {groupSummary.map((g) => {
                   const total = g.statuses.reduce((sum, s) => sum + (stats.byStatus[s as CallbackStatus] ?? 0), 0);
-                  const totalHorsUrgents = stats.byStatusTotal - (stats.byStatus.urgent ?? 0);
-                  const pct = totalHorsUrgents > 0 ? Math.round((total / totalHorsUrgents) * 100) : 0;
+                  const pct = stats.byStatusTotal > 0 ? Math.round((total / stats.byStatusTotal) * 100) : 0;
                   const linkParams = new URLSearchParams();
                   linkParams.set("filter", g.key);
                   if (period === "custom") {
@@ -282,7 +281,7 @@ export default function StatsParStatutPage() {
                 })}
               </div>
               <p className="text-[11px] text-gray-400 text-center mt-3">
-                {stats.byStatusTotal - (stats.byStatus.urgent ?? 0)} prospect{stats.byStatusTotal - (stats.byStatus.urgent ?? 0) > 1 ? "s" : ""} au total
+                {stats.byStatusTotal} prospect{stats.byStatusTotal > 1 ? "s" : ""} au total
               </p>
             </div>
           </div>
@@ -294,8 +293,7 @@ export default function StatsParStatutPage() {
             <div className="grid grid-cols-2 gap-2">
               {statusMeta.map((s) => {
                 const count = stats.byStatus[s.key] ?? 0;
-                const totalHorsUrgents = stats.byStatusTotal - (stats.byStatus.urgent ?? 0);
-                const pct = totalHorsUrgents > 0 ? Math.round((count / totalHorsUrgents) * 100) : 0;
+                const pct = stats.byStatusTotal > 0 ? Math.round((count / stats.byStatusTotal) * 100) : 0;
                 const linkParams = new URLSearchParams();
                 linkParams.set("status", s.key);
                 if (period === "custom") {
@@ -318,7 +316,7 @@ export default function StatsParStatutPage() {
                     <div className="flex items-baseline justify-between">
                       <span className={`text-2xl font-nunito font-extrabold ${s.text}`}>{count}</span>
                       <span className={`text-[11px] font-semibold ${s.text} opacity-70`}>
-                        {totalHorsUrgents > 0 ? `${pct}%` : "—"}
+                        {stats.byStatusTotal > 0 ? `${pct}%` : "—"}
                       </span>
                     </div>
                   </Link>

@@ -248,8 +248,9 @@ export async function GET(req: NextRequest) {
     : 0;
 
   // --- Répartition par statut (sur les prospects actifs dans la période) ---
-  // NB: "pending" exclut les urgents — ils sont comptés à part (byStatus.urgent)
-  // pour rester cohérent avec le filtre "À faire" de l'app (urgents dans leur propre onglet, pas dupliqués).
+  // byStatus.pending inclut les urgents (un urgent = un pending avec flag).
+  // byStatus.urgent est fourni séparément comme indicateur d'attention,
+  // mais c'est un sous-ensemble de byStatus.pending (pas un statut à part).
   const statusWhereTime = since || until
     ? {
         updatedAt: {
@@ -278,14 +279,12 @@ export async function GET(req: NextRequest) {
   for (const row of statusRows) {
     byStatus[row.status] = row._count._all;
   }
-  byStatus.pending = await prisma.prospect.count({
-    where: { userId, ...statusWhereTime, AND: [{ status: "pending" }, { NOT: urgentConditionStats }] },
-  });
   const urgentCount = await prisma.prospect.count({
     where: { userId, ...statusWhereTime, ...urgentConditionStats },
   });
   byStatus.urgent = urgentCount;
-  const byStatusTotal = Object.values(byStatus).reduce((a, b) => a + b, 0);
+  // Total = somme des statuts réels uniquement (urgent est un sous-ensemble, ne pas double-compter).
+  const byStatusTotal = ALL_STATUSES.reduce((sum, s) => sum + (byStatus[s] ?? 0), 0);
 
   // --- Note de réactivité (basée sur le % de rappels < 5 min) ---
   function computeNote(rate: number): { letter: string; label: string; color: string } {
