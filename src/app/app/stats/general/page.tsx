@@ -322,27 +322,38 @@ export default function StatsGeneralPage() {
           </div>
 
           {/* Callout : impact de la réactivité — manque à gagner sur les rappels */}
-          {stats.potentialMarginMissed > 0 && stats.salesRateDirect > stats.salesRateRappel && (
-            <div className="px-5 mt-5">
-              <div className="bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-400 rounded-2xl p-4">
-                <p className="text-[10px] uppercase font-extrabold tracking-widest text-amber-900">⚡ Impact de la réactivité</p>
-                <p className="text-sm font-bold text-amber-900 mt-1">
-                  Décrocher dans l&apos;instant convertit{" "}
-                  <b>{Math.round((stats.salesRateDirect / Math.max(1, stats.salesRateRappel) - 1) * 100)} %</b> de plus
-                </p>
-                <p className="text-3xl font-nunito font-extrabold text-amber-900 mt-1">
-                  + {stats.potentialMarginMissed.toLocaleString("fr-FR")} €
-                </p>
-                <p className="text-[11px] text-amber-900 mt-1 leading-relaxed">
-                  Si vos {stats.callbacksDone} rappels avaient été décrochés immédiatement,
-                  vous auriez fait environ <b>{stats.displayHypoSales} ventes au lieu de {stats.salesFromRappel}</b>,
-                  soit <b>+ {stats.displayAdditionalSales} vente{stats.displayAdditionalSales > 1 ? "s" : ""}</b>.
-                  Chaque appel manqué que vous rappelez coûte en moyenne{" "}
-                  <b>{stats.marginLostPerMissed} € de marge non réalisée</b>.
-                </p>
+          {stats.potentialMarginMissed > 500 && stats.salesRateDirect > stats.salesRateRappel && (() => {
+            // Arrondis "digestes" pour rester stable entre périodes :
+            //  - ratio direct/rappel au plus proche 0.5 ("≈ 2× plus", "≈ 1,5× plus")
+            //  - manque total à la centaine
+            //  - manque par appel à la dizaine
+            const rawRatio = stats.salesRateDirect / Math.max(1, stats.salesRateRappel);
+            const roundedRatioHalf = Math.round(rawRatio * 2) / 2;
+            let ratioLabel: string;
+            if (rawRatio < 1.2) ratioLabel = "un peu plus";
+            else if (roundedRatioHalf === 1.5) ratioLabel = "1,5× plus";
+            else ratioLabel = `${roundedRatioHalf.toString().replace(".", ",")}× plus`;
+            const roundTo = (n: number, step: number) => Math.round(n / step) * step;
+            const displayTotal = roundTo(stats.potentialMarginMissed, 100);
+            const displayPerCall = roundTo(stats.marginLostPerMissed, 10);
+            return (
+              <div className="px-5 mt-5">
+                <div className="bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-400 rounded-2xl p-4">
+                  <p className="text-[10px] uppercase font-extrabold tracking-widest text-amber-900">⚡ Impact de la réactivité</p>
+                  <p className="text-sm font-bold text-amber-900 mt-2 leading-snug">
+                    Décrocher dans l&apos;instant, c&apos;est <b>{ratioLabel} de ventes</b> qu&apos;un rappel.
+                  </p>
+                  <p className="text-3xl font-nunito font-extrabold text-amber-900 mt-2">
+                    ≈ {displayTotal.toLocaleString("fr-FR")} €
+                  </p>
+                  <p className="text-[11px] text-amber-900 mt-1 leading-relaxed">
+                    Manque à gagner estimé sur cette période. Chaque appel manqué que vous rappelez coûte en moyenne{" "}
+                    <b>≈ {displayPerCall} €</b> de marge non réalisée.
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Détail : taux de conversion en vente par canal */}
           <div className="px-5 mt-5">
