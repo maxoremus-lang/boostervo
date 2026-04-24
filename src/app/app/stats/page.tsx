@@ -36,7 +36,7 @@ export default function StatsHubPage() {
             <div className="flex-1">
               <h2 className="font-nunito font-extrabold text-lg text-bleu">Statistiques générales</h2>
               <p className="text-xs text-gray-500 mt-1">
-                Marge récupérée, ventes conclues, taux de transfo, rappels faits, délai moyen, RDV pris,
+                Marge générée, ventes conclues, taux de transfo, rappels faits, délai moyen, RDV pris,
                 évolution sur 7 jours.
               </p>
             </div>

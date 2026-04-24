@@ -191,7 +191,7 @@ export async function GET(req: NextRequest) {
   const salesRateDirect = directPickupsCount > 0 ? Math.round((salesFromDirect / directPickupsCount) * 100) : 0;
   const salesRateRappel = callbacksDone > 0 ? Math.round((salesFromRappel / callbacksDone) * 100) : 0;
 
-  // Marge récupérée (estimation simplifiée : marge moyenne × ventes)
+  // Marge générée (estimation simplifiée : marge moyenne × ventes)
   const MARGE_MOYENNE_PAR_VENTE = 800; // €
   const marginRecovered = salesCount * MARGE_MOYENNE_PAR_VENTE;
 

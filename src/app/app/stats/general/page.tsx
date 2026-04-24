@@ -231,10 +231,10 @@ export default function StatsGeneralPage() {
         <p className="text-center text-red-600 text-sm py-12">{error ?? "Aucune donnée"}</p>
       ) : (
         <>
-          {/* Hero : Marge récupérée */}
+          {/* Hero : Marge générée */}
           <div className="px-5 pt-5">
             <div className="bg-gradient-to-br from-orange to-orange-dark text-white rounded-2xl p-5 shadow-lg">
-              <p className="text-xs uppercase font-bold opacity-90 tracking-wider">Marge récupérée</p>
+              <p className="text-xs uppercase font-bold opacity-90 tracking-wider">Marge générée</p>
               <p className="text-5xl font-nunito font-extrabold mt-1">
                 {stats.marginRecovered.toLocaleString("fr-FR")} <span className="text-2xl">€</span>
               </p>
@@ -256,7 +256,7 @@ export default function StatsGeneralPage() {
                 iconText="total"
                 number={stats.incomingCalls}
                 label="Appels reçus"
-                meta={`Total de prospects entrés en contact sur cette période`}
+                meta={`Total des appels entrants de prospects sur cette période`}
               />
 
               {/* Étape 2 : Décrochés immédiatement */}
@@ -336,21 +336,21 @@ export default function StatsGeneralPage() {
             </div>
           )}
 
-          {/* KPIs complémentaires (détail) */}
+          {/* Détail : taux de conversion en vente par canal */}
           <div className="px-5 mt-5">
             <h3 className="text-xs uppercase font-semibold text-gray-500 mb-2 tracking-wide">Détail</h3>
             <div className="grid grid-cols-2 gap-3">
               <KPI
-                label="RDV pris"
-                value={String(stats.appointmentsCount)}
-                color="text-violet-700"
-                subtitle={`dont ${stats.appointmentsFromDirect} direct${stats.appointmentsFromDirect > 1 ? "s" : ""} · ${stats.appointmentsFromRappel} après rappel`}
+                label="Tx rappels / ventes"
+                value={`${stats.salesRateRappel}%`}
+                color="text-orange-700"
+                subtitle={`${stats.salesFromRappel} vente${stats.salesFromRappel > 1 ? "s" : ""} / ${stats.callbacksDone} rappel${stats.callbacksDone > 1 ? "s" : ""}`}
               />
               <KPI
-                label="Taux transfo global"
-                value={`${stats.globalConversionRate}%`}
-                color="text-bleu"
-                subtitle="RDV + ventes / appels aboutis"
+                label="Tx décrochés / ventes"
+                value={`${stats.salesRateDirect}%`}
+                color="text-green-700"
+                subtitle={`${stats.salesFromDirect} vente${stats.salesFromDirect > 1 ? "s" : ""} / ${stats.directPickupsCount} décroché${stats.directPickupsCount > 1 ? "s" : ""}`}
               />
             </div>
           </div>
