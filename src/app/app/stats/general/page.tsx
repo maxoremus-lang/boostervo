@@ -22,6 +22,16 @@ type StatsResponse = {
   salesRateDirect: number;
   salesFromRappel: number;
   salesRateRappel: number;
+  incomingCalls: number;
+  prospectsWithMissed: number;
+  missedNotAnswered: number;
+  unreachableCount: number;
+  stillToCall: number;
+  appointmentsFromRappel: number;
+  appointmentsFromDirect: number;
+  marginGainedByDirect: number;
+  marginPerDirectCall: number;
+  globalConversionRate: number;
   byDay: { day: string; count: number; isToday?: boolean }[];
 };
 
@@ -133,9 +143,6 @@ export default function StatsGeneralPage() {
       : periodSubtitle[period];
 
   const maxCount = stats ? Math.max(...stats.byDay.map((d) => d.count), 1) : 1;
-  const appointmentShare = stats && stats.callbacksDone > 0
-    ? Math.round((stats.appointmentsCount / stats.callbacksDone) * 100)
-    : 0;
 
   return (
     <div className="pb-24">
@@ -237,62 +244,114 @@ export default function StatsGeneralPage() {
             </div>
           </div>
 
-          {/* 6 KPI */}
-          <div className="p-5 grid grid-cols-2 gap-3">
-            <KPI label="Ventes conclues" value={String(stats.salesCount)} color="text-green-600" />
-            <KPI label="Taux transfo" value={`${stats.conversionRate}%`} color="text-bleu" />
-            <KPI label="Rappels faits" value={String(stats.callbacksDone)} color="text-green-600" />
-            <KPI label="Taux de rappel" value={`${stats.callbackRate}%`} color="text-bleu" />
-            <KPI label="Délai moyen" value={formatDelay(stats.avgDelayMin)} color="text-orange" />
-            <KPI
-              label="RDV pris"
-              value={String(stats.appointmentsCount)}
-              color="text-bleu"
-              subtitle={stats.callbacksDone > 0 ? `${appointmentShare}% des rappels` : ""}
-            />
+          {/* Parcours des appels entrants — entonnoir narratif */}
+          <div className="px-5 mt-5">
+            <h3 className="text-xs uppercase font-semibold text-gray-500 mb-2 tracking-wide">Parcours de vos appels entrants</h3>
+            <p className="text-[11px] text-gray-500 mb-3">Ce qui s&apos;est passé quand vos prospects vous ont appelé.</p>
+
+            <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">
+              {/* Étape 1 : Total reçus */}
+              <FunnelStep
+                iconBg="bg-bleu"
+                iconText="total"
+                number={stats.incomingCalls}
+                label="Appels reçus"
+                meta={`Total de prospects entrés en contact sur cette période`}
+              />
+
+              {/* Étape 2 : Décrochés immédiatement */}
+              <FunnelStep
+                iconBg="bg-green-600"
+                iconText="direct"
+                number={stats.directPickupsCount}
+                outOf={stats.incomingCalls}
+                label="Décrochés immédiatement"
+                pctBadge={{ pct: stats.incomingCalls > 0 ? Math.round((stats.directPickupsCount / stats.incomingCalls) * 100) : 0, color: "green" }}
+                barColor="bg-green-500"
+                barPct={stats.incomingCalls > 0 ? (stats.directPickupsCount / stats.incomingCalls) * 100 : 0}
+                conversion={{
+                  label: "→ convertis en vente",
+                  value: `${stats.salesFromDirect} vente${stats.salesFromDirect > 1 ? "s" : ""}`,
+                  pct: stats.salesRateDirect,
+                  pctColor: "green",
+                }}
+              />
+
+              {/* Étape 3 : Rappelés avec succès */}
+              <FunnelStep
+                iconBg="bg-orange"
+                iconText="rappel"
+                number={stats.callbacksDone}
+                outOf={stats.prospectsWithMissed}
+                outOfLabel="manqués"
+                label="Rappelés avec succès"
+                pctBadge={{ pct: stats.callbackRate, color: "orange" }}
+                barColor="bg-orange"
+                barPct={stats.incomingCalls > 0 ? (stats.callbacksDone / stats.incomingCalls) * 100 : 0}
+                conversion={{
+                  label: "→ convertis en vente",
+                  value: `${stats.salesFromRappel} vente${stats.salesFromRappel > 1 ? "s" : ""}`,
+                  pct: stats.salesRateRappel,
+                  pctColor: "orange",
+                }}
+                extraRow={{
+                  label: "Délai moyen de rappel",
+                  value: formatDelay(stats.avgDelayMin),
+                }}
+              />
+
+              {/* Étape 4 : Non encore rappelés ou injoignables */}
+              <FunnelStep
+                iconBg="bg-red-600"
+                iconText="miss"
+                number={stats.missedNotAnswered}
+                outOf={stats.prospectsWithMissed}
+                outOfLabel="manqués"
+                label="Non encore rappelés ou injoignables"
+                barColor="bg-red-500"
+                barPct={stats.incomingCalls > 0 ? (stats.missedNotAnswered / stats.incomingCalls) * 100 : 0}
+                meta={`${stats.stillToCall} en attente, ${stats.unreachableCount} injoignable${stats.unreachableCount > 1 ? "s" : ""} après plusieurs tentatives`}
+              />
+            </div>
           </div>
 
-          {/* Comparatif taux de conversion : décroché direct vs rappel après missed */}
-          <div className="px-5 mb-5">
-            <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <h3 className="font-nunito font-bold text-sm mb-1">Taux de vente par canal</h3>
-              <p className="text-[11px] text-gray-500 mb-3">Ventes conclues parmi les prospects contactés, selon l&apos;origine du contact.</p>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
-                  <p className="text-[10px] uppercase font-bold text-green-800 tracking-wide">Décroché direct</p>
-                  <p className="text-3xl font-nunito font-extrabold text-green-700 mt-1">{stats.salesRateDirect}%</p>
-                  <p className="text-[11px] text-green-900 mt-0.5">
-                    {stats.salesFromDirect} vente{stats.salesFromDirect > 1 ? "s" : ""} / {stats.directPickupsCount} appel{stats.directPickupsCount > 1 ? "s" : ""}
-                  </p>
-                </div>
-
-                <div className="bg-orange-50 border border-orange-200 rounded-xl p-3 text-center">
-                  <p className="text-[10px] uppercase font-bold text-orange-800 tracking-wide">Après rappel</p>
-                  <p className="text-3xl font-nunito font-extrabold text-orange-700 mt-1">{stats.salesRateRappel}%</p>
-                  <p className="text-[11px] text-orange-900 mt-0.5">
-                    {stats.salesFromRappel} vente{stats.salesFromRappel > 1 ? "s" : ""} / {stats.callbacksDone} rappel{stats.callbacksDone > 1 ? "s" : ""}
-                  </p>
-                </div>
+          {/* Callout : impact de la réactivité */}
+          {stats.marginGainedByDirect > 0 && stats.salesRateDirect > stats.salesRateRappel && (
+            <div className="px-5 mt-5">
+              <div className="bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-400 rounded-2xl p-4">
+                <p className="text-[10px] uppercase font-extrabold tracking-widest text-amber-900">⚡ Impact de la réactivité</p>
+                <p className="text-sm font-bold text-amber-900 mt-1">
+                  Décrocher dans l&apos;instant convertit{" "}
+                  <b>{Math.round((stats.salesRateDirect / Math.max(1, stats.salesRateRappel) - 1) * 100)} %</b> de plus
+                </p>
+                <p className="text-3xl font-nunito font-extrabold text-amber-900 mt-1">
+                  + {stats.marginGainedByDirect.toLocaleString("fr-FR")} €
+                </p>
+                <p className="text-[11px] text-amber-900 mt-1 leading-relaxed">
+                  Si vos {stats.directPickupsCount} décrochés directs étaient passés par un rappel, vous auriez fait seulement{" "}
+                  {Math.round(stats.directPickupsCount * (stats.salesRateRappel / 100))} vente{Math.round(stats.directPickupsCount * (stats.salesRateRappel / 100)) > 1 ? "s" : ""} au lieu de {stats.salesFromDirect}. Chaque appel pris en direct vaut en moyenne{" "}
+                  <b>{stats.marginPerDirectCall} € de marge supplémentaire</b>.
+                </p>
               </div>
+            </div>
+          )}
 
-              {stats.salesRateDirect > 0 && stats.salesRateRappel > 0 && (
-                <div className="mt-3 bg-blue-50 border border-blue-100 rounded-lg p-2.5">
-                  <p className="text-[11px] text-blue-900 text-center">
-                    {stats.salesRateDirect > stats.salesRateRappel ? (
-                      <>
-                        Décrocher dans l&apos;instant convertit{" "}
-                        <b>{Math.round((stats.salesRateDirect / stats.salesRateRappel - 1) * 100)}%</b> de plus qu&apos;un rappel.
-                      </>
-                    ) : (
-                      <>
-                        Vos rappels convertissent{" "}
-                        <b>{Math.round((stats.salesRateRappel / stats.salesRateDirect - 1) * 100)}%</b> de plus qu&apos;un décroché direct.
-                      </>
-                    )}
-                  </p>
-                </div>
-              )}
+          {/* KPIs complémentaires (détail) */}
+          <div className="px-5 mt-5">
+            <h3 className="text-xs uppercase font-semibold text-gray-500 mb-2 tracking-wide">Détail</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <KPI
+                label="RDV pris"
+                value={String(stats.appointmentsCount)}
+                color="text-violet-700"
+                subtitle={`dont ${stats.appointmentsFromDirect} direct${stats.appointmentsFromDirect > 1 ? "s" : ""} · ${stats.appointmentsFromRappel} après rappel`}
+              />
+              <KPI
+                label="Taux transfo global"
+                value={`${stats.globalConversionRate}%`}
+                color="text-bleu"
+                subtitle="RDV + ventes / appels aboutis"
+              />
             </div>
           </div>
 
@@ -334,10 +393,100 @@ function KPI({
   subtitle?: string;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm">
-      <p className="text-xs text-gray-500 uppercase font-semibold">{label}</p>
-      <p className={`text-3xl font-nunito font-extrabold mt-1 ${color}`}>{value}</p>
-      {subtitle && <p className="text-[11px] text-gray-500 mt-1">{subtitle}</p>}
+    <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
+      <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wide">{label}</p>
+      <p className={`text-2xl font-nunito font-extrabold mt-1 ${color}`}>{value}</p>
+      {subtitle && <p className="text-[10px] text-gray-400 mt-1">{subtitle}</p>}
+    </div>
+  );
+}
+
+function FunnelStep({
+  iconBg,
+  iconText,
+  number,
+  outOf,
+  outOfLabel,
+  label,
+  pctBadge,
+  barColor,
+  barPct,
+  meta,
+  conversion,
+  extraRow,
+}: {
+  iconBg: string;
+  iconText: "total" | "direct" | "rappel" | "miss";
+  number: number;
+  outOf?: number;
+  outOfLabel?: string;
+  label: string;
+  pctBadge?: { pct: number; color: "green" | "orange" | "red" };
+  barColor?: string;
+  barPct?: number;
+  meta?: string;
+  conversion?: { label: string; value: string; pct: number; pctColor: "green" | "orange" | "red" };
+  extraRow?: { label: string; value: string };
+}) {
+  const badgeColors: Record<"green" | "orange" | "red", string> = {
+    green: "bg-green-100 text-green-800",
+    orange: "bg-orange-100 text-orange-800",
+    red: "bg-red-100 text-red-800",
+  };
+  const icons: Record<"total" | "direct" | "rappel" | "miss", string> = {
+    total: "☎",
+    direct: "✓",
+    rappel: "⟲",
+    miss: "✗",
+  };
+  return (
+    <div className="py-3 border-b border-dashed border-gray-200 last:border-b-0 last:pb-0 first:pt-0">
+      <div className="flex items-center gap-3">
+        <div className={`${iconBg} w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-extrabold flex-shrink-0`}>
+          {icons[iconText]}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xl font-nunito font-extrabold text-gray-900">
+            {number}
+            {outOf !== undefined && (
+              <span className="text-xs text-gray-400 font-bold ml-1.5">/ {outOf}{outOfLabel ? ` ${outOfLabel}` : ""}</span>
+            )}
+          </p>
+          <p className="text-[13px] font-bold text-gray-700 flex items-center gap-2 flex-wrap">
+            {label}
+            {pctBadge && (
+              <span className={`${badgeColors[pctBadge.color]} px-2 py-0.5 rounded-full text-[11px] font-bold`}>
+                {pctBadge.pct}%
+              </span>
+            )}
+          </p>
+        </div>
+      </div>
+      {barPct !== undefined && barColor && (
+        <div className="ml-10 mt-2">
+          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <div className={`h-full ${barColor} rounded-full`} style={{ width: `${Math.min(100, Math.max(0, barPct))}%` }} />
+          </div>
+        </div>
+      )}
+      {meta && <p className="text-[11px] text-gray-500 ml-10 mt-1.5">{meta}</p>}
+      {conversion && (
+        <div className="ml-10 mt-2 flex items-center justify-between text-xs">
+          <span className="text-gray-500">{conversion.label}</span>
+          <span className="font-bold text-gray-900">
+            {conversion.value}
+            <span className={`${badgeColors[conversion.pctColor]} ml-1.5 px-2 py-0.5 rounded-full text-[11px]`}>
+              {conversion.pct}%
+            </span>
+          </span>
+        </div>
+      )}
+      {extraRow && (
+        <div className="ml-10 mt-1 flex items-center justify-between text-xs">
+          <span className="text-gray-500">{extraRow.label}</span>
+          <span className="font-bold text-gray-900">{extraRow.value}</span>
+        </div>
+      )}
     </div>
   );
 }

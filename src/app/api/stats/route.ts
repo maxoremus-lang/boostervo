@@ -195,6 +195,29 @@ export async function GET(req: NextRequest) {
   const MARGE_MOYENNE_PAR_VENTE = 800; // €
   const marginRecovered = salesCount * MARGE_MOYENNE_PAR_VENTE;
 
+  // Entonnoir "Parcours des appels entrants" :
+  //   total = prospects avec au moins une activité d'appel dans la période
+  //   = décrochés directs (inbound-answered sans missed)
+  //   + prospects avec ≥1 missed (qu'ils aient été rappelés ou non)
+  const incomingCalls = directPickupsCount + prospectsWithMissed;
+  // Prospects missed que le négociant n'a pas (encore) réussi à rappeler
+  const missedNotAnswered = prospectsWithMissed - callbacksDone;
+  // Parmi ceux-là : injoignables (plusieurs tentatives infructueuses) vs encore à faire
+  const unreachableCount = prospects.filter((p) => p.status === "unreachable").length;
+  const stillToCall = Math.max(0, missedNotAnswered - unreachableCount);
+  // RDV issus de décrochés directs (complément d'appointmentsFromRappel)
+  const appointmentsFromDirect = Math.max(0, appointmentsCount - appointmentsFromRappel);
+  // Impact de la réactivité : marge supplémentaire captée par les décrochés directs
+  // = ventes réelles des directs - ventes hypothétiques si directs avaient été traités comme rappels
+  const hypoSalesIfRappel = directPickupsCount * (salesRateRappel / 100);
+  const marginGainedByDirect = Math.max(0, Math.round((salesFromDirect - hypoSalesIfRappel) * MARGE_MOYENNE_PAR_VENTE));
+  const marginPerDirectCall = directPickupsCount > 0 ? Math.round(marginGainedByDirect / directPickupsCount) : 0;
+  // Taux de transfo global (RDV + ventes issus de tout canal, sur tous les appels aboutis)
+  const totalAnsweredProspects = callbacksDone + directPickupsCount;
+  const globalConversionRate = totalAnsweredProspects > 0
+    ? Math.round(((appointmentsCount + salesCount) / totalAnsweredProspects) * 100)
+    : 0;
+
   // --- Répartition par statut (sur les prospects actifs dans la période) ---
   // NB: "pending" exclut les urgents — ils sont comptés à part (byStatus.urgent)
   // pour rester cohérent avec le filtre "À faire" de l'app (urgents dans leur propre onglet, pas dupliqués).
@@ -425,6 +448,17 @@ export async function GET(req: NextRequest) {
     salesRateDirect,
     salesFromRappel,
     salesRateRappel,
+    // Entonnoir "Parcours des appels entrants"
+    incomingCalls,
+    prospectsWithMissed,
+    missedNotAnswered,
+    unreachableCount,
+    stillToCall,
+    appointmentsFromRappel,
+    appointmentsFromDirect,
+    marginGainedByDirect,
+    marginPerDirectCall,
+    globalConversionRate,
     byStatus,
     byStatusTotal,
     byDay,
