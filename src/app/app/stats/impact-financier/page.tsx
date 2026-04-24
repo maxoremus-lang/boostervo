@@ -184,11 +184,11 @@ export default function StatsImpactFinancierPage() {
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div>
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Date début</label>
-              <input type="date" value={customFrom} onChange={(e) => { setCustomFrom(e.target.value); setPeriod("custom"); }} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              <input type="date" onClick={(e) => e.currentTarget.showPicker?.()} value={customFrom} onChange={(e) => { setCustomFrom(e.target.value); setPeriod("custom"); }} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
             </div>
             <div>
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Date fin</label>
-              <input type="date" value={customTo} onChange={(e) => { setCustomTo(e.target.value); setPeriod("custom"); }} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              <input type="date" onClick={(e) => e.currentTarget.showPicker?.()} value={customTo} onChange={(e) => { setCustomTo(e.target.value); setPeriod("custom"); }} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm" />
             </div>
             {customActive && (
               <button onClick={() => { setCustomFrom(""); setCustomTo(""); setPeriod("month"); setShowCustomPanel(false); }} className="col-span-2 text-[11px] text-gray-500 underline text-left mt-0.5">
