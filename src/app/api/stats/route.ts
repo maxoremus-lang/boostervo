@@ -97,6 +97,11 @@ export async function GET(req: NextRequest) {
   let appointmentsFromRappel = 0;
   let salesFromRappel = 0;
 
+  // Comparaison : conversion en vente des décrochés directs vs des rappels après missed.
+  // Décroché direct = prospect avec ≥1 answered et 0 missed dans la période.
+  let directPickupsCount = 0;
+  let salesFromDirect = 0;
+
   // KPI liés aux rappels (callbacksDone, délai moyen) : uniquement prospects avec ≥1 missed
   for (const p of prospects) {
     const missed = p.callEvents.filter((e) => e.type === "missed");
@@ -145,6 +150,14 @@ export async function GET(req: NextRequest) {
       appointmentsCount++;
     }
     if (p.status === "sold") salesCount++;
+
+    // Décroché direct : ≥1 answered et 0 missed dans la période
+    const hasMissed = p.callEvents.some((e) => e.type === "missed");
+    const hasAnswered = p.callEvents.some((e) => e.type === "answered");
+    if (!hasMissed && hasAnswered) {
+      directPickupsCount++;
+      if (p.status === "sold") salesFromDirect++;
+    }
   }
 
   // --- Distribution des délais par tranches (4 buckets, mutuellement exclusifs) ---
@@ -174,6 +187,9 @@ export async function GET(req: NextRequest) {
   // Uniquement sur les prospects qui ont eu un missed puis un answered
   // (donc issu de rappel stricto sensu — les décrochés directs ne passent pas par là).
   const conversionRate = callbacksDone > 0 ? Math.round(((appointmentsFromRappel + salesFromRappel) / callbacksDone) * 100) : 0;
+  // Comparaison ventes seules : décroché direct vs rappel après missed.
+  const salesRateDirect = directPickupsCount > 0 ? Math.round((salesFromDirect / directPickupsCount) * 100) : 0;
+  const salesRateRappel = callbacksDone > 0 ? Math.round((salesFromRappel / callbacksDone) * 100) : 0;
 
   // Marge récupérée (estimation simplifiée : marge moyenne × ventes)
   const MARGE_MOYENNE_PAR_VENTE = 800; // €
@@ -403,6 +419,12 @@ export async function GET(req: NextRequest) {
     callbackRate,
     avgDelayMin,
     appointmentsCount,
+    // Comparatif ventes : décroché direct vs rappel après missed
+    directPickupsCount,
+    salesFromDirect,
+    salesRateDirect,
+    salesFromRappel,
+    salesRateRappel,
     byStatus,
     byStatusTotal,
     byDay,

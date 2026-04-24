@@ -17,6 +17,11 @@ type StatsResponse = {
   callbackRate: number;
   avgDelayMin: number;
   appointmentsCount: number;
+  directPickupsCount: number;
+  salesFromDirect: number;
+  salesRateDirect: number;
+  salesFromRappel: number;
+  salesRateRappel: number;
   byDay: { day: string; count: number; isToday?: boolean }[];
 };
 
@@ -245,6 +250,50 @@ export default function StatsGeneralPage() {
               color="text-bleu"
               subtitle={stats.callbacksDone > 0 ? `${appointmentShare}% des rappels` : ""}
             />
+          </div>
+
+          {/* Comparatif taux de conversion : décroché direct vs rappel après missed */}
+          <div className="px-5 mb-5">
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <h3 className="font-nunito font-bold text-sm mb-1">Taux de vente par canal</h3>
+              <p className="text-[11px] text-gray-500 mb-3">Ventes conclues parmi les prospects contactés, selon l'origine du contact.</p>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
+                  <p className="text-[10px] uppercase font-bold text-green-800 tracking-wide">Décroché direct</p>
+                  <p className="text-3xl font-nunito font-extrabold text-green-700 mt-1">{stats.salesRateDirect}%</p>
+                  <p className="text-[11px] text-green-900 mt-0.5">
+                    {stats.salesFromDirect} vente{stats.salesFromDirect > 1 ? "s" : ""} / {stats.directPickupsCount} appel{stats.directPickupsCount > 1 ? "s" : ""}
+                  </p>
+                </div>
+
+                <div className="bg-orange-50 border border-orange-200 rounded-xl p-3 text-center">
+                  <p className="text-[10px] uppercase font-bold text-orange-800 tracking-wide">Après rappel</p>
+                  <p className="text-3xl font-nunito font-extrabold text-orange-700 mt-1">{stats.salesRateRappel}%</p>
+                  <p className="text-[11px] text-orange-900 mt-0.5">
+                    {stats.salesFromRappel} vente{stats.salesFromRappel > 1 ? "s" : ""} / {stats.callbacksDone} rappel{stats.callbacksDone > 1 ? "s" : ""}
+                  </p>
+                </div>
+              </div>
+
+              {stats.salesRateDirect > 0 && stats.salesRateRappel > 0 && (
+                <div className="mt-3 bg-blue-50 border border-blue-100 rounded-lg p-2.5">
+                  <p className="text-[11px] text-blue-900 text-center">
+                    {stats.salesRateDirect > stats.salesRateRappel ? (
+                      <>
+                        Décrocher dans l&apos;instant convertit{" "}
+                        <b>{Math.round((stats.salesRateDirect / stats.salesRateRappel - 1) * 100)}%</b> de plus qu&apos;un rappel.
+                      </>
+                    ) : (
+                      <>
+                        Vos rappels convertissent{" "}
+                        <b>{Math.round((stats.salesRateRappel / stats.salesRateDirect - 1) * 100)}%</b> de plus qu&apos;un décroché direct.
+                      </>
+                    )}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Graph 7 jours */}
