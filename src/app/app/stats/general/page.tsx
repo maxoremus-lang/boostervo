@@ -32,6 +32,10 @@ type StatsResponse = {
   marginGainedByDirect: number;
   marginPerDirectCall: number;
   globalConversionRate: number;
+  potentialMarginMissed: number;
+  displayHypoSales: number;
+  displayAdditionalSales: number;
+  marginLostPerMissed: number;
   byDay: { day: string; count: number; isToday?: boolean }[];
 };
 
@@ -315,8 +319,8 @@ export default function StatsGeneralPage() {
             </div>
           </div>
 
-          {/* Callout : impact de la réactivité */}
-          {stats.marginGainedByDirect > 0 && stats.salesRateDirect > stats.salesRateRappel && (
+          {/* Callout : impact de la réactivité — manque à gagner sur les rappels */}
+          {stats.potentialMarginMissed > 0 && stats.salesRateDirect > stats.salesRateRappel && (
             <div className="px-5 mt-5">
               <div className="bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-400 rounded-2xl p-4">
                 <p className="text-[10px] uppercase font-extrabold tracking-widest text-amber-900">⚡ Impact de la réactivité</p>
@@ -325,12 +329,14 @@ export default function StatsGeneralPage() {
                   <b>{Math.round((stats.salesRateDirect / Math.max(1, stats.salesRateRappel) - 1) * 100)} %</b> de plus
                 </p>
                 <p className="text-3xl font-nunito font-extrabold text-amber-900 mt-1">
-                  + {stats.marginGainedByDirect.toLocaleString("fr-FR")} €
+                  + {stats.potentialMarginMissed.toLocaleString("fr-FR")} €
                 </p>
                 <p className="text-[11px] text-amber-900 mt-1 leading-relaxed">
-                  Si vos {stats.directPickupsCount} décrochés directs étaient passés par un rappel, vous auriez fait seulement{" "}
-                  {Math.round(stats.directPickupsCount * (stats.salesRateRappel / 100))} vente{Math.round(stats.directPickupsCount * (stats.salesRateRappel / 100)) > 1 ? "s" : ""} au lieu de {stats.salesFromDirect}. Chaque appel pris en direct vaut en moyenne{" "}
-                  <b>{stats.marginPerDirectCall} € de marge supplémentaire</b>.
+                  Si vos {stats.callbacksDone} rappels avaient été décrochés immédiatement,
+                  vous auriez fait environ <b>{stats.displayHypoSales} ventes au lieu de {stats.salesFromRappel}</b>,
+                  soit <b>+ {stats.displayAdditionalSales} vente{stats.displayAdditionalSales > 1 ? "s" : ""}</b>.
+                  Chaque appel manqué que vous rappelez coûte en moyenne{" "}
+                  <b>{stats.marginLostPerMissed} € de marge non réalisée</b>.
                 </p>
               </div>
             </div>

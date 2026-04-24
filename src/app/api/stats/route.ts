@@ -212,6 +212,16 @@ export async function GET(req: NextRequest) {
   const hypoSalesIfRappel = directPickupsCount * (salesRateRappel / 100);
   const marginGainedByDirect = Math.max(0, Math.round((salesFromDirect - hypoSalesIfRappel) * MARGE_MOYENNE_PAR_VENTE));
   const marginPerDirectCall = directPickupsCount > 0 ? Math.round(marginGainedByDirect / directPickupsCount) : 0;
+  // Manque à gagner : si tous les rappels effectués avaient été décrochés immédiatement (au taux direct),
+  // combien de ventes supplémentaires et combien d'€ en plus.
+  // Utilise le taux réel non arrondi pour la précision du calcul.
+  const realSalesRateDirect = directPickupsCount > 0 ? salesFromDirect / directPickupsCount : 0;
+  const hypoSalesIfAllDirect = callbacksDone * realSalesRateDirect;
+  const additionalSalesIfDirect = Math.max(0, hypoSalesIfAllDirect - salesFromRappel);
+  const potentialMarginMissed = Math.round(additionalSalesIfDirect * MARGE_MOYENNE_PAR_VENTE);
+  const displayHypoSales = Math.round(hypoSalesIfAllDirect);
+  const displayAdditionalSales = Math.round(additionalSalesIfDirect);
+  const marginLostPerMissed = callbacksDone > 0 ? Math.round(potentialMarginMissed / callbacksDone) : 0;
   // Taux de transfo global (RDV + ventes issus de tout canal, sur tous les appels aboutis)
   const totalAnsweredProspects = callbacksDone + directPickupsCount;
   const globalConversionRate = totalAnsweredProspects > 0
@@ -459,6 +469,11 @@ export async function GET(req: NextRequest) {
     marginGainedByDirect,
     marginPerDirectCall,
     globalConversionRate,
+    // Manque à gagner : potentiel si rappels avaient été décrochés directement
+    potentialMarginMissed,
+    displayHypoSales,
+    displayAdditionalSales,
+    marginLostPerMissed,
     byStatus,
     byStatusTotal,
     byDay,
