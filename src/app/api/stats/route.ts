@@ -347,7 +347,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // --- Impact financier : distribution par tranche (4 buckets) avec RDV / Ventes / Marge ---
+  // --- Impact financier : distribution par tranche (4 buckets délai + 1 canal direct) ---
   const IMPACT_BUCKETS = [
     { key: "lt5min",    label: "< 5 min",      max: 5 * MIN },
     { key: "5to30min",  label: "5 - 30 min",   max: 30 * MIN },
@@ -355,14 +355,25 @@ export async function GET(req: NextRequest) {
     { key: "gt2h",      label: "> 2 h",        max: Infinity },
   ];
   type ImpactBucket = { key: string; label: string; rappels: number; rdvs: number; ventes: number; marge: number };
-  const impactDistribution: ImpactBucket[] = IMPACT_BUCKETS.map((b) => ({
-    key: b.key, label: b.label, rappels: 0, rdvs: 0, ventes: 0, marge: 0,
-  }));
+  // Bucket "Décroché direct" en 1ère position : canal sans rappel nécessaire (délai implicite = 0).
+  // Permet d'afficher le Groupe C (inbound-answered sans missed) à côté des tranches de délai
+  // et d'aligner current.margin avec marginRecovered côté stats générales.
+  const directBucket: ImpactBucket = {
+    key: "direct",
+    label: "Décroché direct",
+    rappels: directPickupsCount,
+    rdvs: appointmentsFromDirect,
+    ventes: salesFromDirect,
+    marge: salesFromDirect * MARGE_MOYENNE_PAR_VENTE,
+  };
+  const impactDistribution: ImpactBucket[] = [
+    directBucket,
+    ...IMPACT_BUCKETS.map((b) => ({ key: b.key, label: b.label, rappels: 0, rdvs: 0, ventes: 0, marge: 0 })),
+  ];
   const QUALIFIED_RDV_STATUSES = ["appointment", "test_drive", "quote_sent"];
 
-  // Pour chaque prospect, on prend le premier délai (1ère séquence manqué→répondu)
-  // et on l'associe à une tranche. Ce prospect compte pour 1 rappel dans cette tranche.
-  // Son statut final détermine s'il compte aussi comme RDV ou vente.
+  // Pour chaque prospect ayant un rappel (1ère séquence missed → answered), on remplit
+  // le bucket de délai correspondant (offset +1 à cause du bucket direct en tête).
   for (const p of prospects) {
     const sortedAsc = [...p.callEvents].sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -376,7 +387,7 @@ export async function GET(req: NextRequest) {
           const d = ev.createdAt.getTime() - firstMissedDate.getTime();
           if (d > 0) {
             const idx = IMPACT_BUCKETS.findIndex((b) => d < b.max);
-            const i = idx === -1 ? IMPACT_BUCKETS.length - 1 : idx;
+            const i = (idx === -1 ? IMPACT_BUCKETS.length - 1 : idx) + 1; // +1 : direct est en position 0
             impactDistribution[i].rappels++;
             if (QUALIFIED_RDV_STATUSES.includes(p.status)) impactDistribution[i].rdvs++;
             if (p.status === "sold") {
@@ -391,17 +402,22 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Totaux courants : incluent maintenant les décrochés directs → alignés avec marginRecovered
   const totalImpactCallbacks = impactDistribution.reduce((s, b) => s + b.rappels, 0);
   const totalCurrentRdvs = impactDistribution.reduce((s, b) => s + b.rdvs, 0);
   const totalCurrentSales = impactDistribution.reduce((s, b) => s + b.ventes, 0);
   const totalCurrentMargin = totalCurrentSales * MARGE_MOYENNE_PAR_VENTE;
 
-  // Potentiel si tous les rappels avaient été <5min
-  const bestBucket = impactDistribution[0];
+  // Potentiel : le meilleur bucket RAPPEL (on ne peut pas "rappeler" à un délai négatif).
+  // Direct est déjà à son maximum ; on ne le fait pas évoluer dans le potentiel.
+  const rappelBuckets = impactDistribution.filter((b) => b.key !== "direct");
+  const bestBucket = rappelBuckets[0]; // <5 min par convention
   const bestRdvRate = bestBucket.rappels > 0 ? bestBucket.rdvs / bestBucket.rappels : 0;
   const bestSalesRate = bestBucket.rappels > 0 ? bestBucket.ventes / bestBucket.rappels : 0;
-  const potentialRdvs = Math.round(totalImpactCallbacks * bestRdvRate);
-  const potentialSales = Math.round(totalImpactCallbacks * bestSalesRate);
+  const rappelCallbacks = rappelBuckets.reduce((s, b) => s + b.rappels, 0);
+  // Si tous les rappels avaient été faits en <5 min (direct reste à son niveau actuel)
+  const potentialRdvs = Math.round(rappelCallbacks * bestRdvRate) + directBucket.rdvs;
+  const potentialSales = Math.round(rappelCallbacks * bestSalesRate) + directBucket.ventes;
   const potentialMargin = potentialSales * MARGE_MOYENNE_PAR_VENTE;
   const missedMargin = Math.max(0, potentialMargin - totalCurrentMargin);
 
@@ -492,6 +508,9 @@ export async function GET(req: NextRequest) {
     // Stats dédiées à l'impact financier
     impactStats: {
       totalCallbacks: totalImpactCallbacks,
+      // Sous-totaux : rappels effectués vs décrochés directs (pour textes explicatifs)
+      rappelCallbacks,
+      directPickups: directBucket.rappels,
       distribution: impactDistribution,
       current: {
         rdvs: totalCurrentRdvs,

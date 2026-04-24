@@ -20,6 +20,8 @@ type Bucket = {
 type StatsResponse = {
   impactStats: {
     totalCallbacks: number;
+    rappelCallbacks: number;
+    directPickups: number;
     distribution: Bucket[];
     current: { rdvs: number; sales: number; margin: number; rdvRate: number; salesRate: number };
     potential: { rdvs: number; sales: number; margin: number };
@@ -41,6 +43,7 @@ const periodSubtitle: Record<Exclude<Period, "custom">, string> = {
 };
 
 const BUCKET_COLORS: Record<string, { dot: string }> = {
+  direct:     { dot: "bg-emerald-500" },
   lt5min:     { dot: "bg-green-500" },
   "5to30min": { dot: "bg-lime-500" },
   "30minTo2h":{ dot: "bg-orange-500" },
@@ -201,7 +204,7 @@ export default function StatsImpactFinancierPage() {
       ) : i.totalCallbacks === 0 ? (
         <div className="px-5 py-12 text-center">
           <div className="text-4xl mb-3">💰</div>
-          <p className="font-nunito font-bold text-gray-700">Aucun rappel sur cette période</p>
+          <p className="font-nunito font-bold text-gray-700">Aucune activité d&apos;appel sur cette période</p>
           <p className="text-sm text-gray-500 mt-1">Choisissez une période plus large pour voir l&apos;impact financier.</p>
         </div>
       ) : (
@@ -214,8 +217,9 @@ export default function StatsImpactFinancierPage() {
                 <p className="text-xs uppercase font-bold opacity-90 tracking-wider">Potentiel inexploité</p>
               </div>
               <p className="text-xs opacity-90 leading-relaxed">
-                Si tous vos <strong>{i.totalCallbacks} rappels</strong> avaient été faits
-                <strong> en moins de 5 min</strong>, vous auriez plus de résultats :
+                Si tous vos <strong>{i.rappelCallbacks} rappels</strong> avaient été faits
+                <strong> en moins de 5 min</strong> (les {i.directPickups} décrochés directs étant déjà au maximum),
+                vous auriez plus de résultats :
               </p>
               <div className="mt-3 space-y-2">
                 <div className="flex items-center justify-between">
@@ -254,14 +258,14 @@ export default function StatsImpactFinancierPage() {
           {/* ======== 2 TAUX CLÉS ======== */}
           <div className="mx-5 mt-4 grid grid-cols-2 gap-2">
             <div className="bg-white rounded-xl p-3 shadow-sm">
-              <p className="text-[10px] text-gray-500 uppercase font-semibold">Rappels → RDV</p>
+              <p className="text-[10px] text-gray-500 uppercase font-semibold">Appels → RDV</p>
               <p className="text-2xl font-nunito font-extrabold text-violet-600 mt-0.5">{i.current.rdvRate}%</p>
-              <p className="text-[10px] text-gray-400">{i.current.rdvs} RDV / {i.totalCallbacks} rappels</p>
+              <p className="text-[10px] text-gray-400">{i.current.rdvs} RDV / {i.totalCallbacks} appels</p>
             </div>
             <div className="bg-white rounded-xl p-3 shadow-sm">
-              <p className="text-[10px] text-gray-500 uppercase font-semibold">Rappels → Ventes</p>
+              <p className="text-[10px] text-gray-500 uppercase font-semibold">Appels → Ventes</p>
               <p className="text-2xl font-nunito font-extrabold text-green-600 mt-0.5">{i.current.salesRate}%</p>
-              <p className="text-[10px] text-gray-400">{i.current.sales} ventes / {i.totalCallbacks} rappels</p>
+              <p className="text-[10px] text-gray-400">{i.current.sales} ventes / {i.totalCallbacks} appels</p>
             </div>
           </div>
 
@@ -270,7 +274,7 @@ export default function StatsImpactFinancierPage() {
             <p className="text-[10px] text-gray-500 uppercase font-semibold mb-2">Entonnoir commercial</p>
             <div className="space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold w-16">Rappels</span>
+                <span className="text-xs font-semibold w-16">Appels</span>
                 <div className="flex-1 h-5 bg-bleu rounded text-white text-[11px] font-bold flex items-center justify-end pr-2">
                   {i.totalCallbacks}
                 </div>
@@ -307,8 +311,8 @@ export default function StatsImpactFinancierPage() {
             <p className="text-xs uppercase font-semibold text-gray-500 mb-2">Performance par tranche</p>
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
               <div className="grid grid-cols-[1fr_32px_40px_40px_64px] gap-1.5 px-3 py-2 bg-gray-50 text-[10px] font-bold text-gray-500 uppercase">
-                <span>Tranche</span>
-                <span className="text-right">Rap.</span>
+                <span>Canal</span>
+                <span className="text-right">Vol.</span>
                 <span className="text-right text-violet-700">RDV</span>
                 <span className="text-right text-green-700">Vtes</span>
                 <span className="text-right">Marge</span>
@@ -365,16 +369,16 @@ export default function StatsImpactFinancierPage() {
 
           {/* ======== COURBE D'IMPACT ======== */}
           <div className="mx-5 mt-5">
-            <p className="text-xs uppercase font-semibold text-gray-500 mb-2">Taux de transformation par délai</p>
+            <p className="text-xs uppercase font-semibold text-gray-500 mb-2">Taux de transformation par canal</p>
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center gap-4 mb-2 text-[11px]">
                 <div className="flex items-center gap-1.5">
                   <span className="w-3 h-0.5 bg-violet-500"></span>
-                  <span className="font-semibold text-violet-700">Rappels → RDV</span>
+                  <span className="font-semibold text-violet-700">Appels → RDV</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="w-3 h-0.5 bg-green-500"></span>
-                  <span className="font-semibold text-green-700">Rappels → Ventes</span>
+                  <span className="font-semibold text-green-700">Appels → Ventes</span>
                 </div>
               </div>
               <svg viewBox="0 0 320 190" className="w-full">
@@ -388,7 +392,9 @@ export default function StatsImpactFinancierPage() {
                 <line x1="40" y1="104" x2="310" y2="104" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="2,3" />
 
                 {(() => {
-                  const xs = [80, 150, 220, 290];
+                  // 5 points alignés : direct + 4 tranches de délai
+                  const n = i.distribution.length;
+                  const xs = Array.from({ length: n }, (_, k) => 60 + k * ((290 - 60) / Math.max(1, n - 1)));
                   const rdvRates = i.distribution.map((b) =>
                     b.rappels > 0 ? Math.round((b.rdvs / b.rappels) * 100) : 0
                   );
@@ -418,7 +424,9 @@ export default function StatsImpactFinancierPage() {
                       {i.distribution.map((b, k) => (
                         <g key={`x${k}`}>
                           <text x={xs[k]} y="168" fill="#374151" fontSize="9" fontWeight="700" textAnchor="middle">{b.label}</text>
-                          <text x={xs[k]} y="180" fill="#6b7280" fontSize="8" textAnchor="middle">{b.rappels} rappel{b.rappels > 1 ? "s" : ""}</text>
+                          <text x={xs[k]} y="180" fill="#6b7280" fontSize="8" textAnchor="middle">
+                            {b.rappels} {b.key === "direct" ? "appel" : "rappel"}{b.rappels > 1 ? "s" : ""}
+                          </text>
                         </g>
                       ))}
                     </>
@@ -426,7 +434,7 @@ export default function StatsImpactFinancierPage() {
                 })()}
               </svg>
               <p className="text-[11px] text-center text-gray-600 mt-2 pt-2 border-t border-gray-100">
-                <strong>Tendance :</strong> plus le délai s&apos;allonge, plus les taux s&apos;effondrent.
+                <strong>Tendance :</strong> décrocher direct ou rappeler sous 5 min = meilleure conversion. Plus le délai s&apos;allonge, plus les taux s&apos;effondrent.
               </p>
             </div>
           </div>
