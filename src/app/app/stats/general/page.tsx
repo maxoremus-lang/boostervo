@@ -256,7 +256,7 @@ export default function StatsGeneralPage() {
           <div className="px-5 mb-5">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <h3 className="font-nunito font-bold text-sm mb-1">Taux de vente par canal</h3>
-              <p className="text-[11px] text-gray-500 mb-3">Ventes conclues parmi les prospects contactés, selon l'origine du contact.</p>
+              <p className="text-[11px] text-gray-500 mb-3">Ventes conclues parmi les prospects contactés, selon l&apos;origine du contact.</p>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
