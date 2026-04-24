@@ -93,15 +93,25 @@ export async function GET(req: NextRequest) {
   // Collecte de tous les délais de rappel (un par "round" missed → answered)
   const allDelaysMs: number[] = [];
 
+  // Pour le taux de transfo : ventes et RDV issus spécifiquement d'un rappel (= prospects missed + answered)
+  let appointmentsFromRappel = 0;
+  let salesFromRappel = 0;
+
+  // KPI liés aux rappels (callbacksDone, délai moyen) : uniquement prospects avec ≥1 missed
   for (const p of prospects) {
     const missed = p.callEvents.filter((e) => e.type === "missed");
     const answered = p.callEvents.filter((e) => e.type === "answered");
 
-    if (missed.length === 0) continue; // pas d'appel manqué dans la période = pas comptabilisé
+    if (missed.length === 0) continue; // pas d'appel manqué dans la période = pas comptabilisé côté rappels
     prospectsWithMissed++;
 
     if (answered.length > 0) {
       callbacksDone++;
+
+      if (p.status === "appointment" || p.status === "test_drive" || p.status === "quote_sent") {
+        appointmentsFromRappel++;
+      }
+      if (p.status === "sold") salesFromRappel++;
 
       // Calcul propre des délais par "round" : chaque answered termine une séquence
       // de missed qui le précèdent. Le délai = answered.at - firstMissed.at du round.
@@ -124,14 +134,17 @@ export async function GET(req: NextRequest) {
           }
         }
       }
-
-      // Taux de transfo : parmi les prospects qu'on a RAPPELÉS, combien ont abouti
-      // (on regarde leur statut actuel pour mesurer le succès du rappel)
-      if (p.status === "appointment" || p.status === "test_drive" || p.status === "quote_sent") {
-        appointmentsCount++;
-      }
-      if (p.status === "sold") salesCount++;
     }
+  }
+
+  // Ventes et RDV : comptent TOUS les prospects au bon statut, qu'ils aient eu
+  // un appel manqué ou un décroché direct (Groupe C). Sinon une vente issue
+  // d'un décroché immédiat n'apparaîtrait pas dans les stats.
+  for (const p of prospects) {
+    if (p.status === "appointment" || p.status === "test_drive" || p.status === "quote_sent") {
+      appointmentsCount++;
+    }
+    if (p.status === "sold") salesCount++;
   }
 
   // --- Distribution des délais par tranches (4 buckets, mutuellement exclusifs) ---
@@ -157,7 +170,10 @@ export async function GET(req: NextRequest) {
 
   const callbackRate = prospectsWithMissed > 0 ? Math.round((callbacksDone / prospectsWithMissed) * 100) : 0;
   const avgDelayMin = delayCount > 0 ? Math.round(totalDelayMs / delayCount / 60000) : 0;
-  const conversionRate = callbacksDone > 0 ? Math.round(((appointmentsCount + salesCount) / callbacksDone) * 100) : 0;
+  // Taux de transfo : % de rappels aboutis qui se traduisent par RDV/essai/devis/vente.
+  // Uniquement sur les prospects qui ont eu un missed puis un answered
+  // (donc issu de rappel stricto sensu — les décrochés directs ne passent pas par là).
+  const conversionRate = callbacksDone > 0 ? Math.round(((appointmentsFromRappel + salesFromRappel) / callbacksDone) * 100) : 0;
 
   // Marge récupérée (estimation simplifiée : marge moyenne × ventes)
   const MARGE_MOYENNE_PAR_VENTE = 800; // €

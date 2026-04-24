@@ -248,6 +248,29 @@ const IMPACT_BUCKETS = [
   },
 ];
 
+// ============ GROUPE C : Décroché direct (inbound-answered, sans missed préalable) ============
+// Cas réaliste : le négociant est au téléphone et décroche immédiatement un appel entrant.
+// 1 seul event (answered inbound), pas de rappel nécessaire. Le prospect est qualifié
+// pendant l'appel et son statut reflète le résultat de la conversation.
+const DIRECT_PICKUP = {
+  count: 40,
+  // Décrochés répartis sur les 30 derniers jours en heures d'ouverture.
+  answeredMinRange: [60, 30 * 24 * 60],
+  // Distribution des issues pour un décroché direct :
+  //  - 25% RDV (appointment + test_drive + quote_sent)
+  //  - 18% vente conclue
+  //  - 40% pas intéressé
+  //  - 17% reporté
+  statusPool: [
+    ...Array(10).fill("sold"),
+    ...Array(6).fill("appointment"),
+    ...Array(3).fill("test_drive"),
+    ...Array(1).fill("quote_sent"),
+    ...Array(14).fill("not_interested"),
+    ...Array(6).fill("postponed"),
+  ],
+};
+
 // ============ MAIN ============
 async function main() {
   const email = process.argv[2];
@@ -350,6 +373,31 @@ async function main() {
     }
   }
   if (skippedB > 0) console.log(`   (groupe B : ${skippedB} prospects sautés car paire hors ouverture)`);
+
+  // === GROUPE C : Décrochés directs (inbound-answered sans missed) ===
+  let skippedC = 0;
+  const poolC = [...DIRECT_PICKUP.statusPool].sort(() => Math.random() - 0.5);
+  for (let i = 0; i < DIRECT_PICKUP.count; i++) {
+    const status = poolC[i % poolC.length];
+    const answeredDate = sampleBusinessDate(DIRECT_PICKUP.answeredMinRange[0], DIRECT_PICKUP.answeredMinRange[1]);
+    if (!answeredDate) { skippedC++; continue; }
+
+    const phone = randomPhone(usedPhones);
+    const fiche = fillFiche(status);
+    const events = [
+      { type: "answered", createdAt: answeredDate, durationSec: rand(90, 480) },
+    ];
+    const appointmentAt = status === "appointment" ? pickAppointmentDate() : null;
+    const postponedUntil = status === "postponed" ? minutesAgo(-rand(1, 7) * 24 * 60) : null;
+
+    await createProspectAndEvents({
+      user, phone, fiche, status, isUrgent: false,
+      appointmentAt, postponedUntil, events,
+    });
+    created++;
+    eventsCount += events.length;
+  }
+  if (skippedC > 0) console.log(`   (groupe C : ${skippedC} prospects sautés car plage hors ouverture)`);
 
   // === STATS ===
   const statuses = await prisma.prospect.groupBy({
