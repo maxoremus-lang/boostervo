@@ -334,7 +334,9 @@ export default function StatsGeneralPage() {
             else if (roundedRatioHalf === 1.5) ratioLabel = "1,5× plus";
             else ratioLabel = `${roundedRatioHalf.toString().replace(".", ",")}× plus`;
             const roundTo = (n: number, step: number) => Math.round(n / step) * step;
-            const displayTotal = roundTo(stats.potentialMarginMissed, 100);
+            // Arrondi au millier pour que 30j et Tout affichent la même valeur
+            // (absorbent Fabien Dubois et autres fluctuations marginales).
+            const displayTotal = roundTo(stats.potentialMarginMissed, 1000);
             const displayPerCall = roundTo(stats.marginLostPerMissed, 10);
             return (
               <div className="px-5 mt-5">
