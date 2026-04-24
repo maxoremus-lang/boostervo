@@ -143,29 +143,32 @@ export async function GET(req: NextRequest) {
   }));
 
   // Compteurs par groupe (filtres principaux)
-  // NB: todo exclut les urgents pour éviter le double comptage
+  // NB: todo exclut les urgents pour éviter le double comptage.
+  // Les compteurs respectent la même période que la liste (sinceFilter) pour que
+  // les chips de sous-filtre et les onglets collent à la liste affichée.
+  const periodFilter = sinceFilter ?? {};
   const counts = {
-    urgent: await prisma.prospect.count({ where: { userId, ...urgentCondition } }),
+    urgent: await prisma.prospect.count({ where: { userId, ...periodFilter, ...urgentCondition } }),
     todo: await prisma.prospect.count({
       where: {
         userId,
+        ...periodFilter,
         AND: [
           { status: { in: ["pending", "postponed", "unreachable"] } },
           { NOT: urgentCondition },
         ],
       },
     }),
-    in_progress: await prisma.prospect.count({ where: { userId, status: { in: ["appointment", "test_drive", "quote_sent"] } } }),
-    done: await prisma.prospect.count({ where: { userId, status: { in: ["sold", "not_interested"] } } }),
-    all: await prisma.prospect.count({ where: { userId } }),
+    in_progress: await prisma.prospect.count({ where: { userId, ...periodFilter, status: { in: ["appointment", "test_drive", "quote_sent"] } } }),
+    done: await prisma.prospect.count({ where: { userId, ...periodFilter, status: { in: ["sold", "not_interested"] } } }),
+    all: await prisma.prospect.count({ where: { userId, ...periodFilter } }),
   };
 
-  // Compteurs par statut précis (pour les sous-filtres)
-  // NB: "pending" exclut les urgents — ils sont comptés à part dans counts.urgent
-  // et ne doivent pas gonfler le chip "À recontacter" dans l'onglet "À faire".
+  // Compteurs par statut précis (pour les sous-filtres) — même période que la liste.
+  // NB: "pending" exclut les urgents — ils sont comptés à part dans counts.urgent.
   const statusRows = await prisma.prospect.groupBy({
     by: ["status"],
-    where: { userId },
+    where: { userId, ...periodFilter },
     _count: { _all: true },
   });
   const byStatus: Record<string, number> = {
@@ -177,7 +180,7 @@ export async function GET(req: NextRequest) {
     byStatus[row.status] = row._count._all;
   }
   byStatus.pending = await prisma.prospect.count({
-    where: { userId, AND: [{ status: "pending" }, { NOT: urgentCondition }] },
+    where: { userId, ...periodFilter, AND: [{ status: "pending" }, { NOT: urgentCondition }] },
   });
 
   return NextResponse.json({ prospects: result, counts, byStatus });
