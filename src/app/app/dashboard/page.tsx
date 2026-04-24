@@ -59,10 +59,11 @@ export default function DashboardPage() {
   const urgents = prospects.filter((p) => p.isUrgent && p.status === "pending");
   const todos = prospects.filter((p) => !p.isUrgent && p.status === "pending");
 
-  // Chiffres des 3 cases — utilisent les counts serveur pour être cohérents
+  // Chiffres des 4 cases — utilisent les counts serveur pour être cohérents
   // avec les boutons de filtre de la page "Mes rappels"
   const toCallCount = data?.counts.todo ?? 0; // pending + postponed + unreachable
   const urgentCount = data?.counts.urgent ?? 0; // isUrgent=true && status=pending
+  const inProgressCount = data?.counts.in_progress ?? 0; // appointment + test_drive + quote_sent
   const doneCount = data?.counts.done ?? 0; // sold + not_interested
 
   // Phrase d'orientation dynamique sous le titre d'écran
@@ -95,27 +96,34 @@ export default function DashboardPage() {
 
       {/* Stats rapides — cliquables */}
       <div className="px-5 -mt-5">
-        <div className="bg-white rounded-2xl shadow-md grid grid-cols-3 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-md grid grid-cols-4 overflow-hidden">
           <Link
             href="/app/rappels?filter=urgent"
-            className="text-center p-4 border-r border-gray-100 active:bg-gray-50 transition"
+            className="text-center p-3 border-r border-gray-100 active:bg-gray-50 transition"
           >
             <div className="text-2xl font-nunito font-extrabold text-red-600">{urgentCount}</div>
-            <div className="text-[10px] text-gray-500 uppercase font-semibold">Urgents</div>
+            <div className="text-[9px] text-gray-500 uppercase font-semibold leading-tight">Urgents</div>
           </Link>
           <Link
             href="/app/rappels?filter=todo"
-            className="text-center p-4 border-r border-gray-100 active:bg-gray-50 transition"
+            className="text-center p-3 border-r border-gray-100 active:bg-gray-50 transition"
           >
             <div className="text-2xl font-nunito font-extrabold text-orange">{toCallCount}</div>
-            <div className="text-[10px] text-gray-500 uppercase font-semibold">À rappeler</div>
+            <div className="text-[9px] text-gray-500 uppercase font-semibold leading-tight">À rappeler</div>
+          </Link>
+          <Link
+            href="/app/rappels?filter=in_progress"
+            className="text-center p-3 border-r border-gray-100 active:bg-gray-50 transition"
+          >
+            <div className="text-2xl font-nunito font-extrabold text-violet-600">{inProgressCount}</div>
+            <div className="text-[9px] text-gray-500 uppercase font-semibold leading-tight">En cours</div>
           </Link>
           <Link
             href="/app/rappels?filter=done"
-            className="text-center p-4 active:bg-gray-50 transition"
+            className="text-center p-3 active:bg-gray-50 transition"
           >
             <div className="text-2xl font-nunito font-extrabold text-green-600">{doneCount}</div>
-            <div className="text-[10px] text-gray-500 uppercase font-semibold">Traités</div>
+            <div className="text-[9px] text-gray-500 uppercase font-semibold leading-tight">Traités</div>
           </Link>
         </div>
       </div>
