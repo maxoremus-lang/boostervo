@@ -227,7 +227,7 @@ export default function StatsGeneralPage() {
                 {stats.marginRecovered.toLocaleString("fr-FR")} <span className="text-2xl">€</span>
               </p>
               <p className="text-xs opacity-90 mt-2">
-                Estimation : {stats.salesCount} vente{stats.salesCount > 1 ? "s" : ""} × 2 500 € de marge moyenne
+                Estimation : {stats.salesCount} vente{stats.salesCount > 1 ? "s" : ""} × 800 € de marge moyenne
               </p>
             </div>
           </div>
