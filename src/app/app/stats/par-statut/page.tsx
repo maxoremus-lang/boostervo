@@ -58,9 +58,9 @@ const statusMeta: {
 
 // Résumés par groupe pour la vue haute
 const groupSummary = [
-  { key: "todo" as const,        label: "À faire",   statuses: ["pending", "postponed", "unreachable"],          color: "text-orange" },
-  { key: "in_progress" as const, label: "En cours",  statuses: ["appointment", "test_drive", "quote_sent"],       color: "text-violet-700" },
-  { key: "done" as const,        label: "Terminés",  statuses: ["sold", "not_interested"],                        color: "text-emerald-700" },
+  { key: "todo" as const,        label: "À faire",   statuses: ["pending", "postponed", "unreachable"],          color: "text-orange-700",   bg: "bg-orange-50" },
+  { key: "in_progress" as const, label: "En cours",  statuses: ["appointment", "test_drive", "quote_sent"],       color: "text-violet-700",   bg: "bg-violet-50" },
+  { key: "done" as const,        label: "Terminés",  statuses: ["sold", "not_interested"],                        color: "text-emerald-700",  bg: "bg-emerald-50" },
 ];
 
 export default function StatsParStatutPage() {
@@ -265,11 +265,11 @@ export default function StatsParStatutPage() {
                     <Link
                       key={g.key}
                       href={`/app/rappels?${linkParams.toString()}`}
-                      className="flex flex-col items-center gap-0.5 active:opacity-70 transition"
+                      className={`${g.bg} rounded-xl p-3 flex flex-col items-center gap-0.5 active:opacity-70 transition`}
                     >
                       <span className={`text-3xl font-nunito font-extrabold ${g.color}`}>{total}</span>
-                      <span className="text-[11px] font-bold text-gray-600">{g.label}</span>
-                      <span className="text-[10px] text-gray-400">{pct}%</span>
+                      <span className={`text-[11px] font-bold ${g.color}`}>{g.label}</span>
+                      <span className={`text-[10px] ${g.color} opacity-70`}>{pct}%</span>
                     </Link>
                   );
                 })}
