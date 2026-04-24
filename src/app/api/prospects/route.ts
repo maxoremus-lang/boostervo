@@ -137,6 +137,7 @@ export async function GET(req: NextRequest) {
       id: e.id,
       at: e.createdAt.toISOString(),
       type: e.type,
+      direction: (e.fromPhone === null || e.fromPhone === undefined) ? "outbound" : "inbound",
       durationSec: e.durationSec,
       ringSec: e.ringSec,
     })),

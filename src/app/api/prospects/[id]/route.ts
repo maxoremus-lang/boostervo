@@ -54,6 +54,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       id: e.id,
       at: e.createdAt.toISOString(),
       type: e.type,
+      // Dérivé : outbound = depuis l'app (fromPhone null), inbound = prospect → nous
+      direction: (e.fromPhone === null || e.fromPhone === undefined) ? "outbound" : "inbound",
       durationSec: e.durationSec,
       ringSec: e.ringSec,
     })),

@@ -12,6 +12,7 @@ export type CallEvent = {
   id: string;
   at: string;          // ISO datetime
   type: "missed" | "answered";
+  direction: "inbound" | "outbound"; // inbound = prospect → nous ; outbound = nous → prospect (depuis l'app)
   durationSec?: number;
   ringSec?: number;
 };

@@ -71,9 +71,9 @@ export default function ProspectCard({
   const isUrgentCard = variant === "urgent" || prospect.isUrgent;
   const phoneFormatted = formatPhone(prospect.phone);
   const { startCall } = useCall();
-  // Dernier appel manqué (pour afficher heure + durée sonnerie sur toutes les cartes)
+  // Dernier appel manqué entrant (pour afficher heure + durée sonnerie sur toutes les cartes)
   const lastMissed = [...prospect.callEvents]
-    .filter((e) => e.type === "missed")
+    .filter((e) => e.type === "missed" && e.direction !== "outbound")
     .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())[0];
   const detailHref = contextParams
     ? `/app/rappels/${prospect.id}?${contextParams}`

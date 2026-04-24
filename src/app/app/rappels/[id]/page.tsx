@@ -64,7 +64,7 @@ function formatDelay(ms: number): string {
  * (le compteur repart à 1 après chaque answered).
  * Retourne { delays, missedNumbers }.
  */
-function computeCallbackAnalysis(events: { id: string; at: string; type: string }[]): {
+function computeCallbackAnalysis(events: { id: string; at: string; type: string; direction: string }[]): {
   delays: Map<string, number>;
   missedNumbers: Map<string, number>;
 } {
@@ -75,11 +75,13 @@ function computeCallbackAnalysis(events: { id: string; at: string; type: string 
   let firstMissedOfRound: { at: string } | null = null;
   let missedCountInRound = 0;
   for (const ev of sorted) {
-    if (ev.type === "missed") {
+    if (ev.type === "missed" && ev.direction === "inbound") {
+      // Seuls les missed entrants alimentent la file de rappels à traiter
       if (!firstMissedOfRound) firstMissedOfRound = { at: ev.at };
       missedCountInRound++;
       missedNumbers.set(ev.id, missedCountInRound);
-    } else if (ev.type === "answered") {
+    } else if (ev.type === "answered" && ev.direction === "outbound") {
+      // Seul un appel sortant décroché "ferme" la séquence et compte comme rappel effectué
       if (firstMissedOfRound) {
         const delay = new Date(ev.at).getTime() - new Date(firstMissedOfRound.at).getTime();
         if (delay > 0) delays.set(ev.id, delay);
@@ -87,6 +89,7 @@ function computeCallbackAnalysis(events: { id: string; at: string; type: string 
       }
       missedCountInRound = 0;
     }
+    // inbound-answered et outbound-missed n'affectent ni la numérotation ni le délai
   }
   return { delays, missedNumbers };
 }
@@ -405,19 +408,24 @@ export default function ProspectDetailPage({ params }: { params: { id: string } 
               return prospect.callEvents.map((ev) => {
                 const delayMs = delays.get(ev.id);
                 const missedNum = missedNumbers.get(ev.id);
+                // 4 cas : outbound+answered (vrai rappel), outbound+missed (rappel sans réponse),
+                // inbound+answered (prospect a rappelé lui-même, on a décroché),
+                // inbound+missed (appel manqué classique).
+                const isOutbound = ev.direction === "outbound";
+                const isAnswered = ev.type === "answered";
+                // Pastille : vert plein (sortant décroché) / vert contour (entrant décroché)
+                // / rouge plein (entrant manqué) / rouge contour (sortant sans réponse)
+                const dotClasses = isAnswered
+                  ? (isOutbound ? "bg-green-500" : "bg-white border-2 border-green-500")
+                  : (isOutbound ? "bg-white border-2 border-red-500" : "bg-red-500");
+                const title = isOutbound
+                  ? (isAnswered ? "Appel sortant décroché" : "Appel sortant sans réponse")
+                  : (isAnswered ? "Appel entrant décroché" : `Appel entrant manqué n°${missedNum ?? "?"}`);
                 return (
                   <div key={ev.id} className="flex gap-3">
-                    <div
-                      className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                        ev.type === "answered" ? "bg-green-500" : "bg-red-500"
-                      }`}
-                    />
+                    <div className={`w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 ${dotClasses}`} />
                     <div className="flex-1">
-                      <p className="text-sm font-semibold">
-                        {ev.type === "answered"
-                          ? "Rappel effectué"
-                          : `Appel manqué n°${missedNum ?? "?"}`}
-                      </p>
+                      <p className="text-sm font-semibold">{title}</p>
                       <p className="text-xs text-gray-500">
                         {formatEventDate(ev.at)} · {formatRelativeTime(ev.at)}
                         {ev.ringSec && ` · sonné ${ev.ringSec}s`}

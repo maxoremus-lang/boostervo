@@ -241,5 +241,7 @@ export function formatRelativeWithDate(iso: string): string {
 }
 
 export function missedCallsCount(p: Prospect): number {
-  return p.callEvents.filter((e) => e.type === "missed").length;
+  // Seuls les appels entrants manqués comptent : un outbound-missed (tentative sortante
+  // sans réponse) n'est pas un "appel manqué" au sens prospect → nous.
+  return p.callEvents.filter((e) => e.type === "missed" && e.direction !== "outbound").length;
 }
