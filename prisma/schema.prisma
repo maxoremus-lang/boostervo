@@ -19,6 +19,10 @@ model User {
   role         String   @default("negotiant") // "admin" | "negotiant" | "invite" | "partenaire"
   notificationSound String  @default("cloche")   // "cloche" | "sonnette"
   soundEnabled      Boolean @default(true)
+  // Marge moyenne par VO (en €). Utilisée pour les estimations de marge quand un
+  // prospect vendu n'a pas de saleMargin renseignée. Obligatoire à l'inscription.
+  // Default 800 pour la rétro-compat des users existants.
+  averageMarginVo   Float    @default(800)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -45,7 +49,11 @@ model Prospect {
   phone           String    // Numéro de l'appelant (source de vérité)
   name            String?   // Saisi après rappel
   vehicleInterest String?   // Ex: "Peugeot 3008 GT 2021"
-  vehiclePrice    Float?
+  vehiclePrice    Float?    // Prix affiché dans l'annonce (intérêt initial)
+  // Prix final négocié si la vente est conclue (statut sold).
+  salePrice       Float?
+  // Marge réelle faite sur cette vente (en €). Si null, on utilise user.averageMarginVo.
+  saleMargin      Float?
   budget          Float?
   notes           String?
   status          String    @default("pending") // pending|postponed|unreachable|appointment|test_drive|quote_sent|not_interested|sold

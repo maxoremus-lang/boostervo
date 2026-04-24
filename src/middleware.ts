@@ -6,7 +6,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Pages publiques de l'appli (pas besoin d'auth)
-  if (pathname === "/app/login") return NextResponse.next();
+  if (pathname === "/app/login" || pathname === "/app/signup") return NextResponse.next();
 
   // Fichiers statiques PWA (servis depuis public/app/) — ne pas protéger
   if (

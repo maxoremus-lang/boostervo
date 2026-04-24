@@ -39,6 +39,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     name: prospect.name,
     vehicleInterest: prospect.vehicleInterest,
     vehiclePrice: prospect.vehiclePrice,
+    salePrice: prospect.salePrice,
+    saleMargin: prospect.saleMargin,
     budget: prospect.budget,
     notes: prospect.notes,
     status: prospect.status,
@@ -88,6 +90,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (body.name !== undefined) data.name = body.name;
   if (body.vehicleInterest !== undefined) data.vehicleInterest = body.vehicleInterest;
   if (body.vehiclePrice !== undefined) data.vehiclePrice = body.vehiclePrice ? parseFloat(body.vehiclePrice) : null;
+  if (body.salePrice !== undefined) data.salePrice = body.salePrice ? parseFloat(body.salePrice) : null;
+  if (body.saleMargin !== undefined) data.saleMargin = body.saleMargin ? parseFloat(body.saleMargin) : null;
   if (body.budget !== undefined) data.budget = body.budget ? parseFloat(body.budget) : null;
   if (body.notes !== undefined) data.notes = body.notes;
   if (body.status !== undefined) data.status = body.status;

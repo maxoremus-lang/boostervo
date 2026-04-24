@@ -27,6 +27,9 @@ export async function GET(req: NextRequest) {
   }
 
   const userId = (session.user as any).id;
+  // Marge moyenne configurée par le négociant (fallback quand saleMargin n'est pas renseignée).
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { averageMarginVo: true } });
+  const MARGE_MOYENNE_PAR_VENTE = user?.averageMarginVo ?? 800;
   const periodParam = (req.nextUrl.searchParams.get("period") || "week") as Period;
   const fromParam = req.nextUrl.searchParams.get("from");
   const toParam = req.nextUrl.searchParams.get("to");
@@ -112,6 +115,7 @@ export async function GET(req: NextRequest) {
   // Décroché direct = prospect avec ≥1 answered et 0 missed dans la période.
   let directPickupsCount = 0;
   let salesFromDirect = 0;
+  let marginFromDirect = 0; // somme saleMargin réelles + fallback averageMarginVo
 
   // KPI liés aux rappels (callbacksDone, délai moyen) : uniquement prospects avec ≥1 missed
   for (const p of prospects) {
@@ -175,7 +179,10 @@ export async function GET(req: NextRequest) {
     const hasAnswered = p.callEvents.some((e) => e.type === "answered");
     if (!hasMissed && hasAnswered) {
       directPickupsCount++;
-      if (outcomeInPeriod && p.status === "sold") salesFromDirect++;
+      if (outcomeInPeriod && p.status === "sold") {
+        salesFromDirect++;
+        marginFromDirect += p.saleMargin ?? MARGE_MOYENNE_PAR_VENTE;
+      }
     }
   }
 
@@ -210,9 +217,15 @@ export async function GET(req: NextRequest) {
   const salesRateDirect = directPickupsCount > 0 ? Math.round((salesFromDirect / directPickupsCount) * 100) : 0;
   const salesRateRappel = callbacksDone > 0 ? Math.round((salesFromRappel / callbacksDone) * 100) : 0;
 
-  // Marge générée (estimation simplifiée : marge moyenne × ventes)
-  const MARGE_MOYENNE_PAR_VENTE = 800; // €
-  const marginRecovered = salesCount * MARGE_MOYENNE_PAR_VENTE;
+  // Marge générée = somme des saleMargin réelles (quand renseignées) + marge moyenne du
+  // négociant pour les ventes où le négociant n'a pas précisé la marge réelle.
+  // On ne prend en compte que les ventes dont outcomeAt tombe dans la période.
+  let marginRecovered = 0;
+  for (const p of prospects) {
+    if (p.status !== "sold") continue;
+    if (!isOutcomeInPeriod(p.outcomeAt)) continue;
+    marginRecovered += p.saleMargin ?? MARGE_MOYENNE_PAR_VENTE;
+  }
 
   // Entonnoir "Parcours des appels entrants" :
   //   total = prospects avec au moins une activité d'appel dans la période
@@ -361,7 +374,7 @@ export async function GET(req: NextRequest) {
     rappels: directPickupsCount,
     rdvs: appointmentsFromDirect,
     ventes: salesFromDirect,
-    marge: salesFromDirect * MARGE_MOYENNE_PAR_VENTE,
+    marge: marginFromDirect,
   };
   const impactDistribution: ImpactBucket[] = [
     directBucket,
@@ -392,7 +405,7 @@ export async function GET(req: NextRequest) {
               if (QUALIFIED_RDV_STATUSES.includes(p.status)) impactDistribution[i].rdvs++;
               if (p.status === "sold") {
                 impactDistribution[i].ventes++;
-                impactDistribution[i].marge += MARGE_MOYENNE_PAR_VENTE;
+                impactDistribution[i].marge += p.saleMargin ?? MARGE_MOYENNE_PAR_VENTE;
               }
             }
             break; // 1er round seulement
@@ -407,7 +420,8 @@ export async function GET(req: NextRequest) {
   const totalImpactCallbacks = impactDistribution.reduce((s, b) => s + b.rappels, 0);
   const totalCurrentRdvs = impactDistribution.reduce((s, b) => s + b.rdvs, 0);
   const totalCurrentSales = impactDistribution.reduce((s, b) => s + b.ventes, 0);
-  const totalCurrentMargin = totalCurrentSales * MARGE_MOYENNE_PAR_VENTE;
+  // Somme des marges réelles par bucket (inclut saleMargin renseignée par prospect).
+  const totalCurrentMargin = impactDistribution.reduce((s, b) => s + b.marge, 0);
 
   // Potentiel : le meilleur bucket RAPPEL (on ne peut pas "rappeler" à un délai négatif).
   // Direct est déjà à son maximum ; on ne le fait pas évoluer dans le potentiel.

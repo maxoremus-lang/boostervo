@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState, Suspense } from "react";
@@ -102,6 +103,10 @@ function LoginForm() {
       >
         {loading ? "Connexion..." : "Se connecter"}
       </button>
+      <p className="text-xs text-gray-500 text-center mt-3">
+        Pas encore de compte ?{" "}
+        <Link href="/app/signup" className="text-orange font-bold">Créer un compte</Link>
+      </p>
     </form>
   );
 }

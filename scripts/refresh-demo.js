@@ -450,6 +450,18 @@ async function createProspectAndEvents({
   // Pour les statuts terminaux, on considère que le négociant a "clôturé" le prospect
   // au moment du dernier appel de la séquence.
   const outcomeAt = TERMINAL_STATUSES.has(status) ? updatedAt : null;
+  // Pour les ventes conclues, on simule des prix/marges réalistes :
+  //   - Prix de vente : prix affiché ± 3 % (négociation)
+  //   - Marge : distribution autour de la moyenne du négociant ± 30 %
+  let salePrice = null;
+  let saleMargin = null;
+  if (status === "sold" && fiche.vehicle?.price) {
+    const negotiation = 0.97 + Math.random() * 0.06; // 0.97 - 1.03
+    salePrice = Math.round(fiche.vehicle.price * negotiation / 100) * 100;
+    const avg = user.averageMarginVo || 800;
+    const spread = 0.7 + Math.random() * 0.6; // 0.7 - 1.3
+    saleMargin = Math.round((avg * spread) / 50) * 50;
+  }
 
   const prospect = await prisma.prospect.create({
     data: {
@@ -458,6 +470,8 @@ async function createProspectAndEvents({
       name: fiche.name,
       vehicleInterest: fiche.vehicle?.model ?? null,
       vehiclePrice: fiche.vehicle?.price ?? null,
+      salePrice,
+      saleMargin,
       budget: fiche.budget,
       notes: fiche.notes,
       status,

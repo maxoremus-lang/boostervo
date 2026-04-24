@@ -52,6 +52,8 @@ export default function FichePage({ params }: { params: { id: string } }) {
   const [status, setStatus] = useState<CallbackStatus>("pending");
   const [appointmentAt, setAppointmentAt] = useState("");
   const [notes, setNotes] = useState("");
+  const [salePrice, setSalePrice] = useState("");
+  const [saleMargin, setSaleMargin] = useState("");
   const [saving, setSaving] = useState(false);
 
   // Charger le prospect depuis l'API
@@ -75,6 +77,8 @@ export default function FichePage({ params }: { params: { id: string } }) {
         setStatus(data.status ?? "pending");
         setAppointmentAt(data.appointmentAt ?? "");
         setNotes(data.notes ?? "");
+        setSalePrice(data.salePrice != null ? String(data.salePrice) : "");
+        setSaleMargin(data.saleMargin != null ? String(data.saleMargin) : "");
         setLoading(false);
       } catch {
         if (!cancelled) {
@@ -102,6 +106,10 @@ export default function FichePage({ params }: { params: { id: string } }) {
           status,
           appointmentAt: status === "appointment" ? appointmentAt || null : null,
           notes,
+          // Prix/marge : uniquement si statut "sold", sinon remet à null pour ne pas
+          // garder une valeur obsolète si on repasse sur un autre statut.
+          salePrice: status === "sold" ? (salePrice ? parseFloat(salePrice) : null) : null,
+          saleMargin: status === "sold" ? (saleMargin ? parseFloat(saleMargin) : null) : null,
         }),
       });
       if (!res.ok) {
@@ -223,6 +231,39 @@ export default function FichePage({ params }: { params: { id: string } }) {
                 onChange={(e) => setAppointmentAt(e.target.value)}
                 className="w-full mt-1 px-3 py-2 bg-white border border-green-300 rounded-lg text-sm"
               />
+            </div>
+          )}
+
+          {status === "sold" && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 space-y-3">
+              <p className="text-xs font-bold text-emerald-800 uppercase tracking-wide">Détails de la vente</p>
+              <div>
+                <label className="text-[11px] font-semibold text-emerald-700">Prix de vente VO (€)</label>
+                <input
+                  type="number"
+                  value={salePrice}
+                  onChange={(e) => setSalePrice(e.target.value)}
+                  placeholder="Ex : 18 500"
+                  min="0"
+                  step="1"
+                  className="w-full mt-1 px-3 py-2 bg-white border border-emerald-300 rounded-lg text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-[11px] font-semibold text-emerald-700">Marge VO (€)</label>
+                <input
+                  type="number"
+                  value={saleMargin}
+                  onChange={(e) => setSaleMargin(e.target.value)}
+                  placeholder="Ex : 2 300"
+                  min="0"
+                  step="1"
+                  className="w-full mt-1 px-3 py-2 bg-white border border-emerald-300 rounded-lg text-sm"
+                />
+                <p className="text-[10px] text-emerald-600/80 mt-1">
+                  Laissez vide pour utiliser la marge moyenne par défaut de la concession.
+                </p>
+              </div>
             </div>
           )}
 
