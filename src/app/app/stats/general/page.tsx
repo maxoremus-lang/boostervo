@@ -6,7 +6,7 @@ import BottomNav from "../../_components/BottomNav";
 import SearchButton from "../../_components/SearchButton";
 import SearchBar from "../../_components/SearchBar";
 
-type Period = "day" | "week" | "month" | "custom";
+type Period = "day" | "week" | "month" | "all" | "custom";
 
 type StatsResponse = {
   period: Period;
@@ -43,12 +43,14 @@ const periodLabels: Record<Exclude<Period, "custom">, string> = {
   day: "Jour",
   week: "7 j",
   month: "30 j",
+  all: "Tout",
 };
 
 const periodSubtitle: Record<Exclude<Period, "custom">, string> = {
   day: "Aujourd'hui",
   week: "7 derniers jours",
   month: "30 derniers jours",
+  all: "Tout l'historique",
 };
 
 /** Formate YYYY-MM-DD → 12 avr. 26 */
@@ -172,7 +174,7 @@ export default function StatsGeneralPage() {
       {/* Sélecteur période */}
       <div className="px-5 py-3 bg-white border-b border-gray-100">
         <div className="flex gap-2 overflow-x-auto">
-          {(Object.keys(periodLabels) as Array<Exclude<Period, "custom">>).map((p) => (
+          {(["day", "week", "month", "all"] as Array<Exclude<Period, "custom">>).map((p) => (
             <button
               key={p}
               onClick={() => { setPeriod(p); setShowCustomPanel(false); }}
