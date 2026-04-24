@@ -72,21 +72,29 @@ function computeCallbackAnalysis(events: { id: string; at: string; type: string;
   const missedNumbers = new Map<string, number>();
   // Trier par ordre chronologique ASC
   const sorted = [...events].sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
+  let firstMissedEver: { at: string } | null = null;
   let firstMissedOfRound: { at: string } | null = null;
   let missedCountInRound = 0;
+  let firstDelayRecorded = false;
   for (const ev of sorted) {
     if (ev.type === "missed" && ev.direction === "inbound") {
       // Seuls les missed entrants alimentent la file de rappels à traiter
+      if (!firstMissedEver) firstMissedEver = { at: ev.at };
       if (!firstMissedOfRound) firstMissedOfRound = { at: ev.at };
       missedCountInRound++;
       missedNumbers.set(ev.id, missedCountInRound);
     } else if (ev.type === "answered" && ev.direction === "outbound") {
-      // Seul un appel sortant décroché "ferme" la séquence et compte comme rappel effectué
-      if (firstMissedOfRound) {
-        const delay = new Date(ev.at).getTime() - new Date(firstMissedOfRound.at).getTime();
-        if (delay > 0) delays.set(ev.id, delay);
-        firstMissedOfRound = null;
+      // Seul le 1er outbound-answered après le 1er missed reçoit le badge de délai.
+      // Les séquences ultérieures (2e round missed→outbound-answered pour le même prospect)
+      // ne sont pas marquées — on veut une seule ligne de délai par fiche.
+      if (firstMissedEver && !firstDelayRecorded) {
+        const delay = new Date(ev.at).getTime() - new Date(firstMissedEver.at).getTime();
+        if (delay > 0) {
+          delays.set(ev.id, delay);
+          firstDelayRecorded = true;
+        }
       }
+      firstMissedOfRound = null;
       missedCountInRound = 0;
     }
     // inbound-answered et outbound-missed n'affectent ni la numérotation ni le délai
