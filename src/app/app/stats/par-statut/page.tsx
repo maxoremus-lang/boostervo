@@ -289,7 +289,7 @@ export default function StatsParStatutPage() {
           {/* Détail par statut (8 cases) */}
           <div className="px-5 mt-5">
             <p className="text-xs uppercase font-semibold text-gray-500">Détail par statut</p>
-            <p className="text-[11px] text-gray-400 mb-2">% = part du portefeuille prospect total</p>
+            <p className="text-[11px] text-gray-400 mb-2">% = part du portefeuille de {stats.byStatusTotal} prospect{stats.byStatusTotal > 1 ? "s" : ""}</p>
             <div className="grid grid-cols-2 gap-2">
               {statusMeta.map((s) => {
                 const count = stats.byStatus[s.key] ?? 0;
