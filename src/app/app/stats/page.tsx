@@ -34,7 +34,7 @@ export default function StatsHubPage() {
               </svg>
             </div>
             <div className="flex-1">
-              <h2 className="font-nunito font-extrabold text-lg text-bleu">Stats générales</h2>
+              <h2 className="font-nunito font-extrabold text-lg text-bleu">Statistiques générales</h2>
               <p className="text-xs text-gray-500 mt-1">
                 Marge récupérée, ventes conclues, taux de transfo, rappels faits, délai moyen, RDV pris,
                 évolution sur 7 jours.
@@ -57,7 +57,7 @@ export default function StatsHubPage() {
               </svg>
             </div>
             <div className="flex-1">
-              <h2 className="font-nunito font-extrabold text-lg text-bleu">Stats par statut</h2>
+              <h2 className="font-nunito font-extrabold text-lg text-bleu">Statistiques par statut</h2>
               <p className="text-xs text-gray-500 mt-1">
                 Répartition des prospects : injoignables, à recontacter, RDV pris, devis envoyés, ventes
                 conclues… avec filtres par période.
@@ -80,7 +80,7 @@ export default function StatsHubPage() {
               </svg>
             </div>
             <div className="flex-1">
-              <h2 className="font-nunito font-extrabold text-lg text-bleu">Stats délai de rappel</h2>
+              <h2 className="font-nunito font-extrabold text-lg text-bleu">Statistiques délai de rappel</h2>
               <p className="text-xs text-gray-500 mt-1">
                 Votre note de réactivité (A+ → E), délai moyen, % de rappels sous 5 min,
                 évolution vs période précédente.

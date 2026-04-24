@@ -145,7 +145,7 @@ export default function StatsParStatutPage() {
           </div>
           <SearchButton />
         </div>
-        <h1 className="text-xl font-nunito font-extrabold">Stats par statut</h1>
+        <h1 className="text-xl font-nunito font-extrabold">Statistiques par statut</h1>
         <p className="text-xs opacity-80">{headerSubtitle}</p>
       </div>
 

@@ -288,7 +288,7 @@ export default function StatsDelaiRappelPage() {
         <div className="px-5 py-12 text-center">
           <div className="text-4xl mb-3">📞</div>
           <p className="font-nunito font-bold text-gray-700">Aucun rappel sur cette période</p>
-          <p className="text-sm text-gray-500 mt-1">Choisissez une période plus large pour voir vos stats.</p>
+          <p className="text-sm text-gray-500 mt-1">Choisissez une période plus large pour voir vos statistiques.</p>
         </div>
       ) : (
         <>

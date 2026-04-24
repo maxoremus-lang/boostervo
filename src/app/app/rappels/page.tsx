@@ -260,7 +260,7 @@ export default function RappelsListPage() {
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
-              Retour aux stats
+              Retour aux statistiques
             </Link>
           ) : (
             <button

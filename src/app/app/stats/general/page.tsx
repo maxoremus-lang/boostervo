@@ -147,7 +147,7 @@ export default function StatsGeneralPage() {
           </div>
           <SearchButton />
         </div>
-        <h1 className="text-xl font-nunito font-extrabold">Stats générales</h1>
+        <h1 className="text-xl font-nunito font-extrabold">Statistiques générales</h1>
         <p className="text-xs opacity-80">{headerSubtitle}</p>
       </div>
 
