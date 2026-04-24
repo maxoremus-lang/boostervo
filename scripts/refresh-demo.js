@@ -356,7 +356,9 @@ async function main() {
   }
   if (skippedA > 0) console.log(`   (groupe A : ${skippedA} prospects sautés car plage hors ouverture)`);
 
-  // === GROUPE B : Impact (missed + answered) ===
+  // === GROUPE B : Rappel réussi (missed entrant → outbound-answered) ===
+  // Le prospect a appelé (missed inbound), le négociant l'a rappelé depuis l'app
+  // et a eu la personne au bout du fil (outbound answered). C'est le vrai "rappel effectué".
   let skippedB = 0;
   for (const bucket of IMPACT_BUCKETS) {
     // On mélange le pool de statuts pour varier l'ordre d'apparition en base
@@ -374,8 +376,8 @@ async function main() {
       const fiche = fillFiche(status);
 
       const events = [
-        { type: "missed",   createdAt: pair.missed,   ringSec: rand(12, 28) },
-        { type: "answered", createdAt: pair.answered, durationSec: rand(90, 480) },
+        { type: "missed",   direction: "inbound",  createdAt: pair.missed,   ringSec: rand(12, 28) },
+        { type: "answered", direction: "outbound", createdAt: pair.answered, durationSec: rand(90, 480) },
       ];
 
       const appointmentAt = status === "appointment" ? pickAppointmentDate() : null;
