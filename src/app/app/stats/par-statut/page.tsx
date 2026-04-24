@@ -253,7 +253,7 @@ export default function StatsParStatutPage() {
           <div className="px-5 pt-5">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <p className="text-xs uppercase font-semibold text-gray-500">Vue d&apos;ensemble</p>
-              <p className="text-[11px] text-gray-400 mb-3">% calculés sur l&apos;ensemble du portefeuille prospect</p>
+              <p className="text-[11px] text-gray-400 mb-3">% calculés sur l&apos;ensemble du portefeuille de {stats.byStatusTotal} prospect{stats.byStatusTotal > 1 ? "s" : ""}</p>
               <div className="grid grid-cols-3 gap-3">
                 {groupSummary.map((g) => {
                   const total = g.statuses.reduce((sum, s) => sum + (stats.byStatus[s as CallbackStatus] ?? 0), 0);
