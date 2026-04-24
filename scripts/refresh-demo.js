@@ -189,7 +189,10 @@ const DASHBOARD_GROUPS = [
     status: "unreachable",
     isUrgent: false,
     lastMissedMinRange: [180, 3 * 1440],  // 3h à 3j
-    extraMissed: { proba: 1.0, offsetMinRange: [180, 720] },  // toujours plusieurs tentatives
+    extraMissed: { proba: 0, offsetMinRange: [180, 720] },  // pas d'inbound supplémentaire
+    // On a vraiment essayé de joindre le prospect : 3 à 5 tentatives sortantes
+    // après son appel initial, toutes sans réponse. C'est ça qui justifie "injoignable".
+    outboundAttempts: { min: 3, max: 5, offsetMinRange: [30, 720] },
   },
 ];
 
@@ -313,9 +316,10 @@ async function main() {
       // Groupe A : aucun answered → jamais qualifié (name null)
       const fiche = fillFiche(g.status, false);
 
-      const events = [{ type: "missed", createdAt: lastMissedDate, ringSec: rand(12, 28) }];
+      // Event initial : appel entrant manqué du prospect
+      const events = [{ type: "missed", direction: "inbound", createdAt: lastMissedDate, ringSec: rand(12, 28) }];
       if (Math.random() < g.extraMissed.proba) {
-        // Extra missed : une Date antérieure à lastMissedDate, elle aussi en heures d'ouverture
+        // Extra missed inbound : une Date antérieure à lastMissedDate, elle aussi en heures d'ouverture
         let earlier = null;
         for (let k = 0; k < 50; k++) {
           const o = rand(g.extraMissed.offsetMinRange[0], g.extraMissed.offsetMinRange[1]);
@@ -323,7 +327,22 @@ async function main() {
           if (isBusinessTimeParis(cand)) { earlier = cand; break; }
         }
         if (earlier) {
-          events.unshift({ type: "missed", createdAt: earlier, ringSec: rand(12, 28) });
+          events.unshift({ type: "missed", direction: "inbound", createdAt: earlier, ringSec: rand(12, 28) });
+        }
+      }
+      // Tentatives sortantes sans réponse (ex : injoignables) — postérieures au 1er inbound
+      if (g.outboundAttempts) {
+        const nAttempts = rand(g.outboundAttempts.min, g.outboundAttempts.max);
+        for (let a = 0; a < nAttempts; a++) {
+          let cand = null;
+          for (let k = 0; k < 50; k++) {
+            const o = rand(g.outboundAttempts.offsetMinRange[0], g.outboundAttempts.offsetMinRange[1]);
+            const c = new Date(lastMissedDate.getTime() + o * 60_000);
+            if (c.getTime() < Date.now() && isBusinessTimeParis(c)) { cand = c; break; }
+          }
+          if (cand) {
+            events.push({ type: "missed", direction: "outbound", createdAt: cand, ringSec: rand(15, 30) });
+          }
         }
       }
 
@@ -442,12 +461,15 @@ async function createProspectAndEvents({
   });
 
   for (const ev of sorted) {
+    // Outbound : nous → prospect (fromPhone null côté outbound webhook Twilio).
+    // Inbound (défaut) : prospect → numéro Twilio du négociant.
+    const isOutbound = ev.direction === "outbound";
     await prisma.callEvent.create({
       data: {
         prospectId: prospect.id,
         type: ev.type,
-        fromPhone: phone,
-        toPhone: user.twilioNumber ?? null,
+        fromPhone: isOutbound ? null : phone,
+        toPhone: isOutbound ? phone : (user.twilioNumber ?? null),
         ringSec: ev.ringSec ?? null,
         durationSec: ev.durationSec ?? null,
         createdAt: ev.createdAt,
