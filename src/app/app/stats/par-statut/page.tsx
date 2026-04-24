@@ -47,12 +47,12 @@ const statusMeta: {
   group: "todo" | "in_progress" | "done";
 }[] = [
   { key: "pending",        label: "À recontacter", bg: "bg-orange-50",  text: "text-orange-700",  dot: "bg-orange-500",  group: "todo" },
-  { key: "postponed",      label: "Reporté",       bg: "bg-blue-50",    text: "text-blue-700",    dot: "bg-blue-500",    group: "todo" },
-  { key: "unreachable",    label: "Injoignable",   bg: "bg-amber-50",   text: "text-amber-800",   dot: "bg-amber-500",   group: "todo" },
+  { key: "postponed",      label: "Reporté",       bg: "bg-orange-50",  text: "text-orange-700",  dot: "bg-orange-500",  group: "todo" },
+  { key: "unreachable",    label: "Injoignable",   bg: "bg-orange-50",  text: "text-orange-700",  dot: "bg-orange-500",  group: "todo" },
   { key: "appointment",    label: "RDV pris",      bg: "bg-violet-50",  text: "text-violet-700",  dot: "bg-violet-500",  group: "in_progress" },
   { key: "test_drive",     label: "Essai",         bg: "bg-violet-50",  text: "text-violet-700",  dot: "bg-violet-500",  group: "in_progress" },
   { key: "quote_sent",     label: "Devis envoyé",  bg: "bg-violet-50",  text: "text-violet-700",  dot: "bg-violet-500",  group: "in_progress" },
-  { key: "not_interested", label: "Pas intéressé", bg: "bg-gray-50",    text: "text-gray-600",    dot: "bg-gray-400",    group: "done" },
+  { key: "not_interested", label: "Pas intéressé", bg: "bg-emerald-50", text: "text-emerald-800", dot: "bg-emerald-500", group: "done" },
   { key: "sold",           label: "Vente conclue", bg: "bg-emerald-50", text: "text-emerald-800", dot: "bg-emerald-500", group: "done" },
 ];
 
