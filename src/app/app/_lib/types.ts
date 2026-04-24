@@ -12,7 +12,9 @@ export type CallEvent = {
   id: string;
   at: string;          // ISO datetime
   type: "missed" | "answered";
-  direction: "inbound" | "outbound"; // inbound = prospect → nous ; outbound = nous → prospect (depuis l'app)
+  // Dérivé de fromPhone côté API. Absent sur les anciens events et sur les mocks locaux
+  // → traité comme "inbound" par défaut dans les composants qui l'utilisent.
+  direction?: "inbound" | "outbound";
   durationSec?: number;
   ringSec?: number;
 };

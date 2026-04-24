@@ -64,7 +64,7 @@ function formatDelay(ms: number): string {
  * (le compteur repart à 1 après chaque answered).
  * Retourne { delays, missedNumbers }.
  */
-function computeCallbackAnalysis(events: { id: string; at: string; type: string; direction: string }[]): {
+function computeCallbackAnalysis(events: { id: string; at: string; type: string; direction?: string }[]): {
   delays: Map<string, number>;
   missedNumbers: Map<string, number>;
 } {
