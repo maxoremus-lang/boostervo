@@ -52,6 +52,10 @@ model Prospect {
   isUrgent        Boolean   @default(false)
   appointmentAt   DateTime?
   postponedUntil  DateTime? // Date de report programmé
+  // Date à laquelle le prospect est passé à un statut terminal
+  // (sold / appointment / test_drive / quote_sent / not_interested / unreachable).
+  // Utilisé pour filtrer les stats par période (ex: ventes des 7 derniers jours).
+  outcomeAt       DateTime?
   userId          String
   user            User      @relation(fields: [userId], references: [id])
   createdAt       DateTime  @default(now())

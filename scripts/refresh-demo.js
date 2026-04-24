@@ -437,12 +437,19 @@ async function main() {
   }
 }
 
+const TERMINAL_STATUSES = new Set([
+  "sold", "appointment", "test_drive", "quote_sent", "not_interested", "unreachable",
+]);
+
 async function createProspectAndEvents({
   user, phone, fiche, status, isUrgent, appointmentAt, postponedUntil = null, events,
 }) {
   const sorted = [...events].sort((a, b) => a.createdAt - b.createdAt);
   const createdAt = sorted[0].createdAt;
   const updatedAt = sorted[sorted.length - 1].createdAt;
+  // Pour les statuts terminaux, on considère que le négociant a "clôturé" le prospect
+  // au moment du dernier appel de la séquence.
+  const outcomeAt = TERMINAL_STATUSES.has(status) ? updatedAt : null;
 
   const prospect = await prisma.prospect.create({
     data: {
@@ -457,6 +464,7 @@ async function createProspectAndEvents({
       isUrgent,
       appointmentAt,
       postponedUntil,
+      outcomeAt,
       createdAt,
       updatedAt,
     },

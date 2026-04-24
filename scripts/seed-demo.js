@@ -155,6 +155,9 @@ async function main() {
       where: { phone_userId: { phone: d.phone, userId: user.id } },
     });
 
+    const TERMINAL_STATUSES = new Set([
+      "sold", "appointment", "test_drive", "quote_sent", "not_interested", "unreachable",
+    ]);
     const prospectData = {
       phone: d.phone,
       name: d.name ?? null,
@@ -165,6 +168,9 @@ async function main() {
       status: d.status,
       isUrgent: d.isUrgent,
       appointmentAt: d.appointmentAtMin != null ? minutesAgo(d.appointmentAtMin) : null,
+      // Pour les statuts terminaux du seed : on approxime avec "maintenant"
+      // (refresh-demo.js gère une timeline plus réaliste).
+      outcomeAt: TERMINAL_STATUSES.has(d.status) ? new Date() : null,
       userId: user.id,
     };
 

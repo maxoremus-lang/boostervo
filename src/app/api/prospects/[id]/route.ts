@@ -100,6 +100,21 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     data.isUrgent = false;
   }
 
+  // outcomeAt : horodatage de la transition vers un statut terminal.
+  // Sert aux stats pour filtrer ventes / RDV par période.
+  // unreachable est inclus car il marque aussi la clôture d'un prospect.
+  const terminalStatuses = [...doneStatuses, "unreachable"];
+  if (data.status !== undefined) {
+    const wasTerminal = terminalStatuses.includes(existing.status);
+    const isTerminal = terminalStatuses.includes(data.status);
+    if (isTerminal && !wasTerminal) {
+      data.outcomeAt = new Date();
+    } else if (!isTerminal && wasTerminal) {
+      data.outcomeAt = null;
+    }
+    // Si les deux sont terminaux (ex: appointment → sold), on garde la date initiale.
+  }
+
   const updated = await prisma.prospect.update({
     where: { id: params.id },
     data,

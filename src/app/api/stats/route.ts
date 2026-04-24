@@ -70,6 +70,17 @@ export async function GET(req: NextRequest) {
       }
     : undefined;
 
+  // Helper : le prospect a-t-il atteint un statut terminal dans la période ?
+  // Pour "all" (ni since ni until), on accepte tout prospect dont outcomeAt est renseigné.
+  // Sinon, outcomeAt doit être dans [since, until].
+  // Un prospect sans outcomeAt (statut non terminal) ne compte jamais.
+  const isOutcomeInPeriod = (outcomeAt: Date | null): boolean => {
+    if (!outcomeAt) return false;
+    if (since && outcomeAt < since) return false;
+    if (until && outcomeAt > until) return false;
+    return true;
+  };
+
   // Prospects + CallEvents filtrés par période pour les KPI de performance
   const prospects = await prisma.prospect.findMany({
     where: { userId },
@@ -113,10 +124,14 @@ export async function GET(req: NextRequest) {
     if (answered.length > 0) {
       callbacksDone++;
 
-      if (p.status === "appointment" || p.status === "test_drive" || p.status === "quote_sent") {
-        appointmentsFromRappel++;
+      // RDV / ventes : ne comptent que si le statut a été figé dans la période
+      // (outcomeAt dans la fenêtre), sinon on traînerait des conversions anciennes.
+      if (isOutcomeInPeriod(p.outcomeAt)) {
+        if (p.status === "appointment" || p.status === "test_drive" || p.status === "quote_sent") {
+          appointmentsFromRappel++;
+        }
+        if (p.status === "sold") salesFromRappel++;
       }
-      if (p.status === "sold") salesFromRappel++;
 
       // Calcul propre des délais par "round" : chaque answered termine une séquence
       // de missed qui le précèdent. Le délai = answered.at - firstMissed.at du round.
@@ -145,18 +160,22 @@ export async function GET(req: NextRequest) {
   // Ventes et RDV : comptent TOUS les prospects au bon statut, qu'ils aient eu
   // un appel manqué ou un décroché direct (Groupe C). Sinon une vente issue
   // d'un décroché immédiat n'apparaîtrait pas dans les stats.
+  // Filtre par outcomeAt pour que les totaux évoluent selon la période sélectionnée.
   for (const p of prospects) {
-    if (p.status === "appointment" || p.status === "test_drive" || p.status === "quote_sent") {
-      appointmentsCount++;
+    const outcomeInPeriod = isOutcomeInPeriod(p.outcomeAt);
+    if (outcomeInPeriod) {
+      if (p.status === "appointment" || p.status === "test_drive" || p.status === "quote_sent") {
+        appointmentsCount++;
+      }
+      if (p.status === "sold") salesCount++;
     }
-    if (p.status === "sold") salesCount++;
 
     // Décroché direct : ≥1 answered et 0 missed dans la période
     const hasMissed = p.callEvents.some((e) => e.type === "missed");
     const hasAnswered = p.callEvents.some((e) => e.type === "answered");
     if (!hasMissed && hasAnswered) {
       directPickupsCount++;
-      if (p.status === "sold") salesFromDirect++;
+      if (outcomeInPeriod && p.status === "sold") salesFromDirect++;
     }
   }
 
@@ -374,7 +393,9 @@ export async function GET(req: NextRequest) {
 
   // Pour chaque prospect ayant un rappel (1ère séquence missed → answered), on remplit
   // le bucket de délai correspondant (offset +1 à cause du bucket direct en tête).
+  // Les conversions (rdvs, ventes) ne comptent que si outcomeAt est dans la période.
   for (const p of prospects) {
+    const outcomeInPeriod = isOutcomeInPeriod(p.outcomeAt);
     const sortedAsc = [...p.callEvents].sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
@@ -389,10 +410,12 @@ export async function GET(req: NextRequest) {
             const idx = IMPACT_BUCKETS.findIndex((b) => d < b.max);
             const i = (idx === -1 ? IMPACT_BUCKETS.length - 1 : idx) + 1; // +1 : direct est en position 0
             impactDistribution[i].rappels++;
-            if (QUALIFIED_RDV_STATUSES.includes(p.status)) impactDistribution[i].rdvs++;
-            if (p.status === "sold") {
-              impactDistribution[i].ventes++;
-              impactDistribution[i].marge += MARGE_MOYENNE_PAR_VENTE;
+            if (outcomeInPeriod) {
+              if (QUALIFIED_RDV_STATUSES.includes(p.status)) impactDistribution[i].rdvs++;
+              if (p.status === "sold") {
+                impactDistribution[i].ventes++;
+                impactDistribution[i].marge += MARGE_MOYENNE_PAR_VENTE;
+              }
             }
             break; // 1er round seulement
           }
