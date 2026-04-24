@@ -287,27 +287,6 @@ export async function GET(req: NextRequest) {
   byStatus.urgent = urgentCount;
   const byStatusTotal = Object.values(byStatus).reduce((a, b) => a + b, 0);
 
-  // --- Graph par jour (toujours basé sur les 7 derniers jours pour la lisibilité) ---
-  const graphSince = new Date(now);
-  graphSince.setDate(now.getDate() - 6);
-  graphSince.setHours(0, 0, 0, 0);
-
-  const dayLabels = ["D", "L", "M", "M", "J", "V", "S"]; // dimanche..samedi
-  const byDay = [];
-  for (let i = 0; i < 7; i++) {
-    const dayStart = new Date(graphSince);
-    dayStart.setDate(graphSince.getDate() + i);
-    const dayEnd = new Date(dayStart);
-    dayEnd.setDate(dayStart.getDate() + 1);
-
-    const count = prospects.reduce((sum, p) => {
-      return sum + p.callEvents.filter((e) => e.type === "answered" && e.createdAt >= dayStart && e.createdAt < dayEnd).length;
-    }, 0);
-
-    const isToday = dayStart.toDateString() === now.toDateString();
-    byDay.push({ day: dayLabels[dayStart.getDay()], count, isToday });
-  }
-
   // --- Note de réactivité (basée sur le % de rappels < 5 min) ---
   function computeNote(rate: number): { letter: string; label: string; color: string } {
     if (rate >= 80) return { letter: "A+", label: "Exceptionnel", color: "green" };
@@ -515,7 +494,6 @@ export async function GET(req: NextRequest) {
     marginLostPerMissed,
     byStatus,
     byStatusTotal,
-    byDay,
     teamRanking: null,
     // Stats dédiées au délai de rappel
     delayStats: {

@@ -181,15 +181,6 @@ export const stats: Stats = {
     callbackRate: 4,
     avgDelayMin: -3,
   },
-  byDay: [
-    { day: "L", count: 12 },
-    { day: "M", count: 20 },
-    { day: "M", count: 17 },
-    { day: "J", count: 25 },
-    { day: "V", count: 30, isToday: true },
-    { day: "S", count: 5 },
-    { day: "D", count: 2 },
-  ],
   teamRanking: [
     { name: "Laura P.", count: 34 },
     { name: "Jean M.", count: 27, isCurrentUser: true },

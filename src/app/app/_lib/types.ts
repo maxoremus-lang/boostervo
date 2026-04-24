@@ -60,6 +60,5 @@ export type Stats = {
     callbackRate: number;
     avgDelayMin: number;
   };
-  byDay: { day: string; count: number; isToday?: boolean }[];
   teamRanking?: { name: string; count: number; isCurrentUser?: boolean }[];
 };

@@ -36,7 +36,6 @@ type StatsResponse = {
   displayHypoSales: number;
   displayAdditionalSales: number;
   marginLostPerMissed: number;
-  byDay: { day: string; count: number; isToday?: boolean }[];
 };
 
 const periodLabels: Record<Exclude<Period, "custom">, string> = {
@@ -147,8 +146,6 @@ export default function StatsGeneralPage() {
             ? `Jusqu'au ${formatDateFr(customTo)}`
             : "Période personnalisée"
       : periodSubtitle[period];
-
-  const maxCount = stats ? Math.max(...stats.byDay.map((d) => d.count), 1) : 1;
 
   return (
     <div className="pb-24">
@@ -378,24 +375,6 @@ export default function StatsGeneralPage() {
             </div>
           </div>
 
-          {/* Graph 7 jours */}
-          <div className="px-5">
-            <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <h3 className="font-nunito font-bold text-sm mb-3">Rappels effectués sur 7 jours</h3>
-              <div className="flex items-end justify-between h-32 gap-2">
-                {stats.byDay.map((d, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                    <span className="text-[10px] text-gray-500 font-semibold">{d.count > 0 ? d.count : ""}</span>
-                    <div
-                      className={`w-full rounded-t ${d.isToday ? "bg-orange" : "bg-bleu"}`}
-                      style={{ height: `${Math.max((d.count / maxCount) * 100, 5)}%` }}
-                    />
-                    <span className={`text-[10px] ${d.isToday ? "text-orange font-bold" : "text-gray-500"}`}>{d.day}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </>
       )}
 
