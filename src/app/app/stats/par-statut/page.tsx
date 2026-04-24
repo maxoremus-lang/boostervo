@@ -252,7 +252,8 @@ export default function StatsParStatutPage() {
               Le total "hors urgents" est cohérent avec la somme des 3 tuiles — les urgents sont comptés dans leur bandeau rouge. */}
           <div className="px-5 pt-5">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <p className="text-xs uppercase font-semibold text-gray-500 mb-3">Vue d&apos;ensemble</p>
+              <p className="text-xs uppercase font-semibold text-gray-500">Vue d&apos;ensemble</p>
+              <p className="text-[11px] text-gray-400 mb-3">% calculés sur l&apos;ensemble du portefeuille prospect</p>
               <div className="grid grid-cols-3 gap-3">
                 {groupSummary.map((g) => {
                   const total = g.statuses.reduce((sum, s) => sum + (stats.byStatus[s as CallbackStatus] ?? 0), 0);
@@ -288,7 +289,8 @@ export default function StatsParStatutPage() {
 
           {/* Détail par statut (8 cases) */}
           <div className="px-5 mt-5">
-            <p className="text-xs uppercase font-semibold text-gray-500 mb-2">Détail par statut</p>
+            <p className="text-xs uppercase font-semibold text-gray-500">Détail par statut</p>
+            <p className="text-[11px] text-gray-400 mb-2">% = part du portefeuille prospect total</p>
             <div className="grid grid-cols-2 gap-2">
               {statusMeta.map((s) => {
                 const count = stats.byStatus[s.key] ?? 0;
