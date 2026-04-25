@@ -52,12 +52,13 @@ type StatsResponse = {
   };
 };
 
+// Couleurs alignées sur celles des tuiles de distribution juste au-dessus.
 const IMPACT_BUCKET_DOT: Record<string, string> = {
   direct:      "bg-emerald-500",
   lt5min:      "bg-green-500",
-  "5to30min":  "bg-lime-500",
-  "30minTo2h": "bg-orange-500",
-  gt2h:        "bg-red-500",
+  "5to30min":  "bg-orange-500",
+  "30minTo2h": "bg-red-500",
+  gt2h:        "bg-red-700",
 };
 
 function formatEuros(amount: number): string {
