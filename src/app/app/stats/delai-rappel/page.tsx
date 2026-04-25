@@ -361,7 +361,7 @@ export default function StatsDelaiRappelPage() {
             const lt30 = d.distribution.find((x) => x.key === "lt30min")?.count ?? 0;
             const lt2h = d.distribution.find((x) => x.key === "lt2h")?.count ?? 0;
             const tiles: Array<{ count: number; label: string; sub: string; textClass: string }> = [
-              { count: directCount, label: "Décroché", sub: "",       textClass: "text-emerald-600" },
+              { count: directCount, label: "Décrochés", sub: "",       textClass: "text-emerald-600" },
               { count: lt5,         label: "< 5 min",  sub: "rappel", textClass: "text-green-600" },
               { count: lt30,        label: "> 5 min",  sub: "rappel", textClass: "text-orange-500" },
               { count: lt2h,        label: "> 30 min", sub: "rappel", textClass: "text-red-500" },

@@ -370,7 +370,7 @@ export async function GET(req: NextRequest) {
   // et d'aligner current.margin avec marginRecovered côté stats générales.
   const directBucket: ImpactBucket = {
     key: "direct",
-    label: "Décroché direct",
+    label: "Décrochés",
     rappels: directPickupsCount,
     rdvs: appointmentsFromDirect,
     ventes: salesFromDirect,
