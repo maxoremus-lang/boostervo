@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       // Titre = source de l'appel, toujours visible en gros sur la notif.
       // Identifie immédiatement un prospect leboncoin tracké par BoosterVO,
       // même au tout 1er appel quand on n'a pas encore le nom du prospect.
-      const title = "Appel entrant — BVO-leboncoin";
+      const title = "Appel BVO-leboncoin";
       // Corps = numéro + nom si on l'a déjà (rappel d'un prospect existant qualifié).
       const body = prospect?.name
         ? `${prospect.name} · ${normalizedPhone}`
