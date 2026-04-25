@@ -259,18 +259,20 @@ const DIRECT_PICKUP = {
   count: 40,
   // Décrochés répartis sur les 30 derniers jours en heures d'ouverture.
   answeredMinRange: [60, 30 * 24 * 60],
-  // Distribution des issues pour un décroché direct :
-  //  - 25% RDV (appointment + test_drive + quote_sent)
-  //  - 18% vente conclue
-  //  - 40% pas intéressé
-  //  - 17% reporté
+  // Distribution des issues pour un décroché direct (canal le plus performant) :
+  //  - 45% RDV (appointment + test_drive + quote_sent)
+  //  - 35% vente conclue
+  //  - 15% pas intéressé
+  //  - 5% reporté
+  // Le décroché direct doit avoir le meilleur taux de transformation, juste
+  // au-dessus du rappel < 5 min (40% RDV / 30% vente).
   statusPool: [
-    ...Array(10).fill("sold"),
-    ...Array(6).fill("appointment"),
-    ...Array(3).fill("test_drive"),
-    ...Array(1).fill("quote_sent"),
-    ...Array(14).fill("not_interested"),
-    ...Array(6).fill("postponed"),
+    ...Array(14).fill("sold"),
+    ...Array(10).fill("appointment"),
+    ...Array(5).fill("test_drive"),
+    ...Array(3).fill("quote_sent"),
+    ...Array(6).fill("not_interested"),
+    ...Array(2).fill("postponed"),
   ],
 };
 
