@@ -353,24 +353,26 @@ export default function StatsDelaiRappelPage() {
             </div>
           </div>
 
-          {/* 4 tuiles de distribution : décroché direct + 3 tranches de délai */}
+          {/* 3 tuiles de distribution : tranches de délai de rappel */}
           {(() => {
-            const directCount = stats?.impactStats?.distribution.find((b) => b.key === "direct")?.rappels ?? 0;
             const lt5 = d.distribution.find((x) => x.key === "lt5min")?.count ?? 0;
             const lt30 = d.distribution.find((x) => x.key === "lt30min")?.count ?? 0;
             const lt2h = d.distribution.find((x) => x.key === "lt2h")?.count ?? 0;
+            const gte2h = d.distribution.find((x) => x.key === "gte2h")?.count ?? 0;
+            const gt5min = lt30 + lt2h + gte2h;
+            const gt30min = lt2h + gte2h;
             const tiles: Array<{ count: number; label: string; textClass: string }> = [
-              { count: directCount, label: "Décroché direct", textClass: "text-emerald-600" },
-              { count: lt5,         label: "< 5 min",         textClass: "text-green-600" },
-              { count: lt30,        label: "5 - 30 min",      textClass: "text-lime-600" },
-              { count: lt2h,        label: "30 min - 2 h",    textClass: "text-orange-500" },
+              { count: lt5,     label: "< 5 min",  textClass: "text-green-600" },
+              { count: gt5min,  label: "> 5 min",  textClass: "text-orange-500" },
+              { count: gt30min, label: "> 30 min", textClass: "text-red-500" },
             ];
             return (
-              <div className="mx-5 mt-4 grid grid-cols-4 gap-2">
+              <div className="mx-5 mt-4 grid grid-cols-3 gap-2">
                 {tiles.map((t) => (
                   <div key={t.label} className="bg-white rounded-xl p-3 text-center shadow-sm">
                     <p className={`text-xl font-nunito font-extrabold ${t.textClass}`}>{t.count}</p>
-                    <p className="text-[10px] text-gray-500 font-semibold mt-0.5">{t.label}</p>
+                    <p className="text-[10px] text-gray-500 font-semibold mt-0.5 leading-tight">{t.label}</p>
+                    <p className="text-[10px] text-gray-500 font-semibold leading-tight">rappel</p>
                   </div>
                 ))}
               </div>
@@ -382,12 +384,11 @@ export default function StatsDelaiRappelPage() {
             <div className="mx-5 mt-5">
               <p className="text-xs uppercase font-semibold text-gray-500 mb-2">Taux de conversion par délai</p>
               <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                <div className="grid grid-cols-[1fr_32px_40px_40px_64px] gap-1.5 px-3 py-2 bg-gray-50 text-[10px] font-bold text-gray-500 uppercase">
+                <div className="grid grid-cols-[1fr_48px_64px_64px] gap-1.5 px-3 py-2 bg-gray-50 text-xs font-bold text-gray-500 uppercase">
                   <span>Canal</span>
                   <span className="text-right">Vol.</span>
                   <span className="text-right text-violet-700">RDV</span>
                   <span className="text-right text-green-700">Vtes</span>
-                  <span className="text-right">Marge</span>
                 </div>
                 <div className="divide-y divide-gray-100">
                   {stats.impactStats.distribution.map((b) => {
@@ -395,43 +396,39 @@ export default function StatsDelaiRappelPage() {
                     const rdvPct = b.rappels > 0 ? Math.round((b.rdvs / b.rappels) * 100) : 0;
                     const ventesPct = b.rappels > 0 ? Math.round((b.ventes / b.rappels) * 100) : 0;
                     return (
-                      <div key={b.key} className="grid grid-cols-[1fr_32px_40px_40px_64px] gap-1.5 px-3 py-2.5 items-center">
+                      <div key={b.key} className="grid grid-cols-[1fr_48px_64px_64px] gap-1.5 px-3 py-2.5 items-center">
                         <div className="flex items-center gap-1.5 min-w-0">
                           <span className={`w-2 h-2 rounded-full flex-shrink-0 ${dot}`}></span>
-                          <span className="text-sm font-semibold truncate">{b.label}</span>
+                          <span className="text-base font-semibold truncate">{b.label}</span>
                         </div>
-                        <span className="text-sm font-bold text-gray-700 text-right">{b.rappels}</span>
-                        <span className="text-sm font-bold text-violet-600 text-right">
+                        <span className="text-base font-bold text-gray-700 text-right">{b.rappels}</span>
+                        <span className="text-base font-bold text-violet-600 text-right">
                           {b.rdvs}
                           {b.rappels > 0 && (
-                            <span className="text-[9px] block text-violet-400 font-normal leading-none">{rdvPct}%</span>
+                            <span className="text-[11px] block text-violet-400 font-normal leading-none">{rdvPct}%</span>
                           )}
                         </span>
-                        <span className="text-sm font-bold text-green-600 text-right">
+                        <span className="text-base font-bold text-green-600 text-right">
                           {b.ventes}
                           {b.rappels > 0 && (
-                            <span className="text-[9px] block text-green-400 font-normal leading-none">{ventesPct}%</span>
+                            <span className="text-[11px] block text-green-400 font-normal leading-none">{ventesPct}%</span>
                           )}
-                        </span>
-                        <span className="text-sm font-extrabold text-bleu text-right">
-                          {b.marge > 0 ? formatEuros(b.marge) : "—"}
                         </span>
                       </div>
                     );
                   })}
                 </div>
-                <div className="grid grid-cols-[1fr_32px_40px_40px_64px] gap-1.5 px-3 py-2.5 bg-gray-50 border-t border-gray-200 items-center">
-                  <span className="text-sm font-extrabold text-gray-700">Total</span>
-                  <span className="text-sm font-extrabold text-gray-700 text-right">{stats.impactStats.totalCallbacks}</span>
-                  <span className="text-sm font-extrabold text-violet-700 text-right">
+                <div className="grid grid-cols-[1fr_48px_64px_64px] gap-1.5 px-3 py-2.5 bg-gray-50 border-t border-gray-200 items-center">
+                  <span className="text-base font-extrabold text-gray-700">Total</span>
+                  <span className="text-base font-extrabold text-gray-700 text-right">{stats.impactStats.totalCallbacks}</span>
+                  <span className="text-base font-extrabold text-violet-700 text-right">
                     {stats.impactStats.current.rdvs}
-                    <span className="text-[9px] block text-violet-400 font-normal leading-none">{stats.impactStats.current.rdvRate}%</span>
+                    <span className="text-[11px] block text-violet-400 font-normal leading-none">{stats.impactStats.current.rdvRate}%</span>
                   </span>
-                  <span className="text-sm font-extrabold text-green-600 text-right">
+                  <span className="text-base font-extrabold text-green-600 text-right">
                     {stats.impactStats.current.sales}
-                    <span className="text-[9px] block text-green-400 font-normal leading-none">{stats.impactStats.current.salesRate}%</span>
+                    <span className="text-[11px] block text-green-400 font-normal leading-none">{stats.impactStats.current.salesRate}%</span>
                   </span>
-                  <span className="text-sm font-extrabold text-bleu text-right">{formatEuros(stats.impactStats.current.margin)}</span>
                 </div>
               </div>
               <p className="text-[10px] text-gray-400 mt-2 italic px-1">
