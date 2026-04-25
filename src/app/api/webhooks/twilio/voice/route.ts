@@ -46,10 +46,14 @@ export async function POST(req: NextRequest) {
       const prospect = await prisma.prospect.findFirst({
         where: { userId: user.id, phone: normalizedPhone },
       });
-      const title = "Appel entrant";
+      // Titre = source de l'appel, toujours visible en gros sur la notif.
+      // Identifie immédiatement un prospect leboncoin tracké par BoosterVO,
+      // même au tout 1er appel quand on n'a pas encore le nom du prospect.
+      const title = "Appel entrant — BVO-leboncoin";
+      // Corps = numéro + nom si on l'a déjà (rappel d'un prospect existant qualifié).
       const body = prospect?.name
         ? `${prospect.name} · ${normalizedPhone}`
-        : `Appel de ${normalizedPhone}`;
+        : normalizedPhone;
       const url = prospect ? `/app/rappels/${prospect.id}` : "/app/rappels";
       sendPushToUser(user.id, {
         title,
