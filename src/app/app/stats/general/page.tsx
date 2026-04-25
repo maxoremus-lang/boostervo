@@ -264,13 +264,13 @@ export default function StatsGeneralPage() {
                 meta={`Total des appels entrants de prospects sur cette période`}
               />
 
-              {/* Étape 2 : Décrochés immédiatement */}
+              {/* Étape 2 : Décrochés directs */}
               <FunnelStep
                 iconBg="bg-green-600"
                 iconText="direct"
                 number={stats.directPickupsCount}
                 outOf={stats.incomingCalls}
-                label="Décrochés immédiatement"
+                label="Décrochés directs"
                 pctBadge={{ pct: stats.incomingCalls > 0 ? Math.round((stats.directPickupsCount / stats.incomingCalls) * 100) : 0, color: "green" }}
                 barColor="bg-green-500"
                 barPct={stats.incomingCalls > 0 ? (stats.directPickupsCount / stats.incomingCalls) * 100 : 0}
