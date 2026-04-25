@@ -44,12 +44,13 @@ const periodSubtitle: Record<Exclude<Period, "custom">, string> = {
   all: "Tout l'historique",
 };
 
+// Couleurs alignées avec celles utilisées sur la page délai de rappel.
 const BUCKET_COLORS: Record<string, { dot: string }> = {
   direct:     { dot: "bg-emerald-500" },
   lt5min:     { dot: "bg-green-500" },
-  "5to30min": { dot: "bg-lime-500" },
-  "30minTo2h":{ dot: "bg-orange-500" },
-  gt2h:       { dot: "bg-red-500" },
+  "5to30min": { dot: "bg-orange-500" },
+  "30minTo2h":{ dot: "bg-red-500" },
+  gt2h:       { dot: "bg-red-700" },
 };
 
 /** Formatte YYYY-MM-DD → 12 avr. 26 */
@@ -338,31 +339,23 @@ export default function StatsImpactFinancierPage() {
           <div className="mx-5 mt-5">
             <p className="text-xs uppercase font-semibold text-gray-500 mb-2">Performance par tranche</p>
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              <div className="grid grid-cols-[1fr_40px_56px_56px_80px] gap-1.5 px-3 py-2 bg-gray-50 text-xs font-bold text-gray-500 uppercase">
+              <div className="grid grid-cols-[1fr_48px_64px_88px] gap-1.5 px-3 py-2 bg-gray-50 text-xs font-bold text-gray-500 uppercase">
                 <span>Canal</span>
                 <span className="text-right">Vol.</span>
-                <span className="text-right text-violet-700">RDV</span>
                 <span className="text-right text-green-700">Vtes</span>
                 <span className="text-right">Marge</span>
               </div>
               <div className="divide-y divide-gray-100">
                 {i.distribution.map((b) => {
                   const color = BUCKET_COLORS[b.key]?.dot ?? "bg-gray-400";
-                  const rdvPct = b.rappels > 0 ? Math.round((b.rdvs / b.rappels) * 100) : 0;
                   const ventesPct = b.rappels > 0 ? Math.round((b.ventes / b.rappels) * 100) : 0;
                   return (
-                    <div key={b.key} className="grid grid-cols-[1fr_40px_56px_56px_80px] gap-1.5 px-3 py-2.5 items-center">
+                    <div key={b.key} className="grid grid-cols-[1fr_48px_64px_88px] gap-1.5 px-3 py-2.5 items-center">
                       <div className="flex items-center gap-1.5 min-w-0">
                         <span className={`w-2 h-2 rounded-full flex-shrink-0 ${color}`}></span>
                         <span className="text-base font-semibold truncate">{b.label}</span>
                       </div>
                       <span className="text-base font-bold text-gray-700 text-right">{b.rappels}</span>
-                      <span className="text-base font-bold text-violet-600 text-right">
-                        {b.rdvs}
-                        {b.rappels > 0 && (
-                          <span className="text-[11px] block text-violet-400 font-normal leading-none">{rdvPct}%</span>
-                        )}
-                      </span>
                       <span className="text-base font-bold text-green-600 text-right">
                         {b.ventes}
                         {b.rappels > 0 && (
@@ -376,13 +369,9 @@ export default function StatsImpactFinancierPage() {
                   );
                 })}
               </div>
-              <div className="grid grid-cols-[1fr_40px_56px_56px_80px] gap-1.5 px-3 py-2.5 bg-gray-50 border-t border-gray-200 items-center">
+              <div className="grid grid-cols-[1fr_48px_64px_88px] gap-1.5 px-3 py-2.5 bg-gray-50 border-t border-gray-200 items-center">
                 <span className="text-base font-extrabold text-gray-700">Total</span>
                 <span className="text-base font-extrabold text-gray-700 text-right">{i.totalCallbacks}</span>
-                <span className="text-base font-extrabold text-violet-700 text-right">
-                  {i.current.rdvs}
-                  <span className="text-[11px] block text-violet-400 font-normal leading-none">{i.current.rdvRate}%</span>
-                </span>
                 <span className="text-base font-extrabold text-green-600 text-right">
                   {i.current.sales}
                   <span className="text-[11px] block text-green-400 font-normal leading-none">{i.current.salesRate}%</span>
@@ -391,7 +380,7 @@ export default function StatsImpactFinancierPage() {
               </div>
             </div>
             <p className="text-[10px] text-gray-400 mt-2 italic px-1">
-              % = taux de transformation par tranche (🟣 RDV · 🟢 Ventes).
+              % = taux de transformation en vente par tranche.
             </p>
           </div>
 
