@@ -205,14 +205,14 @@ const IMPACT_BUCKETS = [
     label: "< 5 min",
     count: 50,
     delayMinRange: [1, 4],
-    // 30% ventes, 40% RDV (= appointment + test_drive + quote_sent), 30% autres
+    // 20% ventes, 30% RDV (= appointment + test_drive + quote_sent), 50% autres
     statusPool: [
-      ...Array(15).fill("sold"),
-      ...Array(12).fill("appointment"),
-      ...Array(6).fill("test_drive"),
+      ...Array(10).fill("sold"),
+      ...Array(9).fill("appointment"),
+      ...Array(4).fill("test_drive"),
       ...Array(2).fill("quote_sent"),
-      ...Array(11).fill("not_interested"),
-      ...Array(4).fill("postponed"),
+      ...Array(20).fill("not_interested"),
+      ...Array(5).fill("postponed"),
     ],
   },
   {
