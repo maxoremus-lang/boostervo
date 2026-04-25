@@ -69,6 +69,14 @@ function formatEuros(amount: number): string {
   return `${amount.toLocaleString("fr-FR")} €`;
 }
 
+/** Formate un montant en k€ avec une décimale si nécessaire (ex: 12 k€, 8,3 k€). */
+function formatKEuros(amount: number): string {
+  if (amount === 0) return "—";
+  if (amount < 1000) return `${amount} €`;
+  const rounded = Math.round((amount / 1000) * 10) / 10;
+  return `${rounded.toString().replace(".", ",")} k€`;
+}
+
 export default function StatsImpactFinancierPage() {
   const [period, setPeriod] = useState<Period>("month");
   const [customFrom, setCustomFrom] = useState<string>("");
@@ -283,21 +291,21 @@ export default function StatsImpactFinancierPage() {
                 <p className="text-[10px] text-gray-400 mb-2">Taux calculés sur les {i.totalCallbacks} conversations abouties</p>
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold w-16">Décrochés</span>
+                    <div
+                      className="h-5 bg-bleu/70 rounded text-white text-[11px] font-bold flex items-center justify-end pr-2"
+                      style={{ width: `${Math.max((directs / maxLabel) * 100, 10)}%` }}
+                    >
+                      {directs}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold w-16">Rappels</span>
                     <div
                       className="h-5 bg-bleu/70 rounded text-white text-[11px] font-bold flex items-center justify-end pr-2"
                       style={{ width: `${Math.max((rappels / maxLabel) * 100, 10)}%` }}
                     >
                       {rappels}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold w-16">Directs</span>
-                    <div
-                      className="h-5 bg-bleu/70 rounded text-white text-[11px] font-bold flex items-center justify-end pr-2"
-                      style={{ width: `${Math.max((directs / maxLabel) * 100, 10)}%` }}
-                    >
-                      {directs}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -339,7 +347,7 @@ export default function StatsImpactFinancierPage() {
           <div className="mx-5 mt-5">
             <p className="text-xs uppercase font-semibold text-gray-500 mb-2">Performance par tranche</p>
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              <div className="grid grid-cols-[1fr_48px_64px_88px] gap-1.5 px-3 py-2 bg-gray-50 text-xs font-bold text-gray-500 uppercase">
+              <div className="grid grid-cols-[1fr_48px_64px_60px] gap-1.5 px-3 py-2 bg-gray-50 text-xs font-bold text-gray-500 uppercase">
                 <span>Canal</span>
                 <span className="text-right">Vol.</span>
                 <span className="text-right text-green-700">Vtes</span>
@@ -350,7 +358,7 @@ export default function StatsImpactFinancierPage() {
                   const color = BUCKET_COLORS[b.key]?.dot ?? "bg-gray-400";
                   const ventesPct = b.rappels > 0 ? Math.round((b.ventes / b.rappels) * 100) : 0;
                   return (
-                    <div key={b.key} className="grid grid-cols-[1fr_48px_64px_88px] gap-1.5 px-3 py-2.5 items-center">
+                    <div key={b.key} className="grid grid-cols-[1fr_48px_64px_60px] gap-1.5 px-3 py-2.5 items-center">
                       <div className="flex items-center gap-1.5 min-w-0">
                         <span className={`w-2 h-2 rounded-full flex-shrink-0 ${color}`}></span>
                         <span className="text-base font-semibold truncate">{b.label}</span>
@@ -363,20 +371,20 @@ export default function StatsImpactFinancierPage() {
                         )}
                       </span>
                       <span className="text-base font-extrabold text-bleu text-right">
-                        {b.marge > 0 ? formatEuros(b.marge) : "—"}
+                        {formatKEuros(b.marge)}
                       </span>
                     </div>
                   );
                 })}
               </div>
-              <div className="grid grid-cols-[1fr_48px_64px_88px] gap-1.5 px-3 py-2.5 bg-gray-50 border-t border-gray-200 items-center">
+              <div className="grid grid-cols-[1fr_48px_64px_60px] gap-1.5 px-3 py-2.5 bg-gray-50 border-t border-gray-200 items-center">
                 <span className="text-base font-extrabold text-gray-700">Total</span>
                 <span className="text-base font-extrabold text-gray-700 text-right">{i.totalCallbacks}</span>
                 <span className="text-base font-extrabold text-green-600 text-right">
                   {i.current.sales}
                   <span className="text-[11px] block text-green-400 font-normal leading-none">{i.current.salesRate}%</span>
                 </span>
-                <span className="text-base font-extrabold text-bleu text-right">{formatEuros(i.current.margin)}</span>
+                <span className="text-base font-extrabold text-bleu text-right">{formatKEuros(i.current.margin)}</span>
               </div>
             </div>
             <p className="text-[10px] text-gray-400 mt-2 italic px-1">
