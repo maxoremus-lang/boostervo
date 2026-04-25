@@ -21,10 +21,15 @@ function PhoneIcon() {
 export default function SignupPage() {
   const router = useRouter();
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [dealership, setDealership] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [dealership, setDealership] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [website, setWebsite] = useState("");
+  const [twilioNumber, setTwilioNumber] = useState("");
+  const [forwardPhone, setForwardPhone] = useState("");
   const [averageMarginVo, setAverageMarginVo] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,8 +46,13 @@ export default function SignupPage() {
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
           password,
-          name: name.trim(),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           dealership: dealership.trim(),
+          mobile: mobile.trim(),
+          website: website.trim(),
+          twilioNumber: twilioNumber.trim(),
+          forwardPhone: forwardPhone.trim(),
           averageMarginVo: parseFloat(averageMarginVo),
         }),
       });
@@ -63,7 +73,6 @@ export default function SignupPage() {
         window.location.href = "/app/dashboard";
         return;
       }
-      // Fallback : rediriger vers login
       router.push("/app/login");
     } catch {
       setError("Erreur réseau. Vérifiez votre connexion.");
@@ -85,18 +94,36 @@ export default function SignupPage() {
             {error}
           </div>
         )}
-        <div>
-          <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Nom complet</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Jean Martin"
-            className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
-            autoComplete="name"
-            required
-          />
+
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-1">Identité</p>
+
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Prénom</label>
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="Jean"
+              className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
+              autoComplete="given-name"
+              required
+            />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Nom</label>
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Martin"
+              className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
+              autoComplete="family-name"
+              required
+            />
+          </div>
         </div>
+
         <div>
           <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Concession</label>
           <input
@@ -108,6 +135,36 @@ export default function SignupPage() {
             required
           />
         </div>
+
+        <div>
+          <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Mobile</label>
+          <input
+            type="tel"
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
+            placeholder="+33 6 12 34 56 78"
+            className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
+            autoComplete="tel"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+            Site web <span className="text-gray-400 normal-case font-normal">(optionnel)</span>
+          </label>
+          <input
+            type="url"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+            placeholder="https://concession-lyon.fr"
+            className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
+            autoComplete="url"
+          />
+        </div>
+
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-2">Connexion</p>
+
         <div>
           <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Email</label>
           <input
@@ -120,6 +177,7 @@ export default function SignupPage() {
             required
           />
         </div>
+
         <div>
           <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Mot de passe</label>
           <input
@@ -133,6 +191,43 @@ export default function SignupPage() {
             required
           />
         </div>
+
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-2">Téléphonie</p>
+
+        <div>
+          <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+            Numéro de tracking <span className="text-gray-400 normal-case font-normal">(optionnel)</span>
+          </label>
+          <input
+            type="tel"
+            value={twilioNumber}
+            onChange={(e) => setTwilioNumber(e.target.value)}
+            placeholder="+33 1 59 16 87 72"
+            className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
+          />
+          <p className="text-[11px] text-gray-400 mt-1">
+            Le numéro affiché dans vos annonces VO. Peut être renseigné plus tard depuis le Profil.
+          </p>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+            Numéro d&apos;atterrissage <span className="text-gray-400 normal-case font-normal">(optionnel)</span>
+          </label>
+          <input
+            type="tel"
+            value={forwardPhone}
+            onChange={(e) => setForwardPhone(e.target.value)}
+            placeholder="+33 4 72 00 00 00"
+            className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm"
+          />
+          <p className="text-[11px] text-gray-400 mt-1">
+            Le numéro réel de la concession où les appels sont transférés.
+          </p>
+        </div>
+
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-2">Activité</p>
+
         <div>
           <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Marge moyenne par VO (€)</label>
           <input
@@ -149,6 +244,7 @@ export default function SignupPage() {
             Utilisée pour estimer la marge générée dans les stats quand la marge réelle n&apos;est pas renseignée.
           </p>
         </div>
+
         <button
           type="submit"
           disabled={loading}

@@ -12,10 +12,16 @@ model User {
   id           String   @id @default(cuid())
   email        String   @unique
   passwordHash String
+  // name = firstName + " " + lastName — conservé pour rétro-compat (NextAuth session,
+  // affichage profil, etc.) et maintenu en sync par l'API signup.
   name         String
+  firstName    String?
+  lastName     String?
+  mobile       String?  // Mobile perso du négociant (saisi au signup)
+  website      String?  // Site web concession (saisi au signup, optionnel)
   dealership   String?
-  twilioNumber String?  // Numéro Twilio assigné au négociant
-  forwardPhone String?  // Numéro réel où transférer les appels
+  twilioNumber String?  // Numéro Twilio assigné au négociant — "Numéro de tracking"
+  forwardPhone String?  // Numéro réel où transférer les appels — "Numéro d'atterrissage"
   role         String   @default("negotiant") // "admin" | "negotiant" | "invite" | "partenaire"
   notificationSound String  @default("cloche")   // "cloche" | "sonnette"
   soundEnabled      Boolean @default(true)

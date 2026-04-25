@@ -5,8 +5,8 @@ import { prisma } from "../../../lib/prisma";
 /**
  * POST /api/signup
  * Inscription publique d'un nouveau négociant.
- * Champs obligatoires : email, password, name, dealership, averageMarginVo.
- * forwardPhone et twilioNumber sont renseignés plus tard via le Profil.
+ * Obligatoires : email, password, firstName, lastName, dealership, mobile, averageMarginVo.
+ * Optionnels  : website, twilioNumber (tracking), forwardPhone (atterrissage).
  */
 export async function POST(req: NextRequest) {
   let body: any;
@@ -18,8 +18,13 @@ export async function POST(req: NextRequest) {
 
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
   const password = typeof body.password === "string" ? body.password : "";
-  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const firstName = typeof body.firstName === "string" ? body.firstName.trim() : "";
+  const lastName = typeof body.lastName === "string" ? body.lastName.trim() : "";
   const dealership = typeof body.dealership === "string" ? body.dealership.trim() : "";
+  const mobile = typeof body.mobile === "string" ? body.mobile.trim() : "";
+  const website = typeof body.website === "string" ? body.website.trim() : "";
+  const twilioNumber = typeof body.twilioNumber === "string" ? body.twilioNumber.trim() : "";
+  const forwardPhone = typeof body.forwardPhone === "string" ? body.forwardPhone.trim() : "";
   const averageMarginVoRaw = body.averageMarginVo;
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -28,11 +33,17 @@ export async function POST(req: NextRequest) {
   if (!password || password.length < 8) {
     return NextResponse.json({ error: "Le mot de passe doit faire au moins 8 caractères" }, { status: 400 });
   }
-  if (!name) {
+  if (!firstName) {
+    return NextResponse.json({ error: "Prénom obligatoire" }, { status: 400 });
+  }
+  if (!lastName) {
     return NextResponse.json({ error: "Nom obligatoire" }, { status: 400 });
   }
   if (!dealership) {
     return NextResponse.json({ error: "Concession obligatoire" }, { status: 400 });
+  }
+  if (!mobile) {
+    return NextResponse.json({ error: "Mobile obligatoire" }, { status: 400 });
   }
   const averageMarginVo = typeof averageMarginVoRaw === "number" ? averageMarginVoRaw : parseFloat(averageMarginVoRaw);
   if (!Number.isFinite(averageMarginVo) || averageMarginVo <= 0) {
@@ -46,7 +57,20 @@ export async function POST(req: NextRequest) {
 
   const passwordHash = await hash(password, 10);
   const user = await prisma.user.create({
-    data: { email, passwordHash, name, dealership, averageMarginVo },
+    data: {
+      email,
+      passwordHash,
+      // name conservé pour rétro-compat (NextAuth, profil) — dérivé de firstName + lastName.
+      name: `${firstName} ${lastName}`,
+      firstName,
+      lastName,
+      dealership,
+      mobile,
+      website: website || null,
+      twilioNumber: twilioNumber || null,
+      forwardPhone: forwardPhone || null,
+      averageMarginVo,
+    },
   });
 
   return NextResponse.json({ ok: true, userId: user.id });
