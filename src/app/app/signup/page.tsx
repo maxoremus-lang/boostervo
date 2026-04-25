@@ -200,10 +200,13 @@ export default function SignupPage() {
 
   /* ============== VUE DESKTOP ============== */
   // fixed inset-0 pour échapper au wrapper max-w-md du layout PWA mobile.
+  // Le split-screen est ensuite contenu dans une carte max-w-6xl centrée pour
+  // éviter de s'étaler sur les grands écrans.
   const desktopView = (
-    <div className="hidden lg:flex fixed inset-0 z-50 bg-fond">
-      {/* Panneau gauche : branding */}
-      <div className="w-1/2 bg-gradient-to-br from-bleu via-bleu to-[#0d3a7a] text-white relative overflow-hidden flex flex-col justify-between p-12 xl:p-16">
+    <div className="hidden lg:flex fixed inset-0 z-50 bg-gray-50 items-center justify-center p-6 xl:p-10">
+      <div className="w-full max-w-6xl flex bg-white rounded-3xl shadow-xl overflow-hidden" style={{ height: "min(880px, calc(100vh - 80px))" }}>
+        {/* Panneau gauche : branding */}
+        <div className="w-1/2 bg-gradient-to-br from-bleu via-bleu to-[#0d3a7a] text-white relative overflow-hidden flex flex-col justify-between p-10 xl:p-12">
         <div className="relative z-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo-white.svg" alt="BoosterVO" className="h-9 w-auto" />
@@ -250,14 +253,15 @@ export default function SignupPage() {
         <div className="absolute -bottom-32 -left-20 w-96 h-96 bg-orange/10 rounded-full blur-3xl" />
       </div>
 
-      {/* Panneau droit : formulaire */}
-      <div className="w-1/2 bg-fond flex items-center justify-center py-12 px-8 xl:px-16 overflow-y-auto">
-        <div className="w-full max-w-md">
-          <div className="mb-6">
-            <h1 className="text-3xl font-nunito font-extrabold text-bleu">Créer un compte</h1>
-            <p className="text-gray-500 text-sm mt-1">Inscription négociant — quelques minutes seulement.</p>
+        {/* Panneau droit : formulaire */}
+        <div className="w-1/2 bg-white flex items-start justify-center py-10 px-8 xl:px-12 overflow-y-auto">
+          <div className="w-full max-w-md">
+            <div className="mb-5">
+              <h1 className="text-2xl xl:text-3xl font-nunito font-extrabold text-bleu">Créer un compte</h1>
+              <p className="text-gray-500 text-sm mt-1">Inscription négociant — quelques minutes seulement.</p>
+            </div>
+            {formContent}
           </div>
-          {formContent}
         </div>
       </div>
     </div>
