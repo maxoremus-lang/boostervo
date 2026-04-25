@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../lib/prisma";
+import { sendPushToUser } from "../../../../../lib/webPush";
 
 /**
  * POST /api/webhooks/twilio/voice
@@ -37,6 +38,28 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Push notif "appel entrant" envoyée en parallèle du Dial pour que le
+    // négociant voie le contexte (nom prospect, fiche en 1 tap) AVANT de décrocher.
+    // Fire-and-forget : on n'attend pas, Twilio doit recevoir le TwiML rapidement.
+    if (user.soundEnabled !== false) {
+      const normalizedPhone = from.replace(/\s/g, "");
+      const prospect = await prisma.prospect.findFirst({
+        where: { userId: user.id, phone: normalizedPhone },
+      });
+      const title = "Appel entrant";
+      const body = prospect?.name
+        ? `${prospect.name} · ${normalizedPhone}`
+        : `Appel de ${normalizedPhone}`;
+      const url = prospect ? `/app/rappels/${prospect.id}` : "/app/rappels";
+      sendPushToUser(user.id, {
+        title,
+        body,
+        url,
+        // tag unique par appel (callSid) pour ne pas écraser la notif missed précédente
+        tag: `incoming-${callSid ?? Date.now()}`,
+      }).catch((e) => console.warn("[Twilio Voice] push error", e));
+    }
+
     // TwiML : transférer vers le téléphone du négociant
     // action= reçoit DialCallStatus (no-answer, busy, completed) après la tentative
     const baseUrl = process.env.APP_URL || process.env.NEXTAUTH_URL;
@@ -50,7 +73,7 @@ export async function POST(req: NextRequest) {
     const actionUrl = new URL("/api/webhooks/twilio/status", baseUrl);
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Dial callerId="${to}" timeout="15" action="${actionUrl.toString()}" method="POST">
+  <Dial callerId="${to}" timeout="20" action="${actionUrl.toString()}" method="POST">
     ${user.forwardPhone}
   </Dial>
 </Response>`;
