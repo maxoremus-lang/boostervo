@@ -5,8 +5,9 @@ import { prisma } from "../../../lib/prisma";
 /**
  * POST /api/signup
  * Inscription publique d'un nouveau négociant.
- * Obligatoires : email, password, firstName, lastName, dealership, mobile, averageMarginVo.
- * Optionnels  : website, twilioNumber (tracking), forwardPhone (atterrissage).
+ * Obligatoires : email, password, firstName, lastName, dealership, mobile,
+ *                averageMarginVo, publicationMode.
+ * Optionnels  : website, twilioNumber (tracking), forwardPhone (n° leboncoin).
  */
 export async function POST(req: NextRequest) {
   let body: any;
@@ -26,6 +27,7 @@ export async function POST(req: NextRequest) {
   const twilioNumber = typeof body.twilioNumber === "string" ? body.twilioNumber.trim() : "";
   const forwardPhone = typeof body.forwardPhone === "string" ? body.forwardPhone.trim() : "";
   const averageMarginVoRaw = body.averageMarginVo;
+  const publicationMode = typeof body.publicationMode === "string" ? body.publicationMode : "";
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ error: "Email invalide" }, { status: 400 });
@@ -49,6 +51,9 @@ export async function POST(req: NextRequest) {
   if (!Number.isFinite(averageMarginVo) || averageMarginVo <= 0) {
     return NextResponse.json({ error: "Marge moyenne par VO invalide" }, { status: 400 });
   }
+  if (!["manual", "auto"].includes(publicationMode)) {
+    return NextResponse.json({ error: "Mode de publication obligatoire" }, { status: 400 });
+  }
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -70,6 +75,7 @@ export async function POST(req: NextRequest) {
       twilioNumber: twilioNumber || null,
       forwardPhone: forwardPhone || null,
       averageMarginVo,
+      publicationMode,
     },
   });
 
