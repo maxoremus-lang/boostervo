@@ -353,20 +353,29 @@ export default function StatsDelaiRappelPage() {
             </div>
           </div>
 
-          {/* 4 tuiles de distribution */}
-          <div className="mx-5 mt-4 grid grid-cols-4 gap-2">
-            {BUCKET_KEYS_ORDER.map(({ key, cat }) => {
-              const b = d.distribution.find((x) => x.key === key);
-              const count = b?.count ?? 0;
-              const label = b?.label ?? "";
-              return (
-                <div key={key} className="bg-white rounded-xl p-3 text-center shadow-sm">
-                  <p className={`text-xl font-nunito font-extrabold ${CATEGORY_TEXT[cat]}`}>{count}</p>
-                  <p className="text-[10px] text-gray-500 font-semibold mt-0.5">{label}</p>
-                </div>
-              );
-            })}
-          </div>
+          {/* 4 tuiles de distribution : décroché direct + 3 tranches de délai */}
+          {(() => {
+            const directCount = stats?.impactStats?.distribution.find((b) => b.key === "direct")?.rappels ?? 0;
+            const lt5 = d.distribution.find((x) => x.key === "lt5min")?.count ?? 0;
+            const lt30 = d.distribution.find((x) => x.key === "lt30min")?.count ?? 0;
+            const lt2h = d.distribution.find((x) => x.key === "lt2h")?.count ?? 0;
+            const tiles: Array<{ count: number; label: string; textClass: string }> = [
+              { count: directCount, label: "Décroché direct", textClass: "text-emerald-600" },
+              { count: lt5,         label: "< 5 min",         textClass: "text-green-600" },
+              { count: lt30,        label: "5 - 30 min",      textClass: "text-lime-600" },
+              { count: lt2h,        label: "30 min - 2 h",    textClass: "text-orange-500" },
+            ];
+            return (
+              <div className="mx-5 mt-4 grid grid-cols-4 gap-2">
+                {tiles.map((t) => (
+                  <div key={t.label} className="bg-white rounded-xl p-3 text-center shadow-sm">
+                    <p className={`text-xl font-nunito font-extrabold ${t.textClass}`}>{t.count}</p>
+                    <p className="text-[10px] text-gray-500 font-semibold mt-0.5">{t.label}</p>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
 
           {/* Taux de conversion par tranche de délai */}
           {stats?.impactStats && stats.impactStats.totalCallbacks > 0 && (
