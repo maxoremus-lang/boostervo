@@ -353,26 +353,30 @@ export default function StatsDelaiRappelPage() {
             </div>
           </div>
 
-          {/* 3 tuiles de distribution : tranches de délai de rappel */}
+          {/* 4 tuiles : décroché + 3 tranches cumulatives de délai de rappel */}
           {(() => {
+            const directCount = stats?.impactStats?.distribution.find((b) => b.key === "direct")?.rappels ?? 0;
             const lt5 = d.distribution.find((x) => x.key === "lt5min")?.count ?? 0;
             const lt30 = d.distribution.find((x) => x.key === "lt30min")?.count ?? 0;
             const lt2h = d.distribution.find((x) => x.key === "lt2h")?.count ?? 0;
             const gte2h = d.distribution.find((x) => x.key === "gte2h")?.count ?? 0;
             const gt5min = lt30 + lt2h + gte2h;
             const gt30min = lt2h + gte2h;
-            const tiles: Array<{ count: number; label: string; textClass: string }> = [
-              { count: lt5,     label: "< 5 min",  textClass: "text-green-600" },
-              { count: gt5min,  label: "> 5 min",  textClass: "text-orange-500" },
-              { count: gt30min, label: "> 30 min", textClass: "text-red-500" },
+            const tiles: Array<{ count: number; label: string; sub: string; textClass: string }> = [
+              { count: directCount, label: "Décroché", sub: "",       textClass: "text-emerald-600" },
+              { count: lt5,         label: "< 5 min",  sub: "rappel", textClass: "text-green-600" },
+              { count: gt5min,      label: "> 5 min",  sub: "rappel", textClass: "text-orange-500" },
+              { count: gt30min,     label: "> 30 min", sub: "rappel", textClass: "text-red-500" },
             ];
             return (
-              <div className="mx-5 mt-4 grid grid-cols-3 gap-2">
+              <div className="mx-5 mt-4 grid grid-cols-4 gap-2">
                 {tiles.map((t) => (
                   <div key={t.label} className="bg-white rounded-xl p-3 text-center shadow-sm">
                     <p className={`text-xl font-nunito font-extrabold ${t.textClass}`}>{t.count}</p>
                     <p className="text-[10px] text-gray-500 font-semibold mt-0.5 leading-tight">{t.label}</p>
-                    <p className="text-[10px] text-gray-500 font-semibold leading-tight">rappel</p>
+                    {t.sub && (
+                      <p className="text-[10px] text-gray-500 font-semibold leading-tight">{t.sub}</p>
+                    )}
                   </div>
                 ))}
               </div>
