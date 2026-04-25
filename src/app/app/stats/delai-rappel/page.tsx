@@ -371,10 +371,10 @@ export default function StatsDelaiRappelPage() {
                 {tiles.map((t) => (
                   <div key={t.label} className="bg-white rounded-xl p-3 text-center shadow-sm">
                     <p className={`text-xl font-nunito font-extrabold ${t.textClass}`}>{t.count}</p>
-                    <p className="text-[10px] text-gray-500 font-semibold mt-0.5 leading-tight">{t.label}</p>
                     {t.sub && (
-                      <p className="text-[10px] text-gray-500 font-semibold leading-tight">{t.sub}</p>
+                      <p className="text-[10px] text-gray-500 font-semibold mt-0.5 leading-tight">{t.sub}</p>
                     )}
+                    <p className={`text-[10px] text-gray-500 font-semibold leading-tight${t.sub ? "" : " mt-0.5"}`}>{t.label}</p>
                   </div>
                 ))}
               </div>
