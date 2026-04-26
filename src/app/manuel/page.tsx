@@ -19,6 +19,8 @@ type StepProps = {
   outro?: string;
   imageSrc: string;
   imageAlt: string;
+  imageWidth: number;
+  imageHeight: number;
   reverse?: boolean;
   bgClass?: string;
 };
@@ -32,6 +34,8 @@ function Step({
   outro,
   imageSrc,
   imageAlt,
+  imageWidth,
+  imageHeight,
   reverse = false,
   bgClass = "bg-white",
 }: StepProps) {
@@ -99,13 +103,13 @@ function Step({
 
           {/* Image mobile */}
           <div className="lg:w-1/2 flex justify-center">
-            <div className="relative w-full max-w-[280px] sm:max-w-[320px]">
-              <div className="rounded-[2.5rem] overflow-hidden shadow-2xl border-[6px] border-bleu/10 bg-white">
+            <div className="relative w-full max-w-[280px] sm:max-w-[340px]">
+              <div className="rounded-3xl overflow-hidden shadow-2xl bg-white">
                 <Image
                   src={imageSrc}
                   alt={imageAlt}
-                  width={1170}
-                  height={2532}
+                  width={imageWidth}
+                  height={imageHeight}
                   className="w-full h-auto"
                   priority={number <= 2}
                 />
@@ -171,6 +175,8 @@ export default function ManuelPage() {
           outro="Plus de « je rappelle après » — car dans votre métier, « après » veut souvent dire « trop tard »."
           imageSrc="/manuel/dashboard.png"
           imageAlt="Dashboard BoosterVO — flux d'appels en temps réel"
+          imageWidth={715}
+          imageHeight={1547}
           bgClass="bg-fond"
         />
 
@@ -189,6 +195,8 @@ export default function ManuelPage() {
           outro="Un tap, et la fiche est enregistrée. Votre pipeline commercial se construit tout seul — chaque qualification alimente automatiquement vos statistiques BoosterVO et votre CRM."
           imageSrc="/manuel/qualification.png"
           imageAlt="Fiche de qualification rapide d'un prospect"
+          imageWidth={417}
+          imageHeight={905}
           reverse
         />
 
@@ -207,6 +215,8 @@ export default function ManuelPage() {
           outro="Le constat est simple : l'app mesure et vous optimisez. En décrochant immédiatement, vous convertissez 3× mieux qu'un rappel tardif."
           imageSrc="/manuel/stats-general.png"
           imageAlt="Statistiques générales — tunnel de conversion"
+          imageWidth={310}
+          imageHeight={854}
           bgClass="bg-fond"
         />
 
@@ -233,6 +243,8 @@ export default function ManuelPage() {
           outro="Mesurer, optimiser, vendre plus."
           imageSrc="/manuel/stats-delai.png"
           imageAlt="Statistiques délai de rappel"
+          imageWidth={312}
+          imageHeight={854}
           reverse
         />
 
@@ -253,6 +265,8 @@ export default function ManuelPage() {
           outro="Réponse : un chiffre précis, en euros."
           imageSrc="/manuel/stats-impact.png"
           imageAlt="Statistiques impact financier — manque à gagner"
+          imageWidth={315}
+          imageHeight={871}
           bgClass="bg-fond"
         />
 
