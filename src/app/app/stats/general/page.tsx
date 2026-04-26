@@ -260,8 +260,8 @@ export default function StatsGeneralPage() {
                 iconBg="bg-bleu"
                 iconText="total"
                 number={stats.incomingCalls}
-                label="Appels reçus"
-                meta={`Total des appels entrants de prospects sur cette période`}
+                label="Appels de prospect unique"
+                meta={`Nombre de prospects uniques ayant tenté de vous joindre sur cette période`}
               />
 
               {/* Étape 2 : Décrochés directs */}
