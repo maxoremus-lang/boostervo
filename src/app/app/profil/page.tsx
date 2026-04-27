@@ -96,8 +96,22 @@ export default function ProfilPage() {
           ) : me ? (
             <>
               <Row label="Email" value={me.email} />
-              <Row label="Numéro BoosterVO" value={me.twilioNumber ?? "Non configuré"} />
-              <Row label="Numéro de transfert" value={me.forwardPhone ?? "Non configuré"} />
+              <EditablePhoneRow
+                label="Numéro BoosterVO"
+                value={me.twilioNumber}
+                field="twilioNumber"
+                onSaved={(v) =>
+                  setMe((prev) => (prev ? { ...prev, twilioNumber: v } : prev))
+                }
+              />
+              <EditablePhoneRow
+                label="Numéro de transfert"
+                value={me.forwardPhone}
+                field="forwardPhone"
+                onSaved={(v) =>
+                  setMe((prev) => (prev ? { ...prev, forwardPhone: v } : prev))
+                }
+              />
               {me.dealership && <Row label="Concession" value={me.dealership} />}
               {me.role === "admin" && <Row label="Rôle" value="Administrateur" />}
             </>
@@ -208,6 +222,109 @@ function Row({ label, value }: { label: string; value: string }) {
     <div className="px-4 py-3">
       <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">{label}</p>
       <p className="text-sm font-semibold mt-0.5">{value}</p>
+    </div>
+  );
+}
+
+function EditablePhoneRow({
+  label,
+  value,
+  field,
+  onSaved,
+}: {
+  label: string;
+  value: string | null;
+  field: "twilioNumber" | "forwardPhone";
+  onSaved: (newValue: string | null) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value ?? "");
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  const startEdit = () => {
+    setDraft(value ?? "");
+    setErr(null);
+    setEditing(true);
+  };
+
+  const cancel = () => {
+    setEditing(false);
+    setErr(null);
+  };
+
+  const save = async () => {
+    setSaving(true);
+    setErr(null);
+    try {
+      const res = await fetch("/api/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [field]: draft.trim() }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setErr(typeof data?.error === "string" ? data.error : "Erreur");
+        setSaving(false);
+        return;
+      }
+      onSaved((data?.[field] as string | null) ?? null);
+      setEditing(false);
+    } catch {
+      setErr("Erreur réseau");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="px-4 py-3">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">{label}</p>
+        {!editing && (
+          <button
+            type="button"
+            onClick={startEdit}
+            className="text-[11px] font-semibold text-bleu underline underline-offset-2"
+          >
+            Modifier
+          </button>
+        )}
+      </div>
+      {editing ? (
+        <div className="mt-1.5 space-y-2">
+          <input
+            type="tel"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="+33XXXXXXXXX"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-bleu"
+            disabled={saving}
+            autoFocus
+          />
+          {err && <p className="text-[11px] text-red-600">{err}</p>}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={save}
+              disabled={saving}
+              className="flex-1 bg-bleu text-white text-sm font-semibold rounded-lg py-2 disabled:opacity-50"
+            >
+              {saving ? "Enregistrement…" : "Enregistrer"}
+            </button>
+            <button
+              type="button"
+              onClick={cancel}
+              disabled={saving}
+              className="flex-1 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg py-2 disabled:opacity-50"
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      ) : (
+        <p className="text-sm font-semibold mt-0.5">{value ?? "Non configuré"}</p>
+      )}
     </div>
   );
 }
