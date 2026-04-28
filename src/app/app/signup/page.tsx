@@ -213,7 +213,7 @@ export default function SignupPage() {
         </div>
 
         <div className="relative z-10 max-w-md">
-          <h2 className="text-2xl xl:text-3xl font-nunito font-extrabold leading-tight">
+          <h2 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight">
             Faites partie des 50 Pros sélectionnés<br />
             pour tester gratuitement l&apos;app BoosterVO.
           </h2>
