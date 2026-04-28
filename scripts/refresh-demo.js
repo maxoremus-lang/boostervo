@@ -15,33 +15,268 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 // ============ POOLS ============
+// Tous les prospects sont qualifiés par un agent IA vocal qui prend l'appel en
+// premier — donc chaque prospect a un prénom et un VO identifié, même ceux qui
+// n'ont jamais été rappelés (Groupe A "missed only"). Les pools doivent être
+// >= au nombre total de prospects par user (~200) pour garantir l'unicité.
 const FIRST_NAMES = [
   "Marc","Sophie","Karim","Élise","Thomas","Pascale","Patrick","Julien","Laurent","Céline",
   "Nicolas","Isabelle","Vincent","Marie","Pierre","Amélie","Stéphane","Nathalie","Fabien","Julie",
   "Olivier","Caroline","Bruno","Valérie","Christophe","Sandrine","Sébastien","Laure","Cédric","Virginie",
   "David","Aurélie","Damien","Émilie","Xavier","Claire","Romain","Léa","Anthony","Charlotte",
-];
-const LAST_NAMES = [
-  "Dubois","Leroy","Benali","Moreau","Girard","Durand","Roche","Fabre","Martin","Bernard",
-  "Petit","Robert","Richard","Lefebvre","Garcia","Michel","David","Laurent","Thomas","Rousseau",
-  "Vincent","Muller","Lefevre","Faure","Blanc","Guerin","Boyer","Garnier","Chevalier","Francois",
+  "Alain","Alice","Alexandre","Alexandra","Alexis","Alban","Aline","Anaïs","André","Andréa",
+  "Antoine","Arnaud","Audrey","Aurélien","Axel","Bastien","Bénédicte","Benoît","Bertrand","Brigitte",
+  "Camille","Cécile","Charles","Christelle","Christian","Christine","Clément","Clémence","Constance","Corinne",
+  "Cyril","Delphine","Denis","Didier","Dimitri","Dominique","Édouard","Éric","Estelle","Étienne",
+  "Eugène","Évelyne","Fabrice","Fanny","Florent","Florence","Florian","Franck","Françoise","Frédéric",
+  "Gabriel","Gaëlle","Gaétan","Geneviève","Geoffrey","Georges","Gérard","Gilbert","Gilles","Grégory",
+  "Guillaume","Hélène","Henri","Hervé","Hugo","Hugues","Inès","Ingrid","Ismaël","Jacqueline",
+  "Jacques","Jean","Jeanne","Jérémy","Jérôme","Joël","Jonathan","Joséphine","Joseph","Judith",
+  "Justine","Karine","Kévin","Léon","Léonard","Lila","Lilian","Lina","Lisa","Loïc",
+  "Lola","Louis","Louise","Lucas","Lucie","Lucien","Ludovic","Madeleine","Magali","Manon",
+  "Marcel","Marina","Marjorie","Mathieu","Mathilde","Maud","Maurice","Maxence","Maxime","Mélanie",
+  "Michel","Mickaël","Mireille","Morgane","Muriel","Nadia","Nadine","Nathan","Noé","Nora",
+  "Norbert","Odile","Paola","Patrice","Paul","Pauline","Philippe","Quentin","Rachid","Raphaël",
+  "Régine","Régis","Rémi","Renaud","René","Robert","Roland","Rose","Roxane","Sabine",
+  "Sabrina","Salomé","Samuel","Sara","Serge","Simon","Solène","Stéphanie","Suzanne","Sylvain",
+  "Sylvie","Tania","Tanguy","Théo","Théodore","Thierry","Tiffany","Timothée","Tristan","Ulysse",
+  "Valentin","Valentine","Vanessa","Véronique","Victor","Victoire","Yann","Yannick","Yasmine","Yves",
+  "Zoé","Zoubir","Adrien","Adèle","Aïcha","Albane","Amine","Apolline","Armand","Aurore",
+  "Bilal","Capucine","Célia","Chloé","Coralie","Corentin","Diane","Dorian","Eléonore","Elsa",
+  "Emma","Enzo","Erwan","Eva","Gauthier","Hadrien","Iris","Jade","Jules","Léna",
 ];
 const VEHICLES = [
+  // Peugeot
+  { model: "Peugeot 108", price: 9900 },
   { model: "Peugeot 208", price: 12900 },
   { model: "Peugeot 2008", price: 18500 },
+  { model: "Peugeot 308", price: 17500 },
   { model: "Peugeot 3008 GT", price: 24990 },
+  { model: "Peugeot 5008", price: 26500 },
+  { model: "Peugeot 408", price: 28900 },
+  { model: "Peugeot 508", price: 24500 },
+  { model: "Peugeot Rifter", price: 19900 },
+  // Citroën
+  { model: "Citroën C1", price: 8900 },
   { model: "Citroën C3", price: 14500 },
+  { model: "Citroën C3 Aircross", price: 16900 },
   { model: "Citroën C4", price: 17900 },
+  { model: "Citroën C5 Aircross", price: 23500 },
+  { model: "Citroën C5 X", price: 28500 },
+  { model: "Citroën Berlingo", price: 18900 },
+  // Renault
+  { model: "Renault Twingo", price: 9500 },
   { model: "Renault Clio", price: 13500 },
   { model: "Renault Captur", price: 17900 },
+  { model: "Renault Mégane", price: 18500 },
+  { model: "Renault Kadjar", price: 19900 },
+  { model: "Renault Arkana", price: 24500 },
+  { model: "Renault Austral", price: 28900 },
+  { model: "Renault Scénic", price: 21500 },
+  { model: "Renault Espace", price: 32500 },
+  { model: "Renault Trafic", price: 22900 },
+  { model: "Renault Kangoo", price: 16500 },
+  // Dacia
   { model: "Dacia Sandero", price: 11200 },
+  { model: "Dacia Logan", price: 11900 },
   { model: "Dacia Duster", price: 16900 },
+  { model: "Dacia Jogger", price: 17500 },
+  { model: "Dacia Spring", price: 14500 },
+  // Volkswagen
   { model: "VW Polo", price: 15800 },
   { model: "VW Golf", price: 18500 },
+  { model: "VW T-Cross", price: 19900 },
+  { model: "VW T-Roc", price: 22500 },
+  { model: "VW Tiguan", price: 27500 },
+  { model: "VW Passat", price: 24900 },
+  { model: "VW Arteon", price: 32500 },
+  { model: "VW Touran", price: 21500 },
+  { model: "VW Touareg", price: 38500 },
+  { model: "VW ID.3", price: 28500 },
+  { model: "VW ID.4", price: 32900 },
+  // Audi
+  { model: "Audi A1", price: 17900 },
+  { model: "Audi A3", price: 22900 },
+  { model: "Audi A4", price: 28500 },
+  { model: "Audi A5", price: 32900 },
+  { model: "Audi A6", price: 36500 },
+  { model: "Audi Q2", price: 24500 },
+  { model: "Audi Q3", price: 28900 },
+  { model: "Audi Q5", price: 36500 },
+  { model: "Audi Q7", price: 48900 },
+  { model: "Audi Q8", price: 58500 },
+  { model: "Audi e-tron", price: 52900 },
+  // BMW
+  { model: "BMW Série 1", price: 22500 },
+  { model: "BMW Série 2", price: 26900 },
+  { model: "BMW Série 3", price: 32900 },
+  { model: "BMW Série 4", price: 38500 },
+  { model: "BMW Série 5", price: 42500 },
+  { model: "BMW X1", price: 28900 },
+  { model: "BMW X2", price: 30500 },
+  { model: "BMW X3", price: 38500 },
+  { model: "BMW X4", price: 42900 },
+  { model: "BMW X5", price: 52500 },
+  { model: "BMW X6", price: 58900 },
+  { model: "BMW i3", price: 24500 },
+  { model: "BMW i4", price: 48500 },
+  { model: "BMW M3", price: 68500 },
+  // Mercedes
+  { model: "Mercedes Classe A", price: 24500 },
+  { model: "Mercedes Classe B", price: 26900 },
+  { model: "Mercedes Classe C", price: 34500 },
+  { model: "Mercedes Classe E", price: 42500 },
+  { model: "Mercedes GLA", price: 28500 },
+  { model: "Mercedes GLB", price: 32900 },
+  { model: "Mercedes GLC", price: 42500 },
+  { model: "Mercedes GLE", price: 52900 },
+  { model: "Mercedes GLS", price: 68500 },
+  { model: "Mercedes EQA", price: 38500 },
+  { model: "Mercedes EQB", price: 42900 },
+  // Toyota
   { model: "Toyota Yaris", price: 13400 },
+  { model: "Toyota Aygo", price: 9900 },
+  { model: "Toyota Corolla", price: 19500 },
+  { model: "Toyota C-HR", price: 22900 },
+  { model: "Toyota RAV4", price: 28500 },
+  { model: "Toyota Camry", price: 32500 },
+  { model: "Toyota Land Cruiser", price: 48900 },
+  { model: "Toyota Hilux", price: 32500 },
+  { model: "Toyota Yaris Cross", price: 18900 },
+  // Ford
+  { model: "Ford Fiesta", price: 12900 },
+  { model: "Ford Focus", price: 17500 },
   { model: "Ford Puma", price: 19500 },
+  { model: "Ford Kuga", price: 24900 },
+  { model: "Ford Mondeo", price: 22500 },
+  { model: "Ford Mustang", price: 42500 },
+  { model: "Ford EcoSport", price: 16900 },
+  { model: "Ford Edge", price: 32900 },
+  // Opel
   { model: "Opel Corsa", price: 13900 },
+  { model: "Opel Astra", price: 17500 },
+  { model: "Opel Mokka", price: 19900 },
+  { model: "Opel Crossland", price: 16500 },
+  { model: "Opel Grandland", price: 24900 },
+  { model: "Opel Insignia", price: 22500 },
+  { model: "Opel Combo", price: 17900 },
+  // Fiat
   { model: "Fiat 500", price: 12500 },
+  { model: "Fiat 500X", price: 16500 },
+  { model: "Fiat 500L", price: 14900 },
+  { model: "Fiat Panda", price: 9900 },
+  { model: "Fiat Tipo", price: 13500 },
+  { model: "Fiat Doblo", price: 17900 },
+  // Hyundai
+  { model: "Hyundai i10", price: 10500 },
+  { model: "Hyundai i20", price: 13900 },
+  { model: "Hyundai i30", price: 17500 },
+  { model: "Hyundai Kona", price: 19900 },
+  { model: "Hyundai Tucson", price: 24500 },
+  { model: "Hyundai Santa Fe", price: 32900 },
+  { model: "Hyundai Bayon", price: 17500 },
+  { model: "Hyundai Ioniq 5", price: 38500 },
+  // Kia
+  { model: "Kia Picanto", price: 10900 },
+  { model: "Kia Rio", price: 13500 },
+  { model: "Kia Ceed", price: 17900 },
+  { model: "Kia Stonic", price: 16500 },
+  { model: "Kia Sportage", price: 24900 },
+  { model: "Kia Niro", price: 22500 },
+  { model: "Kia Sorento", price: 38900 },
+  { model: "Kia EV6", price: 42500 },
+  // Nissan
+  { model: "Nissan Micra", price: 13500 },
+  { model: "Nissan Juke", price: 18900 },
+  { model: "Nissan Qashqai", price: 22500 },
+  { model: "Nissan X-Trail", price: 28900 },
+  { model: "Nissan Leaf", price: 24500 },
+  { model: "Nissan Ariya", price: 38900 },
+  { model: "Nissan Note", price: 14500 },
+  // Skoda
+  { model: "Skoda Fabia", price: 13900 },
+  { model: "Skoda Scala", price: 17500 },
+  { model: "Skoda Kamiq", price: 18900 },
+  { model: "Skoda Karoq", price: 22500 },
+  { model: "Skoda Kodiaq", price: 32500 },
+  { model: "Skoda Octavia", price: 19900 },
+  { model: "Skoda Superb", price: 26900 },
+  { model: "Skoda Enyaq", price: 38500 },
+  // SEAT
+  { model: "SEAT Ibiza", price: 13500 },
+  { model: "SEAT Leon", price: 17900 },
+  { model: "SEAT Arona", price: 17500 },
+  { model: "SEAT Ateca", price: 22500 },
+  { model: "SEAT Tarraco", price: 28900 },
+  // Mini
+  { model: "Mini Cooper", price: 19500 },
+  { model: "Mini Countryman", price: 24900 },
+  { model: "Mini Clubman", price: 22500 },
+  { model: "Mini Cabrio", price: 26500 },
+  // Volvo
+  { model: "Volvo V60", price: 28500 },
+  { model: "Volvo V90", price: 38500 },
+  { model: "Volvo S60", price: 27900 },
+  { model: "Volvo S90", price: 36500 },
+  { model: "Volvo XC40", price: 32900 },
+  { model: "Volvo XC60", price: 38900 },
+  { model: "Volvo XC90", price: 52500 },
+  { model: "Volvo EX30", price: 36500 },
+  // Tesla
+  { model: "Tesla Model 3", price: 38900 },
+  { model: "Tesla Model Y", price: 42500 },
+  { model: "Tesla Model S", price: 78500 },
+  // Mazda
+  { model: "Mazda 2", price: 14500 },
+  { model: "Mazda 3", price: 19900 },
+  { model: "Mazda CX-3", price: 18500 },
+  { model: "Mazda CX-30", price: 22500 },
+  { model: "Mazda CX-5", price: 28900 },
+  { model: "Mazda MX-5", price: 28500 },
+  // Honda
+  { model: "Honda Jazz", price: 16500 },
+  { model: "Honda Civic", price: 21500 },
+  { model: "Honda HR-V", price: 22900 },
+  { model: "Honda CR-V", price: 28500 },
+  // Suzuki
+  { model: "Suzuki Swift", price: 13500 },
+  { model: "Suzuki Vitara", price: 19500 },
+  { model: "Suzuki S-Cross", price: 21900 },
+  { model: "Suzuki Jimny", price: 18900 },
+  // Alfa Romeo
+  { model: "Alfa Romeo Giulia", price: 32500 },
+  { model: "Alfa Romeo Stelvio", price: 38900 },
+  { model: "Alfa Romeo Tonale", price: 28500 },
+  // Cupra
+  { model: "Cupra Born", price: 32500 },
+  { model: "Cupra Formentor", price: 28900 },
+  { model: "Cupra Leon", price: 24500 },
+  // DS
+  { model: "DS3 Crossback", price: 22500 },
+  { model: "DS4", price: 28900 },
+  { model: "DS7 Crossback", price: 32500 },
+  // Jeep
+  { model: "Jeep Renegade", price: 19900 },
+  { model: "Jeep Compass", price: 24500 },
+  { model: "Jeep Wrangler", price: 42900 },
+  { model: "Jeep Avenger", price: 22500 },
+  // Land Rover
+  { model: "Land Rover Defender", price: 58900 },
+  { model: "Land Rover Discovery Sport", price: 38500 },
+  { model: "Range Rover Evoque", price: 36500 },
+  { model: "Range Rover Velar", price: 48900 },
+  { model: "Range Rover Sport", price: 68500 },
+  // Porsche
+  { model: "Porsche Macan", price: 58900 },
+  { model: "Porsche Cayenne", price: 78500 },
+  { model: "Porsche 911", price: 92500 },
+  // Lexus
+  { model: "Lexus UX", price: 32500 },
+  { model: "Lexus NX", price: 42500 },
+  { model: "Lexus RX", price: 52900 },
+  // Subaru
+  { model: "Subaru Forester", price: 28500 },
+  { model: "Subaru Outback", price: 32900 },
 ];
 const NOTE_SNIPPETS = [
   "Budget {budget}K€, financement possible.",
@@ -56,6 +291,29 @@ const NOTE_SNIPPETS = [
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const minutesAgo = (m) => new Date(Date.now() - m * 60_000);
+
+/**
+ * Crée un échantillonneur sans remise : mélange le pool puis renvoie une
+ * fonction qui sort un élément différent à chaque appel. Utilisé pour garantir
+ * que chaque prospect ait un prénom et un VO uniques.
+ */
+function createUniqueSampler(pool, label) {
+  const shuffled = [...pool];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  let idx = 0;
+  return () => {
+    if (idx >= shuffled.length) {
+      throw new Error(`Pool "${label}" épuisé (taille ${shuffled.length}). Augmente le pool dans refresh-demo.js.`);
+    }
+    return shuffled[idx++];
+  };
+}
+
+// Samplers uniques pour le run en cours — initialisés dans main() après wipe.
+let nextFirstName, nextVehicle;
 
 // ==== Business hours (heures d'ouverture concessions VO, TZ Europe/Paris) ====
 const BUSINESS_START_MIN = 9 * 60 + 15;   // 09h15
@@ -136,22 +394,18 @@ function randomPhone(used) {
 }
 
 function fillFiche(status, hasAnswered = true) {
-  // Règle métier : la fiche n'est remplie que quand on a parlé au prospect
-  // (answered). Tant qu'on n'a eu que des missed, name = null ⇒ prospect
-  // "non qualifié" dans l'app.
-  if (!hasAnswered) return { name: null, vehicle: null, budget: null, notes: null };
-
-  const vehicle = pick(VEHICLES);
-  const budget = Math.random() < 0.6 ? vehicle.price + rand(-2000, 3000) : null;
-  const notes = Math.random() < 0.4
+  // Tous les prospects sont qualifiés par un agent IA vocal qui prend l'appel
+  // en premier — donc chaque prospect a un prénom et un VO identifié, même
+  // ceux du Groupe A (missed only). Budget et notes restent réservés aux
+  // prospects ayant été rappelés (hasAnswered=true) car ils dépendent d'un
+  // échange humain.
+  const vehicle = nextVehicle();
+  const name = nextFirstName();
+  const budget = hasAnswered && Math.random() < 0.6 ? vehicle.price + rand(-2000, 3000) : null;
+  const notes = hasAnswered && Math.random() < 0.4
     ? pick(NOTE_SNIPPETS).replace("{budget}", String(Math.round((budget ?? vehicle.price) / 1000)))
     : null;
-  return {
-    name: `${pick(FIRST_NAMES)} ${pick(LAST_NAMES)}`,
-    vehicle,
-    budget,
-    notes,
-  };
+  return { name, vehicle, budget, notes };
 }
 
 function pickAppointmentDate() {
@@ -306,6 +560,11 @@ async function main() {
   let created = 0, eventsCount = 0;
   const usedPhones = new Set();
   let totalDelayMin = 0, delayObservations = 0;
+
+  // Samplers uniques (sans remise) pour ce run : chaque prospect aura un
+  // prénom et un VO différent des autres prospects de ce user.
+  nextFirstName = createUniqueSampler(FIRST_NAMES, "FIRST_NAMES");
+  nextVehicle = createUniqueSampler(VEHICLES, "VEHICLES");
 
   // === GROUPE A : Dashboard (missed only) ===
   let skippedA = 0;
