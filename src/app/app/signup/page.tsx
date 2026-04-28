@@ -213,32 +213,39 @@ export default function SignupPage() {
         </div>
 
         <div className="relative z-10 max-w-md">
-          <h2 className="text-4xl xl:text-5xl font-nunito font-extrabold leading-tight">
-            Récupérez la marge perdue sur vos VO.
+          <h2 className="text-2xl xl:text-3xl font-nunito font-extrabold leading-tight">
+            Faites partie des 50 professionnels sélectionnés pour tester gratuitement l'app BoosterVO.
           </h2>
-          <p className="text-white/80 text-base mt-5 leading-relaxed">
-            BoosterVO suit chaque appel prospect entrant et vous alerte instantanément
-            sur les rappels critiques. Plus aucune vente ne vous échappe.
+          <p className="text-white/80 text-base mt-4 leading-relaxed">
+            Ne laissez plus filer un seul prospect.
           </p>
 
-          <ul className="mt-8 space-y-3.5 text-sm">
+          <p className="text-white font-bold text-base mt-6 leading-snug">
+            Prenez une longueur d'avance avec l'app qui booste vos ventes VO.
+          </p>
+
+          <ul className="mt-5 space-y-3 text-sm">
             <li className="flex items-start gap-3">
               <CheckIcon />
-              <span>Tracking automatique des appels manqués</span>
+              <span>Détecte automatiquement vos appels manqués critiques</span>
             </li>
             <li className="flex items-start gap-3">
               <CheckIcon />
-              <span>Notifications push instantanées sur mobile</span>
+              <span>Vous alerte en temps réel pour rappeler plus vite</span>
             </li>
             <li className="flex items-start gap-3">
               <CheckIcon />
-              <span>Stats détaillées sur la marge récupérée</span>
+              <span>Mesure vos délais de rappel, vos rendez-vous et vos ventes</span>
             </li>
             <li className="flex items-start gap-3">
               <CheckIcon />
-              <span>Inscription en 2 minutes, aucun engagement</span>
+              <span>Test gratuit pendant 10 jours, sans engagement</span>
             </li>
           </ul>
+
+          <p className="text-white/80 text-sm mt-6 leading-relaxed">
+            BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu'à 30 % de rentabilité supplémentaire</strong> sur vos annonces Leboncoin.
+          </p>
         </div>
 
         <p className="relative z-10 text-white/60 text-xs">
