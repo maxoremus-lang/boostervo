@@ -185,13 +185,55 @@ export default function SignupPage() {
   const mobileView = (
     <div className="lg:hidden min-h-screen bg-fond py-8 px-4">
       <div className="max-w-md mx-auto">
-        <div className="flex flex-col items-center mb-6">
+        {/* Logo */}
+        <div className="flex justify-center mb-5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.svg" alt="BoosterVO" className="h-8 w-auto mb-5" />
-          <h1 className="text-2xl font-nunito font-extrabold text-bleu">Créer un compte</h1>
-          <p className="text-gray-500 text-sm mt-1">Inscription négociant</p>
+          <img src="/logo.svg" alt="BoosterVO" className="h-8 w-auto" />
         </div>
+
+        {/* Hero bêta */}
+        <div className="bg-gradient-to-br from-bleu via-bleu to-[#0d3a7a] rounded-2xl p-5 mb-5 text-white relative overflow-hidden">
+          <div className="relative z-10">
+            <h2 className="text-lg font-nunito font-extrabold leading-tight">
+              Faites partie des 50 Pros sélectionnés pour tester gratis l&apos;app BoosterVO.
+            </h2>
+            <p className="text-orange font-extrabold text-sm mt-3">
+              Ne laissez plus filer un seul prospect.
+            </p>
+            <p className="text-white font-bold text-sm mt-4 leading-snug">
+              Prenez une longueur d&apos;avance avec l&apos;app qui booste vos ventes VO.
+            </p>
+            <ul className="mt-3 space-y-2 text-xs">
+              <li className="flex items-start gap-2">
+                <CheckIcon />
+                <span>Détecte automatiquement vos appels manqués critiques</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckIcon />
+                <span>Vous alerte en temps réel pour rappeler plus vite</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckIcon />
+                <span>Mesure vos délais de rappel, vos rendez-vous et vos ventes</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckIcon />
+                <span>Test gratuit pendant 10 jours, sans engagement</span>
+              </li>
+            </ul>
+            <p className="text-white/80 text-xs mt-4 leading-relaxed">
+              BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu&apos;à 30 % de rentabilité supplémentaire</strong> sur vos annonces Leboncoin.
+            </p>
+          </div>
+          <div className="absolute -top-12 -right-12 w-40 h-40 bg-orange/15 rounded-full blur-2xl" />
+        </div>
+
+        {/* Formulaire */}
         <div className="bg-white rounded-2xl shadow-sm p-5">
+          <div className="mb-4">
+            <h1 className="text-xl font-nunito font-extrabold text-bleu">Créer un compte</h1>
+            <p className="text-gray-500 text-xs mt-1">Inscription négociant</p>
+          </div>
           {formContent}
         </div>
       </div>
