@@ -214,9 +214,10 @@ export default function SignupPage() {
 
         <div className="relative z-10 max-w-md">
           <h2 className="text-2xl xl:text-3xl font-nunito font-extrabold leading-tight">
-            Faites partie des 50 professionnels sélectionnés pour tester gratuitement l&apos;app BoosterVO.
+            Faites partie des 50 Pros sélectionnés<br />
+            pour tester gratuitement l&apos;app BoosterVO.
           </h2>
-          <p className="text-white/80 text-base mt-4 leading-relaxed">
+          <p className="text-orange font-bold text-base mt-4 leading-relaxed">
             Ne laissez plus filer un seul prospect.
           </p>
 
