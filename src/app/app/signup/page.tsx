@@ -214,14 +214,14 @@ export default function SignupPage() {
 
         <div className="relative z-10 max-w-md">
           <h2 className="text-2xl xl:text-3xl font-nunito font-extrabold leading-tight">
-            Faites partie des 50 professionnels sélectionnés pour tester gratuitement l'app BoosterVO.
+            Faites partie des 50 professionnels sélectionnés pour tester gratuitement l&apos;app BoosterVO.
           </h2>
           <p className="text-white/80 text-base mt-4 leading-relaxed">
             Ne laissez plus filer un seul prospect.
           </p>
 
           <p className="text-white font-bold text-base mt-6 leading-snug">
-            Prenez une longueur d'avance avec l'app qui booste vos ventes VO.
+            Prenez une longueur d&apos;avance avec l&apos;app qui booste vos ventes VO.
           </p>
 
           <ul className="mt-5 space-y-3 text-sm">
@@ -244,7 +244,7 @@ export default function SignupPage() {
           </ul>
 
           <p className="text-white/80 text-sm mt-6 leading-relaxed">
-            BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu'à 30 % de rentabilité supplémentaire</strong> sur vos annonces Leboncoin.
+            BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu&apos;à 30 % de rentabilité supplémentaire</strong> sur vos annonces Leboncoin.
           </p>
         </div>
 
