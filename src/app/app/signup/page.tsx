@@ -3,10 +3,18 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function SignupPage() {
   const router = useRouter();
+
+  const [slots, setSlots] = useState<{ taken: number; total: number } | null>(null);
+  useEffect(() => {
+    fetch("/api/signup/count")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setSlots({ taken: d.taken ?? 0, total: d.total ?? 50 }))
+      .catch(() => {});
+  }, []);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -194,7 +202,8 @@ export default function SignupPage() {
         {/* Hero bêta */}
         <div className="bg-gradient-to-br from-bleu via-bleu to-[#0d3a7a] rounded-2xl p-5 mb-5 text-white relative overflow-hidden">
           <div className="relative z-10">
-            <h2 className="text-lg font-nunito font-extrabold leading-tight">
+            <SlotsBadge slots={slots} />
+            <h2 className="text-lg font-nunito font-extrabold leading-tight mt-3">
               Faites partie des 50 Pros sélectionnés pour tester gratis l&apos;app BoosterVO.
             </h2>
             <p className="text-orange font-extrabold text-sm mt-3">
@@ -218,11 +227,11 @@ export default function SignupPage() {
               </li>
               <li className="flex items-start gap-2">
                 <CheckIcon />
-                <span>Test gratuit pendant 10 jours, sans engagement</span>
+                <span>App offerte 30 jours, sans engagement</span>
               </li>
             </ul>
             <p className="text-white/80 text-xs mt-4 leading-relaxed">
-              BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu&apos;à 30 % de rentabilité supplémentaire</strong> sur vos annonces Leboncoin.
+              BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu&apos;à 3 000 € de marge dès le 1er mois</strong> sur vos annonces Leboncoin.
             </p>
           </div>
           <div className="absolute -top-12 -right-12 w-40 h-40 bg-orange/15 rounded-full blur-2xl" />
@@ -255,7 +264,8 @@ export default function SignupPage() {
         </div>
 
         <div className="relative z-10 max-w-md">
-          <h2 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight">
+          <SlotsBadge slots={slots} />
+          <h2 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight mt-4">
             Faites partie des 50 Pros sélectionnés<br />
             pour tester gratis l&apos;app BoosterVO.
           </h2>
@@ -282,12 +292,12 @@ export default function SignupPage() {
             </li>
             <li className="flex items-start gap-3">
               <CheckIcon />
-              <span>Test gratuit pendant 10 jours, sans engagement</span>
+              <span>App offerte 30 jours, sans engagement</span>
             </li>
           </ul>
 
           <p className="text-white/80 text-sm mt-6 leading-relaxed">
-            BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu&apos;à 30 % de rentabilité supplémentaire</strong> sur vos annonces Leboncoin.
+            BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu&apos;à 3 000 € de marge dès le 1er mois</strong> sur vos annonces Leboncoin.
           </p>
         </div>
 
@@ -332,5 +342,22 @@ function CheckIcon() {
         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
       </svg>
     </span>
+  );
+}
+
+function SlotsBadge({ slots }: { slots: { taken: number; total: number } | null }) {
+  if (!slots) {
+    return <div className="h-7" aria-hidden="true" />;
+  }
+  const remaining = Math.max(slots.total - slots.taken, 0);
+  const isFull = remaining === 0;
+  const label = isFull
+    ? "Liste d'attente ouverte"
+    : `${slots.taken}/${slots.total} places réservées`;
+  return (
+    <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
+      <span className={`w-2 h-2 rounded-full ${isFull ? "bg-white" : "bg-orange animate-pulse"}`} />
+      <span>{label}</span>
+    </div>
   );
 }
