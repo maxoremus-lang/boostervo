@@ -353,7 +353,7 @@ function SlotsBadge({ slots }: { slots: { taken: number; total: number } | null 
   const isFull = remaining === 0;
   const label = isFull
     ? "Liste d'attente ouverte"
-    : `${slots.taken}/${slots.total} places réservées`;
+    : `${slots.taken}/${slots.total} places`;
   return (
     <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide">
       <span className={`w-2 h-2 rounded-full ${isFull ? "bg-white" : "bg-orange animate-pulse"}`} />
