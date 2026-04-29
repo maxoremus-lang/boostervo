@@ -19,6 +19,8 @@ export default function DashboardPage() {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // null = on ne sait pas encore, true = compte non encore activé (pas de numéro Twilio)
+  const [awaitingActivation, setAwaitingActivation] = useState<boolean | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -46,6 +48,17 @@ export default function DashboardPage() {
         }
       }
     })();
+    // En parallèle : on regarde si le compte a déjà un numéro Twilio assigné
+    (async () => {
+      try {
+        const res = await fetch("/api/me");
+        if (!res.ok) return;
+        const me = await res.json();
+        if (!cancelled) setAwaitingActivation(!me.twilioNumber);
+      } catch {
+        // silencieux : si /api/me échoue, on garde le comportement par défaut
+      }
+    })();
     return () => {
       cancelled = true;
     };
@@ -69,7 +82,9 @@ export default function DashboardPage() {
   // Phrase d'orientation dynamique sous le titre d'écran
   let orientationPhrase = "Chargement…";
   if (!loading && !error) {
-    if (urgentCount > 0) {
+    if (awaitingActivation === true) {
+      orientationPhrase = "Félicitations, votre compte est créé. Votre gestionnaire de compte vous rappellera sous 48 heures maximum pour une mini formation en ligne et pour activer votre compte.";
+    } else if (urgentCount > 0) {
       orientationPhrase = `${urgentCount} ${urgentCount > 1 ? "rappels urgents" : "rappel urgent"} à traiter en priorité`;
     } else if (toCallCount > 0) {
       orientationPhrase = `${toCallCount} ${toCallCount > 1 ? "rappels à faire" : "rappel à faire"} aujourd'hui`;
