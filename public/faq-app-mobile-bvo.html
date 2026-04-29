@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ — App mobile BoosterVO</title>
+<meta name="description" content="Réponses aux questions des négociants bêta-testeurs de l'application mobile BoosterVO.">
+<style>
+  :root {
+    --navy: #0B2D6E;
+    --navy-deep: #071f4f;
+    --orange: #FF6B1A;
+    --orange-soft: #ff8a3d;
+    --ink: #0d2552;
+    --muted: #5a6a8a;
+    --bg: #ffffff;
+    --rule: #e3e8f2;
+    --card: #f6f8fc;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: var(--orange); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; display: block; }
+
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(180deg, #0a2a66 0%, #0B2D6E 60%, #0a2a66 100%);
+    color: #fff;
+    padding: 56px 0 64px;
+  }
+  .hero .logo { width: 200px; margin-bottom: 36px; }
+  .hero .eyebrow {
+    color: var(--orange);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.1;
+    margin: 0 0 16px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 .accent { color: var(--orange); }
+  .hero p.lead {
+    color: #d8e1f3;
+    font-size: 17px;
+    max-width: 620px;
+    margin: 0;
+  }
+
+  /* FAQ */
+  .faq {
+    padding: 72px 0 96px;
+  }
+  details {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  details[open] {
+    background: #fff;
+    border-color: #c9d4ee;
+    box-shadow: 0 12px 30px -16px rgba(11, 45, 110, 0.18);
+  }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 22px 64px 22px 28px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    position: relative;
+    user-select: none;
+    transition: color 0.18s ease;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: "";
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    width: 14px; height: 14px;
+    border-right: 2.5px solid var(--orange);
+    border-bottom: 2.5px solid var(--orange);
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform 0.22s ease;
+  }
+  details[open] summary::after {
+    transform: translateY(-30%) rotate(-135deg);
+  }
+  summary:hover { color: var(--orange); }
+  details > .answer {
+    padding: 0 28px 24px;
+    font-size: 16.5px;
+    color: #2a3a5e;
+  }
+  details > .answer p { margin: 0 0 12px; }
+  details > .answer p:last-child { margin-bottom: 0; }
+  details > .answer strong { color: var(--ink); }
+  .pill {
+    display: inline-block;
+    background: #ffe8d9;
+    color: var(--orange);
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 14px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #08245c;
+    color: #cfd9f0;
+    padding: 32px 0;
+    font-size: 14px;
+    text-align: center;
+  }
+  footer a { color: #fff; }
+
+  @media (max-width: 600px) {
+    summary { font-size: 16.5px; padding: 18px 56px 18px 22px; }
+    details > .answer { padding: 0 22px 20px; font-size: 15.5px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB3aWR0aD0iMTQ1Ljk5Nzg5bW0iCiAgIGhlaWdodD0iMjIuMDU4NjQ1bW0iCiAgIHZpZXdCb3g9IjAgMCAxNDUuOTk3ODkgMjIuMDU4NjQ1IgogICB2ZXJzaW9uPSIxLjEiCiAgIGlkPSJzdmcxIgogICB4bWw6c3BhY2U9InByZXNlcnZlIgogICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzCiAgICAgaWQ9ImRlZnMxIj48Y2xpcFBhdGgKICAgICAgIGlkPSJjbGlwMC03LTItNiI+PHJlY3QKICAgICAgICAgeD0iMzciCiAgICAgICAgIHk9Ijc0MiIKICAgICAgICAgd2lkdGg9IjIwIgogICAgICAgICBoZWlnaHQ9IjIxIgogICAgICAgICBpZD0icmVjdDEtNi00LTMiIC8+PC9jbGlwUGF0aD48L2RlZnM+PGcKICAgICBpZD0ibGF5ZXIxIgogICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zMC4xMjg1NTksLTEyNC4xNjE2MykiPjxnCiAgICAgICBjbGlwLXBhdGg9InVybCgjY2xpcDAtNy0yLTYpIgogICAgICAgdHJhbnNmb3JtPSJtYXRyaXgoMS4wNTA0MTE4LDAsMCwxLjA1MDQxMTgsLTguNzM2Njc0OCwtNjU1LjI0Mzk0KSIKICAgICAgIGlkPSJnOC00LTgiCiAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIj48cGF0aAogICAgICAgICBkPSJtIDM4LjI0OTEsNzQyIGMgLTEuNjgxMywwIC0xLjU4NDMsNi42MSAtMC4xOTQsMTAuMTA5IDEuMzkwMywzLjQ5OSA1LjUyODksMTEuMTAzIDguNTM1OSwxMC44ODcgMy4wMDcsLTAuMjE2IDcuOTg2MiwtOC44MTMgOS41MDU5LC0xMi4xODMgMS41MTk2LC0zLjM3IDAuOTM3NiwtOC4yNTEgLTAuMzg4MSwtOC4wMzUgLTEuMzI1NiwwLjIxNiAtNC42MjM1LDkuNTA0IC03LjU2NTgsOS4zMzEgQyA0NS4yMDA3LDc1MS45MzYgMzkuOTMwNCw3NDIgMzguMjQ5MSw3NDIgWiIKICAgICAgICAgZmlsbD0iIzAwNDM4NiIKICAgICAgICAgZmlsbC1ydWxlPSJldmVub2RkIgogICAgICAgICBpZD0icGF0aDctMi0yIgogICAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIiAvPjwvZz48ZwogICAgICAgaWQ9Imc2IgogICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTMuMzc5MjY2OCwtNTEuODE1NDI0KSI+PHRleHQKICAgICAgICAgeD0iNTQuNDI5MjI2IgogICAgICAgICB5PSIxOTQuNTQ5MjYiCiAgICAgICAgIGNsYXNzPSJ0ZXh0LWJhc2UiCiAgICAgICAgIGlkPSJ0ZXh0Mi03IgogICAgICAgICBzdHlsZT0iZm9udC13ZWlnaHQ6OTAwO2ZvbnQtc2l6ZToyMS40NDM0cHg7Zm9udC1mYW1pbHk6TW9udHNlcnJhdCwgJ0hlbHZldGljYSBOZXVlJywgJ0FyaWFsIEJsYWNrJywgQXJpYWwsIHNhbnMtc2VyaWY7bGV0dGVyLXNwYWNpbmc6LTAuNDE1MDM1cHg7ZmlsbDojZmZmZmZmO3N0cm9rZS13aWR0aDowLjEzODM0NSI+PHRzcGFuCiAgICAgICAgICAgY2xhc3M9ImJsdWUiCiAgICAgICAgICAgaWQ9InRzcGFuMS02IgogICAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlLXdpZHRoOjAuMTM4MzQ1Ij5Cb29zdGVyPC90c3Bhbj48L3RleHQ+PHRleHQKICAgICAgICAgeD0iMTQyLjcyMDg2IgogICAgICAgICB5PSIxOTQuNjMyNjQiCiAgICAgICAgIGNsYXNzPSJ0ZXh0LWJhc2UiCiAgICAgICAgIGlkPSJ0ZXh0Ni0xIgogICAgICAgICBzdHlsZT0iZm9udC13ZWlnaHQ6OTAwO2ZvbnQtc2l6ZToyMy41NzAzcHg7Zm9udC1mYW1pbHk6TW9udHNlcnJhdCwgJ0hlbHZldGljYSBOZXVlJywgJ0FyaWFsIEJsYWNrJywgQXJpYWwsIHNhbnMtc2VyaWY7bGV0dGVyLXNwYWNpbmc6LTAuNDU2MjAxcHg7c3Ryb2tlLXdpZHRoOjAuMTUyMDY3Ij48dHNwYW4KICAgICAgICAgICBjbGFzcz0ib3JhbmdlIgogICAgICAgICAgIGlkPSJ0c3BhbjYtOCIKICAgICAgICAgICBzdHlsZT0iZmlsbDojZmY2NjAwO3N0cm9rZS13aWR0aDowLjE1MjA2NyI+Vk88L3RzcGFuPjwvdGV4dD48ZWxsaXBzZQogICAgICAgICBzdHlsZT0iZmlsbDojZmY2NjAwO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTojMDAwMDAwO3N0cm9rZS13aWR0aDowO3N0cm9rZS1kYXNoYXJyYXk6bm9uZSIKICAgICAgICAgaWQ9InBhdGg1LTkiCiAgICAgICAgIGN4PSI0NS4wNTQ4NTkiCiAgICAgICAgIGN5PSIxODAuNjQxNzciCiAgICAgICAgIHJ4PSIyLjU4ODc5NDkiCiAgICAgICAgIHJ5PSIyLjUyMjQxNTYiIC8+PC9nPjwvZz48L3N2Zz4K" alt="BoosterVO">
+    <div class="eyebrow">Programme bêta · App mobile</div>
+    <h1>Vos questions, <span class="accent">nos réponses.</span></h1>
+    <p class="lead">Tout ce qu'un négociant VO doit savoir avant de rejoindre les 50 bêta-testeurs de l'application BoosterVO.</p>
+  </div>
+</header>
+
+<section class="faq">
+  <div class="wrap">
+
+    <details open>
+      <summary>Comment faire plus de marge avec l'App ?</summary>
+      <div class="answer">
+        <p>L'objectif est de vous faire récupérer de la marge que vous perdez aujourd'hui sur vos appels manqués ou rappelés trop tard.</p>
+        <p>Si l'application vous permet de récupérer ne serait-ce qu'<strong>une vente supplémentaire en 10 jours</strong>… vous êtes largement gagnant.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Comment profiter d'une App gratuite ?</summary>
+      <div class="answer">
+        <p>Vous faites partie des <strong>50 premiers négociants sélectionnés</strong> pour tester gratuitement l'application BoosterVO pendant sa phase bêta.</p>
+        <p>Après cette phase bêta, vous pourrez bénéficier d'un abonnement à <strong>47 €/mois pendant 6 mois</strong> <span class="pill">offre bêta</span> — versus <strong>97 €/mois</strong>, le tarif standard.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Pourquoi participer à la création d'une App négociant ?</summary>
+      <div class="answer">
+        <p>En tant que bêta-testeur, vous pouvez nous faire part de vos besoins, de vos idées et des fonctionnalités qui vous manquent.</p>
+        <p>Vous contribuez ainsi à créer une application <strong>conçue par et pour les professionnels du véhicule d'occasion</strong>.</p>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a href="https://boostervo.fr">boostervo.fr</a> · Mercure SAS · <a href="mailto:contact@boostervo.fr">contact@boostervo.fr</a>
+  </div>
+</footer>
+
+</body>
+</html>
