@@ -83,7 +83,7 @@ export default function DashboardPage() {
   let orientationPhrase = "Chargement…";
   if (!loading && !error) {
     if (awaitingActivation === true) {
-      orientationPhrase = "Félicitations, votre compte est créé. Votre gestionnaire de compte vous rappellera sous 48 heures maximum pour une mini formation en ligne et pour activer votre compte.";
+      orientationPhrase = "Félicitations, votre compte a bien été créé. Votre gestionnaire vous contactera sous 72 heures maximum pour activer votre accès et vous proposer une formation online.";
     } else if (urgentCount > 0) {
       orientationPhrase = `${urgentCount} ${urgentCount > 1 ? "rappels urgents" : "rappel urgent"} à traiter en priorité`;
     } else if (toCallCount > 0) {
@@ -205,8 +205,14 @@ export default function DashboardPage() {
           {urgents.length === 0 && todos.length === 0 && (
             <div className="px-5 mt-10 text-center">
               <div className="text-4xl mb-3">🎉</div>
-              <p className="font-nunito font-bold text-gray-700">Beau travail !</p>
-              <p className="text-sm text-gray-500 mt-1">Aucun rappel à faire pour l&apos;instant.</p>
+              <p className="font-nunito font-bold text-gray-700">
+                {awaitingActivation === true ? "En attente d'activation" : "Beau travail !"}
+              </p>
+              <p className="text-sm text-gray-500 mt-1">
+                {awaitingActivation === true
+                  ? "Pas encore d'appels — votre numéro de tracking sera bientôt activé."
+                  : "Aucun rappel à faire pour l'instant."}
+              </p>
             </div>
           )}
         </>
