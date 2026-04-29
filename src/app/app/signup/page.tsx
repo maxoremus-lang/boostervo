@@ -301,7 +301,7 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <p className="relative z-10 text-white/60 text-xs">
+        <p className="relative z-10 text-white/60 text-xs mt-8">
           Déjà un compte ?{" "}
           <Link href="/app/login" className="text-orange font-bold hover:underline">
             Se connecter
