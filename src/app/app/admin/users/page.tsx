@@ -7,6 +7,10 @@ type AdminUser = {
   id: string;
   email: string;
   name: string;
+  firstName: string | null;
+  lastName: string | null;
+  mobile: string | null;
+  website: string | null;
   dealership: string | null;
   twilioNumber: string | null;
   forwardPhone: string | null;
@@ -54,6 +58,12 @@ export default function AdminUsersPage() {
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Activation d'une inscription en attente (assignation Twilio + forward)
+  const [activatingId, setActivatingId] = useState<string | null>(null);
+  const [activateForm, setActivateForm] = useState({ twilioNumber: "", forwardPhone: "" });
+  const [activateError, setActivateError] = useState<string | null>(null);
+  const [activateSubmitting, setActivateSubmitting] = useState(false);
+
   async function loadUsers() {
     try {
       const res = await fetch("/api/admin/users");
@@ -80,6 +90,42 @@ export default function AdminUsersPage() {
   useEffect(() => {
     loadUsers();
   }, []);
+
+  function startActivate(u: AdminUser) {
+    setActivatingId(u.id);
+    setActivateForm({ twilioNumber: "", forwardPhone: u.mobile ?? "" });
+    setActivateError(null);
+  }
+
+  function cancelActivate() {
+    setActivatingId(null);
+    setActivateError(null);
+  }
+
+  async function handleActivate(e: FormEvent) {
+    e.preventDefault();
+    if (!activatingId) return;
+    setActivateSubmitting(true);
+    setActivateError(null);
+    try {
+      const res = await fetch(`/api/admin/users/${activatingId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(activateForm),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setActivateError(data?.error || "Erreur d'activation");
+        return;
+      }
+      setActivatingId(null);
+      await loadUsers();
+    } catch {
+      setActivateError("Erreur réseau");
+    } finally {
+      setActivateSubmitting(false);
+    }
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -122,6 +168,107 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="px-5 mt-4 space-y-4">
+        {/* Inscriptions à traiter (négociants sans numéro Twilio) */}
+        {users && users.filter((u) => u.role === "negotiant" && !u.twilioNumber).length > 0 && (
+          <div className="bg-white rounded-2xl shadow-sm p-4 border-l-4 border-orange">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-bold text-orange uppercase tracking-wide">
+                Inscriptions à traiter
+              </p>
+              <span className="text-[10px] font-bold text-orange bg-orange/10 px-2 py-0.5 rounded-full">
+                {users.filter((u) => u.role === "negotiant" && !u.twilioNumber).length}
+              </span>
+            </div>
+            <ul className="divide-y divide-gray-100">
+              {users
+                .filter((u) => u.role === "negotiant" && !u.twilioNumber)
+                .map((u) => {
+                  const fullName = u.firstName || u.lastName
+                    ? `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim()
+                    : u.name;
+                  return (
+                    <li key={u.id} className="py-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold truncate">{fullName}</p>
+                          {u.dealership && (
+                            <p className="text-xs text-gray-600 truncate">{u.dealership}</p>
+                          )}
+                          <p className="text-xs text-gray-500 truncate">{u.email}</p>
+                          {u.mobile && (
+                            <p className="text-xs text-gray-500 truncate">📱 {u.mobile}</p>
+                          )}
+                          {u.website && (
+                            <p className="text-[11px] text-gray-400 truncate mt-0.5">
+                              <a href={u.website} target="_blank" rel="noopener noreferrer" className="hover:text-bleu underline">
+                                {u.website}
+                              </a>
+                            </p>
+                          )}
+                          <p className="text-[11px] text-gray-400 mt-0.5">
+                            Inscrit le {new Date(u.createdAt).toLocaleDateString("fr-FR", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                        {activatingId !== u.id && (
+                          <button
+                            type="button"
+                            onClick={() => startActivate(u)}
+                            className="text-xs font-bold text-white bg-orange px-3 py-1.5 rounded-lg shrink-0 hover:opacity-90"
+                          >
+                            Activer
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Formulaire d'activation inline */}
+                      {activatingId === u.id && (
+                        <form onSubmit={handleActivate} className="mt-3 bg-orange/5 rounded-lg p-3 space-y-2">
+                          <Field
+                            label="Numéro Twilio *"
+                            value={activateForm.twilioNumber}
+                            onChange={(v) => setActivateForm({ ...activateForm, twilioNumber: v })}
+                            placeholder="+33159168772"
+                            required
+                          />
+                          <Field
+                            label="Numéro de transfert *"
+                            value={activateForm.forwardPhone}
+                            onChange={(v) => setActivateForm({ ...activateForm, forwardPhone: v })}
+                            placeholder="+33600000000"
+                            required
+                          />
+                          {activateError && <p className="text-xs text-red-600">{activateError}</p>}
+                          <div className="flex gap-2 pt-1">
+                            <button
+                              type="submit"
+                              disabled={activateSubmitting}
+                              className="flex-1 bg-orange text-white text-xs font-bold py-2 rounded-lg disabled:opacity-50"
+                            >
+                              {activateSubmitting ? "Activation…" : "Confirmer l'activation"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={cancelActivate}
+                              className="px-3 py-2 text-xs font-semibold text-gray-600 border border-gray-200 rounded-lg"
+                            >
+                              Annuler
+                            </button>
+                          </div>
+                        </form>
+                      )}
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        )}
+
         {/* Formulaire création */}
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
           <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
