@@ -37,6 +37,50 @@ model User {
 
   prospects Prospect[]
   pushSubscriptions PushSubscription[]
+  linkClicks        LinkClick[]
+}
+
+// Liens courts trackés (ex: boostervo.fr/go1, /go2, …) pour les campagnes SMS,
+// emails, posts LinkedIn, etc. Chaque slug pointe vers une URL de destination
+// (typiquement /app/signup) et accumule des clics.
+model LinkConfig {
+  id          String      @id @default(cuid())
+  slug        String      @unique // "go1", "go2", … (insensible à la casse côté lookup)
+  destination String      // URL relative ou absolue, ex: "/app/signup"
+  label       String?     // Libellé éditable, ex: "SMS Garages Paris semaine 1"
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  clicks      LinkClick[]
+}
+
+// Un clic enregistré sur un lien court. cookieId est posé en cookie côté
+// navigateur pour permettre l'attribution conversion (clic → inscription).
+model LinkClick {
+  id            String     @id @default(cuid())
+  cookieId      String     @unique
+  linkConfigId  String
+  linkConfig    LinkConfig @relation(fields: [linkConfigId], references: [id], onDelete: Cascade)
+
+  ip            String?
+  userAgent     String?
+  referer       String?
+  device        String?    // "mobile" | "desktop" | "tablet"
+  browser       String?    // "Chrome", "Safari", "Firefox", …
+  os            String?    // "iOS", "Android", "Windows", "macOS", …
+
+  // Attribution conversion : renseignés quand un User est créé alors que
+  // le cookie bvo_clk pointait sur ce LinkClick.
+  convertedAt   DateTime?
+  userId        String?
+  user          User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  createdAt     DateTime   @default(now())
+
+  @@index([linkConfigId])
+  @@index([userId])
+  @@index([createdAt])
 }
 
 model PushSubscription {

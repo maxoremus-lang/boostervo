@@ -185,13 +185,22 @@ export default function ProfilPage() {
         {/* Actions */}
         <div className="bg-white rounded-2xl shadow-sm divide-y divide-gray-100">
           {me?.role === "admin" && (
-            <Link
-              href="/app/admin/users"
-              className="block w-full text-left px-4 py-3.5 text-sm font-semibold text-bleu"
-            >
-              Gestion des utilisateurs
-              <span className="float-right text-gray-300">›</span>
-            </Link>
+            <>
+              <Link
+                href="/app/admin/users"
+                className="block w-full text-left px-4 py-3.5 text-sm font-semibold text-bleu"
+              >
+                Gestion des utilisateurs
+                <span className="float-right text-gray-300">›</span>
+              </Link>
+              <Link
+                href="/app/admin/links"
+                className="block w-full text-left px-4 py-3.5 text-sm font-semibold text-bleu"
+              >
+                Liens courts trackés
+                <span className="float-right text-gray-300">›</span>
+              </Link>
+            </>
           )}
           <button className="w-full text-left px-4 py-3.5 text-sm font-semibold text-gray-400 cursor-not-allowed">
             Changer le mot de passe

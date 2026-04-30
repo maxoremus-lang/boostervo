@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import nodemailer from "nodemailer";
 import { prisma } from "../../../lib/prisma";
+import { CLICK_COOKIE_NAME } from "../../../lib/linkTracking";
 
 async function sendSignupNotification(payload: {
   firstName: string;
@@ -174,6 +175,21 @@ export async function POST(req: NextRequest) {
       publicationMode,
     },
   });
+
+  // Attribution conversion : si l'utilisateur arrive via un lien court tracké,
+  // on relie le clic à l'inscription. Non-bloquant — l'absence de cookie ou
+  // une erreur DB ne doit pas faire échouer l'inscription.
+  const cookieId = req.cookies.get(CLICK_COOKIE_NAME)?.value;
+  if (cookieId) {
+    try {
+      await prisma.linkClick.updateMany({
+        where: { cookieId, convertedAt: null },
+        data: { userId: user.id, convertedAt: new Date() },
+      });
+    } catch (err) {
+      console.error("[signup] attribution clic échouée:", err);
+    }
+  }
 
   // Notification mail aux admins (non bloquant pour le signup)
   try {
