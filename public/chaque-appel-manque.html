@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)file:///C:/Users/Max%20REMUS/Downloads/landing-boostervo.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoosterVO — Chaque appel manqué a un prix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF6600;
+    --orange-dark: #cc5200;
+    --blue: #1B4F9B;
+    --blue-dark: #153d7a;
+    --bg: #f8f8f8;
+    --white: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --border: #e0e0e0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ─── HEADER ─────────────────────────────────────────── */
+  header {
+    background: var(--blue);
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+
+  .logo span { color: var(--orange); }
+
+  header a.cta-header {
+    background: var(--orange);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s;
+    letter-spacing: 0.01em;
+  }
+  header a.cta-header:hover { background: var(--orange-dark); }
+
+  /* ─── HERO ────────────────────────────────────────────── */
+  .hero {
+    background: var(--blue);
+    color: white;
+    padding: 90px 5% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(255,102,0,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 760px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: rgba(255,102,0,0.18);
+    border: 1px solid rgba(255,102,0,0.4);
+    color: #ffaa66;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--orange);
+  }
+
+  .hero-separator {
+    width: 56px;
+    height: 4px;
+    background: var(--orange);
+    border-radius: 2px;
+    margin: 24px 0;
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.82);
+    max-width: 600px;
+    margin-bottom: 36px;
+    line-height: 1.7;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 16px 36px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .hero-cta:hover { background: var(--orange-dark); transform: translateY(-2px); }
+
+  /* ─── PROBLEMS ────────────────────────────────────────── */
+  .problems {
+    padding: 80px 5%;
+    background: var(--white);
+  }
+
+  .section-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--blue);
+    margin-bottom: 48px;
+    max-width: 640px;
+  }
+
+  .problems-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 900px;
+  }
+
+  @media (max-width: 640px) { .problems-grid { grid-template-columns: 1fr; } }
+
+  .problem-card {
+    border-radius: 12px;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .problem-card.visible {
+    background: #fff4ed;
+    border: 1.5px solid #ffd5b0;
+  }
+
+  .problem-card.hidden {
+    background: #eef2fb;
+    border: 1.5px solid #c4d4f0;
+  }
+
+  .problem-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .visible .problem-badge { background: var(--orange); color: white; }
+  .hidden .problem-badge { background: var(--blue); color: white; }
+
+  .problem-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .problem-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .problem-icon {
+    position: absolute;
+    bottom: -12px; right: -8px;
+    font-size: 5rem;
+    opacity: 0.07;
+  }
+
+  /* ─── CALCULATOR ─────────────────────────────────────── */
+  .calculator {
+    padding: 80px 5%;
+    background: var(--bg);
+  }
+
+  .calc-inner {
+    max-width: 860px;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(27,79,155,0.10);
+    overflow: hidden;
+  }
+
+  .calc-header {
+    background: var(--blue);
+    padding: 32px 40px;
+    color: white;
+  }
+
+  .calc-header .section-label { color: #ffaa66; }
+
+  .calc-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.7rem;
+    letter-spacing: -0.02em;
+    margin-top: 6px;
+  }
+
+  .calc-body {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 680px) { .calc-body { grid-template-columns: 1fr; padding: 24px; } }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .input-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+  }
+
+  .input-group label strong {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    background: var(--bg);
+  }
+
+  .input-row:focus-within { border-color: var(--blue); }
+
+  .input-row input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .input-unit {
+    padding: 0 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+  }
+
+  .calc-divider {
+    grid-column: 1 / -1;
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  /* Results */
+  .calc-results {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    border-radius: 12px;
+    padding: 32px;
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 560px) { .calc-results { grid-template-columns: 1fr; } }
+
+  .result-block { }
+
+  .result-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
+  }
+
+  .result-value {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    letter-spacing: -0.03em;
+    color: var(--orange);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .result-desc {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.5;
+  }
+
+  .result-divider {
+    width: 1px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  @media (max-width: 560px) { .result-divider { display: none; } }
+
+  /* ─── SOLUTION ───────────────────────────────────────── */
+  .solution {
+    padding: 80px 5%;
+    background: var(--white);
+  }
+
+  .solution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    max-width: 900px;
+    margin-top: 48px;
+  }
+
+  @media (max-width: 740px) { .solution-grid { grid-template-columns: 1fr; } }
+
+  .solution-card {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 28px 24px;
+    border: 1.5px solid var(--border);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .solution-card:hover {
+    border-color: var(--orange);
+    box-shadow: 0 4px 20px rgba(255,102,0,0.1);
+  }
+
+  .solution-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--orange) 0%, #ff8c3a 100%);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 18px;
+  }
+
+  .solution-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .solution-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ─── OFFER ──────────────────────────────────────────── */
+  .offer {
+    padding: 80px 5%;
+    background: var(--bg);
+  }
+
+  .offer-card {
+    max-width: 720px;
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 48px rgba(27,79,155,0.12);
+    border: 2px solid var(--orange);
+  }
+
+  .offer-top {
+    background: var(--orange);
+    padding: 20px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .offer-top span {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: white;
+    letter-spacing: 0.01em;
+  }
+
+  .offer-top .badge {
+    background: rgba(0,0,0,0.15);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  .offer-body {
+    padding: 36px;
+  }
+
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .price-new {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 3rem;
+    color: var(--orange);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .price-old {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    font-weight: 300;
+  }
+
+  .price-period {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .offer-features {
+    list-style: none;
+    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .offer-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .offer-features li::before {
+    content: '✓';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 20px;
+    background: var(--orange);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .guarantee-bar {
+    background: #eef2fb;
+    border: 1px solid #c4d4f0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    font-size: 0.9rem;
+    color: var(--blue);
+    font-weight: 500;
+  }
+
+  .guarantee-bar span.icon { font-size: 1.4rem; }
+
+  .cta-main {
+    display: block;
+    width: 100%;
+    background: var(--orange);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    padding: 18px 28px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .cta-main:hover { background: var(--orange-dark); transform: translateY(-2px); }
+
+  .cta-sub {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 12px;
+  }
+
+  /* ─── FOOTER ─────────────────────────────────────────── */
+  footer {
+    background: var(--blue-dark);
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    padding: 28px 5%;
+    font-size: 0.82rem;
+  }
+
+  footer strong { color: rgba(255,255,255,0.85); }
+
+  /* ─── ANIMATIONS ─────────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-inner > * {
+    animation: fadeUp 0.6s ease forwards;
+    opacity: 0;
+  }
+  .hero-inner > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-inner > *:nth-child(2) { animation-delay: 0.2s; }
+  .hero-inner > *:nth-child(3) { animation-delay: 0.28s; }
+  .hero-inner > *:nth-child(4) { animation-delay: 0.36s; }
+  .hero-inner > *:nth-child(5) { animation-delay: 0.44s; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Booster<span>VO</span></div>
+  <a href="file:///C:/Users/Max%20REMUS/Downloads/landing-boostervo.html#offre" class="cta-header">Essai 50% — 1 mois</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Solution appels pour négociants VO indépendants</div>
+    <h1>LBC vous dit combien<br>d'appels vous <em>ratez.</em><br>Pas combien ça vous <em>coûte.</em></h1>
+    <div class="hero-separator"></div>
+    <p>Appels manqués, rappels tardifs, opportunités non tracées — chaque appel sans suite est une marge perdue que vous ne voyez jamais. BoosterVO traite 100% de vos appels et chiffre ce que vous récupérez.</p>
+    <a href="file:///C:/Users/Max%20REMUS/Downloads/landing-boostervo.html#calculateur" class="hero-cta">Calculer ma marge récupérable →</a>
+  </div>
+</section>
+
+<!-- PROBLEMS -->
+<section class="problems">
+  <p class="section-label">Le diagnostic</p>
+  <h2 class="section-title">Vous avez 2 problèmes — dont 1 totalement invisible</h2>
+  <div class="problems-grid">
+    <div class="problem-card visible">
+      <div class="problem-badge">Visible</div>
+      <h3>Les appels manqués</h3>
+      <p>LBC vous donne des statistiques sur vos appels non décrochés. Vous savez que vous ratez des opportunités — mais vous ne savez pas combien elles valent.</p>
+      <div class="problem-icon">📵</div>
+    </div>
+    <div class="problem-card hidden">
+      <div class="problem-badge">Invisible</div>
+      <h3>Les rappels trop tardifs</h3>
+      <p>Ni LBC ni aucun outil ne vous donne le résultat de vos rappels : combien ont abouti à un RDV, à une vente, à une vraie marge. Cette perte-là ne figure nulle part.</p>
+      <div class="problem-icon">⏱️</div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<section class="calculator" id="calculateur">
+  <p class="section-label" style="padding: 0 0 4px;">Outil de calcul</p>
+  <h2 class="section-title" style="margin-bottom: 32px;">Combien perdez-vous chaque mois ?</h2>
+  <div class="calc-inner">
+    <div class="calc-header">
+      <div class="section-label">Calculateur de marge récupérable</div>
+      <h2>Renseignez vos données — le résultat s'affiche en temps réel</h2>
+    </div>
+    <div class="calc-body">
+
+      <div class="input-group">
+        <label>
+          <strong>Appels entrants / mois</strong>
+          Volume total reçu sur votre ligne
+        </label>
+        <div class="input-row">
+          <input type="number" id="totalCalls" value="80" min="1">
+          <div class="input-unit">appels</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>
+          <strong>Taux d'appels manqués</strong>
+          Appels non décrochés (stat LBC)
+        </label>
+        <div class="input-row">
+          <input type="number" id="missedRate" value="5" min="0" max="100" step="1">
+          <div class="input-unit">%</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>
+          <strong>Taux de rappels tardifs</strong>
+          Rappels hors délai commercial
+        </label>
+        <div class="input-row">
+          <input type="number" id="lateRate" value="15" min="0" max="100" step="1">
+          <div class="input-unit">%</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>
+          <strong>Marge moyenne par vente</strong>
+          Marge nette sur un véhicule vendu
+        </label>
+        <div class="input-row">
+          <input type="number" id="margin" value="1500" min="0" step="50">
+          <div class="input-unit">€</div>
+        </div>
+      </div>
+
+      <div class="calc-divider"></div>
+
+      <div class="calc-results" id="results">
+        <div class="result-block">
+          <div class="result-label">Marge perdue / mois</div>
+          <div class="result-value" id="res-loss">2 880&nbsp;€</div>
+          <div class="result-desc">sur appels manqués<br>+ rappels tardifs (taux 12%)</div>
+        </div>
+        <div class="result-divider"></div>
+        <div class="result-block">
+          <div class="result-label">1 vente récupérée couvre</div>
+          <div class="result-value" id="res-months">5.8x</div>
+          <div class="result-desc">mois d'abonnement BoosterVO<br>à 499 €/mois</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution">
+  <p class="section-label">La solution</p>
+  <h2 class="section-title">BoosterVO traite 100% de vos appels.<br>Et vous montre ce que ça rapporte.</h2>
+  <div class="solution-grid">
+    <div class="solution-card">
+      <div class="solution-icon">📞</div>
+      <h3>Zéro appel manqué</h3>
+      <p>L'agent BoosterVO intercepte chaque appel en temps réel — même quand vous êtes occupé ou indisponible.</p>
+    </div>
+    <div class="solution-card">
+      <div class="solution-icon">⚡</div>
+      <h3>Rappel immédiat</h3>
+      <p>Les prospects non décrochés sont rappelés automatiquement dans la fenêtre commerciale optimale.</p>
+    </div>
+    <div class="solution-card">
+      <div class="solution-icon">📊</div>
+      <h3>Suivi de marge réelle</h3>
+      <p>Chaque appel est tracé : RDV, vente, marge. Vous voyez enfin ce que votre publicité LBC vous rapporte vraiment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- OFFER -->
+<section class="offer" id="offre">
+  <p class="section-label">Offre de lancement</p>
+  <h2 class="section-title" style="margin-bottom: 32px;">Testez BoosterVO sans risque</h2>
+  <div class="offer-card">
+    <div class="offer-top">
+      <span>🎯 Offre de lancement — 1er mois à -50%</span>
+      <span class="badge">Durée limitée</span>
+    </div>
+    <div class="offer-body">
+      <div class="price-row">
+        <div class="price-new">249,50 €</div>
+        <div class="price-old">499 €</div>
+      </div>
+      <div class="price-period">le 1er mois · puis 499 €/mois · sans engagement</div>
+
+      <ul class="offer-features">
+        <li>Traitement 100% de vos appels entrants dès le 1er jour</li>
+        <li>Agent IA configuré sur votre profil négociant</li>
+        <li>Tableau de bord appels, RDV et marge en temps réel</li>
+        <li>Rappel automatique dans les créneaux commerciaux optimaux</li>
+        <li>Résiliation libre — aucun engagement longue durée</li>
+      </ul>
+
+      <div class="guarantee-bar">
+        <span class="icon">🛡️</span>
+        <span><strong>Garantie satisfait ou remboursé</strong> — si 100% de vos appels ne sont pas traités, vous êtes remboursé. Sans question.</span>
+      </div>
+
+      <a href="mailto:contact@boostervo.fr" class="cta-main">
+        Profitez de 50% de discount — 1er mois avec garantie satisfait ou remboursé
+      </a>
+      <div class="cta-sub">Activation sous 48h · Sans engagement · Résiliation en 1 clic</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <strong>BoosterVO</strong> — par Mercures SAS · <a href="mailto:contact@boostervo.fr" style="color:inherit">contact@boostervo.fr</a><br>
+  <span style="font-size:0.78rem;margin-top:6px;display:block">© 2025 Mercures SAS · Tous droits réservés · boostervo.fr</span>
+</footer>
+
+<script>
+  const SUBSCRIPTION = 499;
+  const CONVERSION_RATE = 0.12;
+
+  function fmt(n) {
+    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+  }
+
+  function calculate() {
+    const total    = parseFloat(document.getElementById('totalCalls').value) || 0;
+    const missed   = parseFloat(document.getElementById('missedRate').value)  / 100 || 0;
+    const late     = parseFloat(document.getElementById('lateRate').value)    / 100 || 0;
+    const margin   = parseFloat(document.getElementById('margin').value)      || 0;
+
+    const lostCalls   = total * (missed + late);
+    const lostSales   = lostCalls * CONVERSION_RATE;
+    const lostMargin  = lostSales * margin;
+    const monthsCovered = lostMargin > 0 ? (lostMargin / SUBSCRIPTION).toFixed(1) : '—';
+
+    document.getElementById('res-loss').textContent   = lostMargin > 0 ? fmt(lostMargin) : '—';
+    document.getElementById('res-months').textContent = monthsCovered !== '—' ? monthsCovered + 'x' : '—';
+  }
+
+  ['totalCalls','missedRate','lateRate','margin'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calculate);
+  });
+
+  calculate();
+</script>
+
+
+
+</body></html>
