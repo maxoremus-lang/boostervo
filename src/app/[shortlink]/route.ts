@@ -59,15 +59,23 @@ export async function GET(
     : new URL(link.destination);
 
   const response = NextResponse.redirect(dest, 302);
-  // sameSite=lax + httpOnly. Pas de secure pour rester cohérent avec le cookie
-  // NextAuth (Traefik termine le TLS et l'app voit du HTTP en interne).
-  response.cookies.set({
-    name: CLICK_COOKIE_NAME,
-    value: cookieId,
-    maxAge: CLICK_COOKIE_MAX_AGE_SEC,
-    path: "/",
-    httpOnly: true,
-    sameSite: "lax",
-  });
+  // First-touch attribution : on ne pose le cookie que s'il n'existe pas déjà.
+  // Cas d'usage : un visiteur arrive via /go1 (cookie posé) puis clique sur
+  // /manuel-app sur la page signup ; on doit conserver l'attribution /go1
+  // pour que la conversion soit créditée à la campagne SMS d'origine.
+  // Le LinkClick reste loggé dans tous les cas pour le compteur de clics.
+  const existingCookie = req.cookies.get(CLICK_COOKIE_NAME)?.value;
+  if (!existingCookie) {
+    // sameSite=lax + httpOnly. Pas de secure pour rester cohérent avec le cookie
+    // NextAuth (Traefik termine le TLS et l'app voit du HTTP en interne).
+    response.cookies.set({
+      name: CLICK_COOKIE_NAME,
+      value: cookieId,
+      maxAge: CLICK_COOKIE_MAX_AGE_SEC,
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax",
+    });
+  }
   return response;
 }
