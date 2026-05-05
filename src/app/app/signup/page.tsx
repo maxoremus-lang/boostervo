@@ -257,65 +257,67 @@ export default function SignupPage() {
     <div className="hidden lg:flex fixed inset-0 z-50 bg-gray-50 items-center justify-center p-6 xl:p-10">
       <div className="w-full max-w-6xl flex bg-white rounded-3xl shadow-xl overflow-hidden" style={{ height: "min(880px, calc(100vh - 80px))" }}>
         {/* Panneau gauche : branding */}
-        <div className="w-1/2 bg-gradient-to-br from-bleu via-bleu to-[#0d3a7a] text-white relative overflow-hidden flex flex-col justify-between p-10 xl:p-12">
-        <div className="relative z-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-white.svg" alt="BoosterVO" className="h-9 w-auto" />
+        <div className="w-1/2 bg-gradient-to-br from-bleu via-bleu to-[#0d3a7a] text-white relative overflow-hidden">
+          {/* Décoration : cercles flous en arrière-plan (hors zone scrollable) */}
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-orange/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-32 -left-20 w-96 h-96 bg-orange/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative h-full overflow-y-auto flex flex-col gap-8 p-10 xl:p-12">
+            <div className="relative z-10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-white.svg" alt="BoosterVO" className="h-9 w-auto" />
+            </div>
+
+            <div className="relative z-10 max-w-md">
+              <SlotsBadge slots={slots} />
+              <h2 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight mt-4">
+                Faites partie des 50 Pros sélectionnés<br />
+                pour tester gratis l&apos;app BoosterVO.
+              </h2>
+              <p className="text-orange font-extrabold text-base mt-4 leading-relaxed">
+                Ne laissez plus filer un seul prospect.
+              </p>
+
+              <p className="text-white font-bold text-base mt-6 leading-snug">
+                Prenez une longueur d&apos;avance avec l&apos;app qui booste vos ventes VO.
+              </p>
+
+              <ul className="mt-5 space-y-3 text-sm">
+                <li className="flex items-start gap-3">
+                  <CheckIcon />
+                  <span>Détecte automatiquement vos appels manqués critiques</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckIcon />
+                  <span>Vous alerte en temps réel pour rappeler plus vite</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckIcon />
+                  <span>Mesure vos délais de rappel, vos rendez-vous et vos ventes</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckIcon />
+                  <span>App offerte 30 jours, sans engagement</span>
+                </li>
+              </ul>
+
+              <p className="text-white/80 text-sm mt-6 leading-relaxed">
+                BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu&apos;à 3 000 € de marge dès le 1er mois</strong> sur vos annonces Leboncoin.
+              </p>
+
+              <a
+                href="/manuel/Presentation-App-Mobile-BoosterVO.pdf"
+                download
+                className="mt-6 inline-flex items-center justify-center gap-3 bg-orange hover:bg-orange-dark text-white font-bold text-sm px-5 py-3.5 rounded-xl shadow-lg transition"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Téléchargez le manuel de l&apos;app Mobile
+              </a>
+            </div>
+          </div>
         </div>
-
-        <div className="relative z-10 max-w-md">
-          <SlotsBadge slots={slots} />
-          <h2 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight mt-4">
-            Faites partie des 50 Pros sélectionnés<br />
-            pour tester gratis l&apos;app BoosterVO.
-          </h2>
-          <p className="text-orange font-extrabold text-base mt-4 leading-relaxed">
-            Ne laissez plus filer un seul prospect.
-          </p>
-
-          <p className="text-white font-bold text-base mt-6 leading-snug">
-            Prenez une longueur d&apos;avance avec l&apos;app qui booste vos ventes VO.
-          </p>
-
-          <ul className="mt-5 space-y-3 text-sm">
-            <li className="flex items-start gap-3">
-              <CheckIcon />
-              <span>Détecte automatiquement vos appels manqués critiques</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckIcon />
-              <span>Vous alerte en temps réel pour rappeler plus vite</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckIcon />
-              <span>Mesure vos délais de rappel, vos rendez-vous et vos ventes</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckIcon />
-              <span>App offerte 30 jours, sans engagement</span>
-            </li>
-          </ul>
-
-          <p className="text-white/80 text-sm mt-6 leading-relaxed">
-            BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à <strong className="text-white font-bold">récupérer jusqu&apos;à 3 000 € de marge dès le 1er mois</strong> sur vos annonces Leboncoin.
-          </p>
-        </div>
-
-        <a
-          href="/manuel/Presentation-App-Mobile-BoosterVO.pdf"
-          download
-          className="relative z-10 mt-8 inline-flex items-center justify-center gap-3 bg-orange hover:bg-orange-dark text-white font-bold text-sm px-5 py-3.5 rounded-xl shadow-lg transition self-start"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Téléchargez le manuel de l&apos;app Mobile
-        </a>
-
-        {/* Décoration : cercles flous en arrière-plan */}
-        <div className="absolute -top-20 -right-20 w-80 h-80 bg-orange/15 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -left-20 w-96 h-96 bg-orange/10 rounded-full blur-3xl" />
-      </div>
 
         {/* Panneau droit : formulaire */}
         <div className="w-1/2 bg-white flex items-start justify-center py-10 px-8 xl:px-12 overflow-y-auto">
