@@ -236,12 +236,16 @@ export default function SignupPage() {
             <a
               href="/manuel/Presentation-App-Mobile-BoosterVO.pdf"
               download
-              className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-orange hover:bg-orange-dark text-white font-bold text-sm px-4 py-3 rounded-xl shadow-lg transition"
+              className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-orange hover:bg-orange-dark text-white font-bold text-sm px-4 py-3 rounded-xl shadow-lg transition text-center leading-snug"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Téléchargez le manuel de l&apos;app Mobile
+              <span>
+                Téléchargez le manuel
+                <br />
+                de l&apos;app Mobile
+              </span>
             </a>
           </div>
           <div className="absolute -top-12 -right-12 w-40 h-40 bg-orange/15 rounded-full blur-2xl pointer-events-none" />
