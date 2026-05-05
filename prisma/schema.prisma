@@ -55,11 +55,13 @@ model LinkConfig {
   clicks      LinkClick[]
 }
 
-// Un clic enregistré sur un lien court. cookieId est posé en cookie côté
-// navigateur pour permettre l'attribution conversion (clic → inscription).
+// Un clic enregistré sur un lien court. cookieId identifie le visiteur
+// (= valeur du cookie bvo_clk persistant) — plusieurs clics d'un même
+// visiteur partagent le même cookieId, ce qui permet de reconstruire le
+// parcours (ex: clic /go1 → clic /manuel-app → inscription).
 model LinkClick {
   id            String     @id @default(cuid())
-  cookieId      String     @unique
+  cookieId      String     // visitor id (non unique : 1 visiteur = N clics)
   linkConfigId  String
   linkConfig    LinkConfig @relation(fields: [linkConfigId], references: [id], onDelete: Cascade)
 
@@ -71,13 +73,15 @@ model LinkClick {
   os            String?    // "iOS", "Android", "Windows", "macOS", …
 
   // Attribution conversion : renseignés quand un User est créé alors que
-  // le cookie bvo_clk pointait sur ce LinkClick.
+  // le cookie bvo_clk pointait sur ce visiteur. Seul le premier clic
+  // (first-touch) est marqué converti pour éviter de gonfler les stats.
   convertedAt   DateTime?
   userId        String?
   user          User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   createdAt     DateTime   @default(now())
 
+  @@index([cookieId])
   @@index([linkConfigId])
   @@index([userId])
   @@index([createdAt])

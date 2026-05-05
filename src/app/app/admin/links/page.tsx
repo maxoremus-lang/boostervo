@@ -10,10 +10,15 @@ type LinkStat = {
   destination: string;
   active: boolean;
   totalClicks: number;
+  uniqueVisitors: number;
   totalConversions: number;
   conversionRate: number;
+  downloadedManuel: number;
+  downloadedManuelRate: number;
   lastClickAt: string | null;
 };
+
+const MANUEL_SLUG = "manuel-app";
 
 type RecentClick = {
   id: string;
@@ -267,12 +272,20 @@ export default function AdminLinksPage() {
                       <p className="text-lg font-nunito font-extrabold text-bleu leading-none">
                         {link.totalClicks}
                       </p>
-                      <p className="text-[10px] text-gray-400 uppercase font-bold">clics</p>
+                      <p className="text-[10px] text-gray-400 uppercase font-bold">
+                        clics · {link.uniqueVisitors} visiteur{link.uniqueVisitors > 1 ? "s" : ""}
+                      </p>
                     </div>
                   </div>
 
-                  {/* Stats détaillées */}
-                  <div className="mt-3 grid grid-cols-3 gap-2 bg-gray-50 rounded-lg px-3 py-2 text-center">
+                  {/* Stats détaillées : 4 colonnes pour les campagnes (avec
+                      "manuel téléchargé"), 3 colonnes pour /manuel-app lui-même
+                      (où le cross-tab n'a pas de sens). */}
+                  <div
+                    className={`mt-3 grid gap-2 bg-gray-50 rounded-lg px-3 py-2 text-center ${
+                      link.slug === MANUEL_SLUG ? "grid-cols-3" : "grid-cols-4"
+                    }`}
+                  >
                     <div>
                       <p className="text-[9px] text-gray-400 uppercase font-bold">Inscriptions</p>
                       <p className="text-sm font-bold text-orange">{link.totalConversions}</p>
@@ -283,6 +296,17 @@ export default function AdminLinksPage() {
                         {formatPercent(link.conversionRate)}
                       </p>
                     </div>
+                    {link.slug !== MANUEL_SLUG && (
+                      <div title="Visiteurs de ce lien qui ont aussi cliqué sur le bouton 'Télécharger le manuel'">
+                        <p className="text-[9px] text-gray-400 uppercase font-bold">Manuel ↓</p>
+                        <p className="text-sm font-bold text-bleu">
+                          {link.downloadedManuel}
+                          <span className="text-[10px] text-gray-400 font-semibold ml-1">
+                            ({formatPercent(link.downloadedManuelRate)})
+                          </span>
+                        </p>
+                      </div>
+                    )}
                     <div>
                       <p className="text-[9px] text-gray-400 uppercase font-bold">Dernier clic</p>
                       <p className="text-[11px] font-semibold text-gray-700">

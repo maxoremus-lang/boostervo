@@ -34,7 +34,13 @@ export async function GET(
   const ua = req.headers.get("user-agent");
   const referer = req.headers.get("referer");
   const { device, browser, os } = parseUserAgent(ua);
-  const cookieId = generateCookieId();
+
+  // cookieId = identifiant du visiteur. Si le visiteur a déjà un cookie
+  // (= il a déjà cliqué sur un lien tracké avant), on réutilise sa valeur
+  // pour que tous ses clics soient liés au même visitorId. Sinon on en
+  // génère un nouveau qu'on lui attribuera via Set-Cookie plus bas.
+  const existingCookie = req.cookies.get(CLICK_COOKIE_NAME)?.value;
+  const cookieId = existingCookie || generateCookieId();
 
   try {
     await prisma.linkClick.create({
@@ -67,12 +73,11 @@ export async function GET(
     : new URL(link.destination);
 
   const response = NextResponse.redirect(dest, 302);
-  // First-touch attribution : on ne pose le cookie que s'il n'existe pas déjà.
+  // First-touch attribution : on ne pose le cookie que s'il n'existe pas déjà
+  // (existingCookie a été lu plus haut pour réutiliser le visitorId existant).
   // Cas d'usage : un visiteur arrive via /go1 (cookie posé) puis clique sur
   // /manuel-app sur la page signup ; on doit conserver l'attribution /go1
   // pour que la conversion soit créditée à la campagne SMS d'origine.
-  // Le LinkClick reste loggé dans tous les cas pour le compteur de clics.
-  const existingCookie = req.cookies.get(CLICK_COOKIE_NAME)?.value;
   if (!existingCookie) {
     // sameSite=lax + httpOnly. Pas de secure pour rester cohérent avec le cookie
     // NextAuth (Traefik termine le TLS et l'app voit du HTTP en interne).

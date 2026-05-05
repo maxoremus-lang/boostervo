@@ -176,16 +176,26 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // Attribution conversion : si l'utilisateur arrive via un lien court tracké,
-  // on relie le clic à l'inscription. Non-bloquant — l'absence de cookie ou
-  // une erreur DB ne doit pas faire échouer l'inscription.
+  // Attribution conversion (first-touch) : si l'utilisateur arrive via un
+  // lien court tracké, on crédite la conversion uniquement au PREMIER clic
+  // de ce visiteur (pas tous ses clics, sinon on gonfle artificiellement
+  // le taux de conversion des liens secondaires comme /manuel-app).
+  // Non-bloquant — l'absence de cookie ou une erreur DB ne doit pas faire
+  // échouer l'inscription.
   const cookieId = req.cookies.get(CLICK_COOKIE_NAME)?.value;
   if (cookieId) {
     try {
-      await prisma.linkClick.updateMany({
+      const firstClick = await prisma.linkClick.findFirst({
         where: { cookieId, convertedAt: null },
-        data: { userId: user.id, convertedAt: new Date() },
+        orderBy: { createdAt: "asc" },
+        select: { id: true },
       });
+      if (firstClick) {
+        await prisma.linkClick.update({
+          where: { id: firstClick.id },
+          data: { userId: user.id, convertedAt: new Date() },
+        });
+      }
     } catch (err) {
       console.error("[signup] attribution clic échouée:", err);
     }
