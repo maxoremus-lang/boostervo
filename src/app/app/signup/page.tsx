@@ -301,12 +301,16 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <p className="relative z-10 text-white/60 text-xs mt-8">
-          Déjà un compte ?{" "}
-          <Link href="/app/login" className="text-orange font-bold hover:underline">
-            Se connecter
-          </Link>
-        </p>
+        <a
+          href="/manuel/Presentation-App-Mobile-BoosterVO.pdf"
+          download
+          className="relative z-10 mt-8 inline-flex items-center justify-center gap-3 bg-orange hover:bg-orange-dark text-white font-bold text-sm px-5 py-3.5 rounded-xl shadow-lg transition self-start"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Téléchargez le manuel de l&apos;app Mobile
+        </a>
 
         {/* Décoration : cercles flous en arrière-plan */}
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-orange/15 rounded-full blur-3xl" />
