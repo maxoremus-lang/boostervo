@@ -54,8 +54,16 @@ export async function GET(
     // On poursuit la redirection même si la DB est down — le visiteur a la priorité.
   }
 
+  // Derrière Traefik, req.nextUrl.origin renvoie l'URL interne (localhost:3000).
+  // On reconstruit l'origin public via X-Forwarded-Host / X-Forwarded-Proto
+  // pour que Location pointe vers boostervo.fr et pas localhost.
+  const fwdProto = req.headers.get("x-forwarded-proto");
+  const fwdHost = req.headers.get("x-forwarded-host") || req.headers.get("host");
+  const publicOrigin = fwdHost
+    ? `${fwdProto || "https"}://${fwdHost}`
+    : req.nextUrl.origin;
   const dest = link.destination.startsWith("/")
-    ? new URL(link.destination, req.nextUrl.origin)
+    ? new URL(link.destination, publicOrigin)
     : new URL(link.destination);
 
   const response = NextResponse.redirect(dest, 302);
