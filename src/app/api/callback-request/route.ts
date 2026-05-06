@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { prisma } from "../../../lib/prisma";
+import { CLICK_COOKIE_NAME } from "../../../lib/linkTracking";
 
 async function sendCallbackEmail(payload: { firstName: string; mobile: string; source: string }) {
   if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
@@ -85,6 +87,27 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("[callback-request] envoi mail échoué:", err);
     return NextResponse.json({ error: "Erreur lors de l'envoi" }, { status: 500 });
+  }
+
+  // Attribution first-touch : marque le premier clic non-converti du visiteur
+  // comme converti (sans userId, puisque callback ≠ signup). Non-bloquant.
+  const cookieId = req.cookies.get(CLICK_COOKIE_NAME)?.value;
+  if (cookieId) {
+    try {
+      const firstClick = await prisma.linkClick.findFirst({
+        where: { cookieId, convertedAt: null },
+        orderBy: { createdAt: "asc" },
+        select: { id: true },
+      });
+      if (firstClick) {
+        await prisma.linkClick.update({
+          where: { id: firstClick.id },
+          data: { convertedAt: new Date() },
+        });
+      }
+    } catch (err) {
+      console.error("[callback-request] attribution clic échouée:", err);
+    }
   }
 
   return NextResponse.json({ ok: true });
