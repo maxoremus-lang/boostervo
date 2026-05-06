@@ -49,38 +49,32 @@ export default function SignupV4Page() {
     <>
       <SlotsBadge slots={slots} />
       <h1 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight mt-4">
-        Faites partie des 50 Pros sélectionnés pour tester gratis l&apos;app BoosterVO.
+        Testez BoosterVO gratuitement pendant 10 jours et découvrez ce que vos appels Leboncoin vous rapportent vraiment
       </h1>
-      <p className="text-orange font-extrabold text-base mt-4 leading-relaxed">
-        Ne laissez plus filer un seul prospect.
+      <p className="text-white text-base mt-5 leading-relaxed">
+        Vous payez Leboncoin pour générer des appels. Mais aujourd&apos;hui, vous ne savez pas lesquels vous <u>font gagner</u>… ou <u>perdre</u> de l&apos;argent.
       </p>
       <p className="text-white font-bold text-base mt-6 leading-snug">
-        Prenez une longueur d&apos;avance avec l&apos;app qui booste vos ventes VO.
+        Pendant 10 jours, BoosterVO vous montre :
       </p>
-      <ul className="mt-5 space-y-3 text-sm">
+      <ul className="mt-4 space-y-3 text-sm">
         <li className="flex items-start gap-3">
           <CheckIcon />
-          <span>Détecte automatiquement vos appels manqués critiques</span>
+          <span>Les appels que vous perdez vraiment</span>
         </li>
         <li className="flex items-start gap-3">
           <CheckIcon />
-          <span>Vous alerte en temps réel pour rappeler plus vite</span>
+          <span>Ceux que vous pouvez récupérer</span>
         </li>
         <li className="flex items-start gap-3">
           <CheckIcon />
-          <span>Mesure vos délais de rappel, vos rendez-vous et vos ventes</span>
-        </li>
-        <li className="flex items-start gap-3">
-          <CheckIcon />
-          <span>App offerte 30 jours, sans engagement</span>
+          <span>Et combien ils vous rapportent</span>
         </li>
       </ul>
-      <p className="text-white/80 text-sm mt-6 leading-relaxed">
-        BoosterVO analyse vos appels, vous notifie en temps réel et vous aide à{" "}
-        <strong className="text-white font-bold">
-          récupérer jusqu&apos;à 3 000 € de marge dès le 1er mois
-        </strong>{" "}
-        sur vos annonces Leboncoin.
+      <p className="text-white text-base mt-6 leading-relaxed">
+        Vous ne testez pas une app.
+        <br />
+        <strong className="text-white font-bold">Vous testez la rentabilité réelle de vos appels.</strong>
       </p>
       {buttons}
     </>
