@@ -47,8 +47,7 @@ export default function SignupV4Page() {
 
   const heroContent = (
     <>
-      <SlotsBadge slots={slots} />
-      <h1 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight mt-4">
+      <h1 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight">
         Faites partie des 50 Pros sélectionnés pour tester gratis l&apos;app BoosterVO
       </h1>
       <p className="text-white text-base mt-5 leading-relaxed">
@@ -92,7 +91,12 @@ export default function SignupV4Page() {
 
           <div className="bg-gradient-to-br from-bleu via-bleu to-[#0d3a7a] rounded-2xl p-5 text-white relative overflow-hidden">
             <div className="absolute -top-12 -right-12 w-40 h-40 bg-orange/15 rounded-full blur-2xl pointer-events-none" />
-            <div className="relative z-10">{heroContent}</div>
+            <div className="relative z-10">
+              <div className="flex justify-end mb-3">
+                <SlotsBadge slots={slots} />
+              </div>
+              {heroContent}
+            </div>
           </div>
 
           <div className="mt-6 flex justify-center">
@@ -113,9 +117,10 @@ export default function SignupV4Page() {
             <div className="absolute -bottom-32 -left-20 w-96 h-96 bg-orange/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative h-full overflow-y-auto flex flex-col gap-8 p-10 xl:p-12">
-              <div className="relative z-10">
+              <div className="relative z-10 flex items-center justify-between gap-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo-white.svg" alt="BoosterVO" className="h-9 w-auto" />
+                <SlotsBadge slots={slots} />
               </div>
               <div className="relative z-10 max-w-md">{heroContent}</div>
             </div>
