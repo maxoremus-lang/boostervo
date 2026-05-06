@@ -49,7 +49,7 @@ export default function SignupV4Page() {
     <>
       <SlotsBadge slots={slots} />
       <h1 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight mt-4">
-        Testez BoosterVO gratuitement pendant 10 jours et découvrez ce que vos appels Leboncoin vous rapportent vraiment
+        Faites partie des 50 Pros sélectionnés pour tester gratis l&apos;app BoosterVO
       </h1>
       <p className="text-white text-base mt-5 leading-relaxed">
         Vous payez Leboncoin pour générer des appels. Mais aujourd&apos;hui, vous ne savez pas lesquels vous <u>font gagner</u>… ou <u>perdre</u> de l&apos;argent.
