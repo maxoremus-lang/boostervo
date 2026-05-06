@@ -48,10 +48,13 @@ export default function SignupV4Page() {
   const heroContent = (
     <>
       <h1 className="text-xl xl:text-2xl font-nunito font-extrabold leading-tight">
-        Faites partie des 50 Pros sélectionnés pour tester gratis l&apos;app BoosterVO
+        Faites partie des 50 Pros sélectionnés pour tester gratuitement BoosterVO
       </h1>
       <p className="text-white text-base mt-5 leading-relaxed">
-        Vous payez Leboncoin pour générer des appels. Mais aujourd&apos;hui, vous ne savez pas lesquels vous <u>font gagner</u>… ou <u>perdre</u> de l&apos;argent.
+        Vous payez déjà sur Leboncoin pour générer des appels.
+      </p>
+      <p className="text-white text-base mt-4 leading-relaxed">
+        Mais vous ne savez pas quels appels vous rapportent de l&apos;argent, lesquels sont perdus… ni si votre investissement est rentable ?
       </p>
       <p className="text-white font-bold text-base mt-6 leading-snug">
         Pendant 10 jours, BoosterVO vous montre :
@@ -59,7 +62,7 @@ export default function SignupV4Page() {
       <ul className="mt-4 space-y-3 text-sm">
         <li className="flex items-start gap-3">
           <CheckIcon />
-          <span>Les appels que vous perdez vraiment</span>
+          <span>Les appels réellement perdus</span>
         </li>
         <li className="flex items-start gap-3">
           <CheckIcon />
@@ -67,13 +70,11 @@ export default function SignupV4Page() {
         </li>
         <li className="flex items-start gap-3">
           <CheckIcon />
-          <span>Et combien ils vous rapportent</span>
+          <span>Et l&apos;impact sur votre chiffre d&apos;affaires</span>
         </li>
       </ul>
       <p className="text-white text-base mt-6 leading-relaxed">
-        Vous ne testez pas une app.
-        <br />
-        <strong className="text-white font-bold">Vous testez la rentabilité réelle de vos appels.</strong>
+        Vous ne testez pas une app. Vous allez mesurer votre réel retour sur investissement (<strong className="text-white font-bold">ROI</strong>) leboncoin.
       </p>
       {buttons}
     </>
