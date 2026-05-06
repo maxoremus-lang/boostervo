@@ -49,6 +49,7 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
             keys: { p256dh: sub.p256dh, auth: sub.auth },
           },
           body,
+          { urgency: "high", TTL: 60 },
         );
         delivered++;
         // Tag la subscription comme utilisée (utile pour nettoyage futur)
