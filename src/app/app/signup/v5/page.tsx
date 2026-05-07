@@ -27,10 +27,14 @@ export default function SignupV5Page() {
         href="/manuel-app"
         className="inline-flex items-center justify-center gap-2 bg-orange hover:bg-orange-dark text-white font-bold text-sm px-5 py-3.5 rounded-xl shadow-lg transition"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        Téléchargez le manuel de l&apos;app Mobile
+        <span className="text-center leading-tight">
+          Téléchargez le manuel
+          <br />
+          de l&apos;app Mobile
+        </span>
       </a>
       <button
         type="button"
