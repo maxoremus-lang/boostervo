@@ -72,7 +72,7 @@ export default function SignupV3Page() {
         </li>
         <li className="flex items-start gap-3">
           <CheckIcon />
-          <span>App offerte 30 jours, sans engagement</span>
+          <span>Testez notre app pendant 10 jours sans engagement</span>
         </li>
       </ul>
       <p className="text-white/80 text-sm mt-6 leading-relaxed">
