@@ -79,8 +79,12 @@ export async function GET() {
         label: link.label,
         destination: link.destination,
         active: link.active,
+        smsSent: link.smsSent,
         totalClicks,
         uniqueVisitors: distinctVisitors.length,
+        // Taux de clics campagne SMS = visiteurs uniques / SMS envoyés.
+        // null si smsSent == 0 (pas de campagne SMS rattachée → on n'affiche pas).
+        clickRate: link.smsSent > 0 ? distinctVisitors.length / link.smsSent : null,
         totalConversions,
         conversionRate: totalClicks > 0 ? totalConversions / totalClicks : 0,
         downloadedManuel,

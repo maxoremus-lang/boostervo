@@ -9,8 +9,10 @@ type LinkStat = {
   label: string | null;
   destination: string;
   active: boolean;
+  smsSent: number;
   totalClicks: number;
   uniqueVisitors: number;
+  clickRate: number | null;
   totalConversions: number;
   conversionRate: number;
   downloadedManuel: number;
@@ -55,9 +57,14 @@ export default function AdminLinksPage() {
 
   // Edition inline d'un lien
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<{ label: string; destination: string }>({
+  const [editForm, setEditForm] = useState<{
+    label: string;
+    destination: string;
+    smsSent: string;
+  }>({
     label: "",
     destination: "",
+    smsSent: "0",
   });
   const [savingId, setSavingId] = useState<string | null>(null);
 
@@ -99,10 +106,19 @@ export default function AdminLinksPage() {
 
   function startEdit(link: LinkStat) {
     setEditingId(link.id);
-    setEditForm({ label: link.label ?? "", destination: link.destination });
+    setEditForm({
+      label: link.label ?? "",
+      destination: link.destination,
+      smsSent: String(link.smsSent ?? 0),
+    });
   }
 
   async function saveEdit(id: string) {
+    const smsSentNum = parseInt(editForm.smsSent, 10);
+    if (Number.isNaN(smsSentNum) || smsSentNum < 0) {
+      alert("« SMS envoyés » doit être un entier positif ou zéro.");
+      return;
+    }
     setSavingId(id);
     try {
       const res = await fetch(`/api/admin/links/${id}`, {
@@ -111,6 +127,7 @@ export default function AdminLinksPage() {
         body: JSON.stringify({
           label: editForm.label,
           destination: editForm.destination,
+          smsSent: smsSentNum,
         }),
       });
       if (!res.ok) {
@@ -278,23 +295,38 @@ export default function AdminLinksPage() {
                     </div>
                   </div>
 
-                  {/* Stats détaillées : 4 colonnes pour les campagnes (avec
-                      "manuel téléchargé"), 3 colonnes pour /manuel-app lui-même
-                      (où le cross-tab n'a pas de sens). */}
+                  {/* Stats détaillées : 5 colonnes pour les campagnes SMS (avec
+                      "SMS envoyés" + "taux de clics" + "manuel téléchargé"),
+                      3 colonnes pour /manuel-app lui-même (où le cross-tab et
+                      la notion de campagne SMS n'ont pas de sens). */}
                   <div
                     className={`mt-3 grid gap-2 bg-gray-50 rounded-lg px-3 py-2 text-center ${
-                      link.slug === MANUEL_SLUG ? "grid-cols-3" : "grid-cols-4"
+                      link.slug === MANUEL_SLUG ? "grid-cols-3" : "grid-cols-5"
                     }`}
                   >
+                    {link.slug !== MANUEL_SLUG && (
+                      <div title="Nombre de SMS réellement envoyés pour cette campagne (saisi à la main).">
+                        <p className="text-[9px] text-gray-400 uppercase font-bold">SMS envoyés</p>
+                        <p className="text-sm font-bold text-bleu">
+                          {link.smsSent > 0 ? link.smsSent : <span className="text-gray-300">—</span>}
+                        </p>
+                      </div>
+                    )}
+                    {link.slug !== MANUEL_SLUG && (
+                      <div title="Visiteurs uniques ayant cliqué ÷ SMS envoyés × 100">
+                        <p className="text-[9px] text-gray-400 uppercase font-bold">Taux clics</p>
+                        <p className="text-sm font-bold text-bleu">
+                          {link.clickRate !== null ? (
+                            formatPercent(link.clickRate)
+                          ) : (
+                            <span className="text-gray-300">—</span>
+                          )}
+                        </p>
+                      </div>
+                    )}
                     <div>
                       <p className="text-[9px] text-gray-400 uppercase font-bold">Inscriptions</p>
                       <p className="text-sm font-bold text-orange">{link.totalConversions}</p>
-                    </div>
-                    <div>
-                      <p className="text-[9px] text-gray-400 uppercase font-bold">Taux</p>
-                      <p className="text-sm font-bold text-bleu">
-                        {formatPercent(link.conversionRate)}
-                      </p>
                     </div>
                     {link.slug !== MANUEL_SLUG && (
                       <div title="Visiteurs de ce lien qui ont aussi cliqué sur le bouton 'Télécharger le manuel'">
@@ -304,6 +336,14 @@ export default function AdminLinksPage() {
                           <span className="text-[10px] text-gray-400 font-semibold ml-1">
                             ({formatPercent(link.downloadedManuelRate)})
                           </span>
+                        </p>
+                      </div>
+                    )}
+                    {link.slug === MANUEL_SLUG && (
+                      <div>
+                        <p className="text-[9px] text-gray-400 uppercase font-bold">Taux conv.</p>
+                        <p className="text-sm font-bold text-bleu">
+                          {formatPercent(link.conversionRate)}
                         </p>
                       </div>
                     )}
@@ -380,6 +420,28 @@ export default function AdminLinksPage() {
                           className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-bleu"
                         />
                       </div>
+                      {link.slug !== MANUEL_SLUG && (
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-500 uppercase">
+                            SMS envoyés
+                          </label>
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            min="0"
+                            step="1"
+                            value={editForm.smsSent}
+                            onChange={(e) =>
+                              setEditForm({ ...editForm, smsSent: e.target.value })
+                            }
+                            placeholder="0"
+                            className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-bleu"
+                          />
+                          <p className="text-[10px] text-gray-400 mt-1">
+                            Nombre réel envoyé. Sert à calculer le taux de clics.
+                          </p>
+                        </div>
+                      )}
                       <div className="flex gap-2 pt-1">
                         <button
                           type="button"

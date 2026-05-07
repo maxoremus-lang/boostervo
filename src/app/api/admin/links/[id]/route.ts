@@ -25,7 +25,12 @@ export async function PATCH(
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "Body invalide" }, { status: 400 });
 
-  const data: { label?: string | null; destination?: string; active?: boolean } = {};
+  const data: {
+    label?: string | null;
+    destination?: string;
+    active?: boolean;
+    smsSent?: number;
+  } = {};
   if (typeof body.label === "string") {
     const trimmed = body.label.trim();
     data.label = trimmed === "" ? null : trimmed;
@@ -35,6 +40,16 @@ export async function PATCH(
   }
   if (typeof body.active === "boolean") {
     data.active = body.active;
+  }
+  if (body.smsSent !== undefined) {
+    const n = Number(body.smsSent);
+    if (!Number.isFinite(n) || n < 0 || !Number.isInteger(n)) {
+      return NextResponse.json(
+        { error: "smsSent doit être un entier positif ou zéro" },
+        { status: 400 }
+      );
+    }
+    data.smsSent = n;
   }
 
   if (Object.keys(data).length === 0) {
