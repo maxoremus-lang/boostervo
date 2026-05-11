@@ -67,3 +67,49 @@ export async function PATCH(req: NextRequest, ctx: { params: { id: string } }) {
 
   return NextResponse.json(user);
 }
+
+/**
+ * DELETE /api/admin/users/[id]
+ * Supprime un utilisateur ainsi que ses prospects et l'historique d'appels
+ * associé. Refuse l'auto-suppression et la suppression du dernier admin.
+ */
+export async function DELETE(_req: NextRequest, ctx: { params: { id: string } }) {
+  const auth = await requireAdmin();
+  if (auth.error) return auth.error;
+
+  const targetId = ctx.params.id;
+  const sessionUserId = (auth.session!.user as any).id as string | undefined;
+
+  if (sessionUserId && sessionUserId === targetId) {
+    return NextResponse.json(
+      { error: "Vous ne pouvez pas supprimer votre propre compte." },
+      { status: 400 }
+    );
+  }
+
+  const target = await prisma.user.findUnique({
+    where: { id: targetId },
+    select: { id: true, role: true },
+  });
+  if (!target) {
+    return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
+  }
+
+  if (target.role === "admin") {
+    const adminCount = await prisma.user.count({ where: { role: "admin" } });
+    if (adminCount <= 1) {
+      return NextResponse.json(
+        { error: "Impossible de supprimer le dernier administrateur." },
+        { status: 400 }
+      );
+    }
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.callEvent.deleteMany({ where: { prospect: { userId: targetId } } });
+    await tx.prospect.deleteMany({ where: { userId: targetId } });
+    await tx.user.delete({ where: { id: targetId } });
+  });
+
+  return NextResponse.json({ ok: true });
+}

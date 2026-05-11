@@ -30,6 +30,8 @@ const config: Config = {
           dark: "#cc5200",
         },
         "fond": "#f8f8f8",
+        "creme": "#FBF7EF",
+        "creme-dark": "#f3ede0",
       },
       fontFamily: {
         nunito: ["var(--font-nunito)", "sans-serif"],

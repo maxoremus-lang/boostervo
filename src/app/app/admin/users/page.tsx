@@ -64,6 +64,8 @@ export default function AdminUsersPage() {
   const [activateError, setActivateError] = useState<string | null>(null);
   const [activateSubmitting, setActivateSubmitting] = useState(false);
 
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   async function loadUsers() {
     try {
       const res = await fetch("/api/admin/users");
@@ -124,6 +126,32 @@ export default function AdminUsersPage() {
       setActivateError("Erreur réseau");
     } finally {
       setActivateSubmitting(false);
+    }
+  }
+
+  async function handleDelete(u: AdminUser) {
+    const fullName = u.firstName || u.lastName
+      ? `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim()
+      : u.name;
+    const ok = window.confirm(
+      `Supprimer définitivement ${fullName} (${u.email}) ?\n\n` +
+        `Cette action est irréversible et supprimera également ses prospects et son historique d'appels.`
+    );
+    if (!ok) return;
+
+    setDeletingId(u.id);
+    try {
+      const res = await fetch(`/api/admin/users/${u.id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        window.alert(data?.error || "Erreur de suppression");
+        return;
+      }
+      await loadUsers();
+    } catch {
+      window.alert("Erreur réseau");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -216,13 +244,23 @@ export default function AdminUsersPage() {
                           </p>
                         </div>
                         {activatingId !== u.id && (
-                          <button
-                            type="button"
-                            onClick={() => startActivate(u)}
-                            className="text-xs font-bold text-white bg-orange px-3 py-1.5 rounded-lg shrink-0 hover:opacity-90"
-                          >
-                            Activer
-                          </button>
+                          <div className="flex flex-col gap-1.5 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => startActivate(u)}
+                              className="text-xs font-bold text-white bg-orange px-3 py-1.5 rounded-lg hover:opacity-90"
+                            >
+                              Activer
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(u)}
+                              disabled={deletingId === u.id}
+                              className="text-xs font-semibold text-red-600 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50 disabled:opacity-50"
+                            >
+                              {deletingId === u.id ? "…" : "Supprimer"}
+                            </button>
+                          </div>
                         )}
                       </div>
 

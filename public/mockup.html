@@ -1,0 +1,2748 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BoosterVO — Hero v5 (fond bleu BVO + VSL vidéo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,800;1,900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bvo-bleu:#1B4F9B;
+    --bvo-bleu-dark:#153d7a;
+    --bvo-bleu-deep:#0f2d5c;
+    --bvo-orange:#FF6600;
+    --bvo-orange-dark:#cc5200;
+
+    --navy:#0A1628;
+    --muted:#53637a;
+    --line:#e6e9ef;
+    --green:#15a65a;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Open Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--bvo-bleu);
+    color:#fff;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.55;
+  }
+
+  .material-symbols-outlined{
+    font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;
+    vertical-align:middle;
+  }
+
+  .page{
+    min-height:auto;
+    padding:24px 42px 80px;
+    background:
+      radial-gradient(circle at 78% 12%, rgba(255,102,0,.18), transparent 38%),
+      radial-gradient(circle at 5% 85%, rgba(255,102,0,.08), transparent 32%),
+      linear-gradient(180deg, var(--bvo-bleu) 0%, var(--bvo-bleu-dark) 100%);
+  }
+
+  /* === HEADER === */
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    max-width:1280px;
+    margin:0 auto 56px;
+  }
+  .logo-svg{height:28px;width:auto;display:block}
+  nav{
+    display:flex;
+    gap:44px;
+    font-weight:600;
+    font-size:15px;
+  }
+  nav a{
+    color:rgba(255,255,255,.85);
+    text-decoration:none;
+    transition:color .2s;
+  }
+  nav a:hover{color:var(--bvo-orange)}
+  .top-btn{
+    background:var(--bvo-orange);
+    color:#fff;
+    padding:13px 24px;
+    border-radius:10px;
+    font-family:'Nunito',sans-serif;
+    font-weight:800;
+    font-size:14.5px;
+    text-decoration:none;
+    box-shadow:0 12px 28px rgba(255,102,0,.35);
+    transition:all .2s;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+  }
+  .top-btn:hover{background:var(--bvo-orange-dark);transform:translateY(-1px)}
+  .top-btn .material-symbols-outlined{font-size:18px}
+
+  /* === HERO === */
+  .hero{
+    max-width:1280px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:1fr 1.1fr;
+    gap:60px;
+    align-items:center;
+  }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    color:var(--bvo-orange);
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:24px;
+  }
+  .dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--bvo-orange);
+    box-shadow:0 0 0 4px rgba(255,102,0,.25);
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 4px rgba(255,102,0,.25)}
+    50%{box-shadow:0 0 0 9px rgba(255,102,0,.05)}
+  }
+
+  h1{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;
+    font-size:34px;
+    line-height:1.15;
+    letter-spacing:-.7px;
+    margin-bottom:18px;
+    color:#fff;
+  }
+  h1 .accent{
+    color:var(--bvo-orange);
+    font-weight:900;
+  }
+  h1 em{
+    color:var(--bvo-orange);
+    font-style:italic;
+    font-weight:900;
+  }
+
+  .subtitle{
+    max-width:560px;
+    color:rgba(255,255,255,.82);
+    font-size:15.5px;
+    line-height:1.5;
+    margin-bottom:4px;
+  }
+
+  .bullets{
+    list-style:none;
+    display:grid;
+    gap:12px;
+    color:rgba(255,255,255,.88);
+    font-size:14.5px;
+    margin:12px 0 18px;
+    max-width:620px;
+  }
+  .bullets li{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .bullets li > div{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .bullets li strong{
+    font-weight:800;
+    color:#fff;
+    font-size:14.5px;
+    line-height:1.35;
+  }
+  .bullets li span.desc{
+    color:rgba(255,255,255,.65);
+    font-size:13px;
+    line-height:1.35;
+  }
+  .check{
+    width:20px;height:20px;border-radius:50%;
+    background:var(--bvo-orange);
+    color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:900;
+    flex:0 0 20px;margin-top:1px;
+    box-shadow:0 3px 10px rgba(255,102,0,.35);
+  }
+
+  .money-box{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    max-width:520px;
+    padding:12px 18px;
+    border-left:4px solid var(--bvo-orange);
+    border-radius:0 10px 10px 0;
+    background:rgba(255,255,255,.10);
+    backdrop-filter:blur(6px);
+    margin-bottom:18px;
+  }
+  .money-icon{
+    width:38px;height:38px;border-radius:7px;
+    background:linear-gradient(135deg,#ff8c32,var(--bvo-orange));
+    display:flex;align-items:center;justify-content:center;
+    color:white;font-size:18px;font-weight:900;
+    box-shadow:0 8px 18px rgba(255,102,0,.40);
+    flex-shrink:0;
+    font-family:'Nunito',sans-serif;
+  }
+  .money-box strong{color:var(--bvo-orange);font-weight:800}
+  .money-box > div:last-child{font-size:13.5px;line-height:1.4;color:#fff}
+
+  .ctas{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin:0 0 18px;
+    flex-wrap:wrap;
+  }
+  .primary{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    background:var(--bvo-orange);
+    color:#fff;
+    padding:14px 24px;
+    justify-content:center;
+    border-radius:10px;
+    font-family:'Nunito',sans-serif;
+    font-size:14.5px;
+    font-weight:800;
+    text-decoration:none;
+    box-shadow:0 14px 32px rgba(255,102,0,.40), 0 4px 12px rgba(255,102,0,.22);
+    transition:all .2s;
+  }
+  .primary:hover{
+    background:var(--bvo-orange-dark);
+    transform:translateY(-2px);
+    box-shadow:0 18px 40px rgba(255,102,0,.50);
+  }
+  .primary .material-symbols-outlined{font-size:18px}
+
+  .secondary{
+    font-family:'Nunito',sans-serif;
+    font-weight:800;
+    font-size:13.5px;
+    color:#fff;
+    border-bottom:2px solid rgba(255,255,255,.7);
+    padding-bottom:4px;
+    text-decoration:none;
+    transition:all .2s;
+  }
+  .secondary:hover{color:var(--bvo-orange);border-color:var(--bvo-orange)}
+
+  .trust{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    font-size:12px;
+    font-weight:600;
+    color:rgba(255,255,255,.82);
+    margin-top:0;
+  }
+  .trust span{
+    display:inline-flex;align-items:center;gap:8px;
+    padding-right:18px;
+    border-right:1px solid rgba(255,255,255,.2);
+  }
+  .trust span:last-child{border-right:0}
+  .trust .material-symbols-outlined{
+    font-size:18px;color:var(--bvo-orange);
+  }
+
+  /* === VIDÉO VSL (16:9, dimensions hero boostervo.fr) === */
+  .video-wrap{
+    position:relative;
+    width:100%;
+    border-radius:16px;
+    overflow:hidden;
+    background:rgba(0,0,0,.35);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 32px 80px rgba(7,18,37,.40), 0 12px 28px rgba(7,18,37,.22);
+    aspect-ratio:16/9;
+  }
+  .video-wrap video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .video-poster{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 36px;
+    color:rgba(255,255,255,.92);
+    background:
+      radial-gradient(circle at 50% 35%, rgba(255,102,0,.18), transparent 55%),
+      linear-gradient(180deg, rgba(7,18,37,.40) 0%, rgba(7,18,37,.78) 100%);
+    cursor:pointer;
+    transition:opacity .3s;
+  }
+  .video-poster .label{
+    font-family:'Nunito',sans-serif;
+    font-size:13px;
+    font-weight:800;
+    color:var(--bvo-orange);
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    margin-bottom:14px;
+  }
+  .video-poster .play-btn{
+    width:78px;
+    height:78px;
+    border-radius:50%;
+    background:var(--bvo-orange);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:24px;
+    box-shadow:0 16px 40px rgba(255,102,0,.50), 0 0 0 0 rgba(255,102,0,.35);
+    animation:play-pulse 2.4s ease-in-out infinite;
+    transition:transform .25s, box-shadow .25s;
+  }
+  .video-poster:hover .play-btn{
+    transform:scale(1.08);
+    box-shadow:0 22px 50px rgba(255,102,0,.65);
+  }
+  @keyframes play-pulse{
+    0%,100%{box-shadow:0 16px 40px rgba(255,102,0,.50), 0 0 0 0 rgba(255,102,0,.35)}
+    50%{box-shadow:0 16px 40px rgba(255,102,0,.50), 0 0 0 16px rgba(255,102,0,0)}
+  }
+  .video-poster .play-btn .material-symbols-outlined{
+    font-size:40px;
+    color:#fff;
+    margin-left:5px;
+    font-variation-settings:'FILL' 1,'wght' 700;
+  }
+  .video-poster .title{
+    font-family:'Nunito',sans-serif;
+    font-size:22px;
+    font-weight:800;
+    color:#fff;
+    line-height:1.3;
+    max-width:420px;
+    margin-bottom:10px;
+  }
+  .video-poster .quote{
+    font-size:14.5px;
+    line-height:1.55;
+    font-style:italic;
+    color:rgba(255,255,255,.78);
+    max-width:420px;
+  }
+  .video-wrap.is-playing .video-poster{
+    opacity:0;
+    pointer-events:none;
+  }
+
+  /* === PROOF ROW === */
+  .proof-row{
+    max-width:1280px;
+    margin:54px auto 0;
+    background:#fff;
+    border-radius:16px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    box-shadow:0 24px 56px rgba(7,18,37,.25);
+    color:var(--navy);
+    overflow:hidden;
+  }
+  .proof{
+    display:grid;
+    grid-template-columns:60px 1fr;
+    gap:16px;
+    align-items:center;
+    padding:24px 28px;
+    border-right:1px solid #e4e7ec;
+    min-height:116px;
+  }
+  .proof:last-child{border-right:0}
+  .proof-icon{
+    width:52px;height:52px;border-radius:50%;
+    border:1px solid #ecdcc8;
+    display:flex;align-items:center;justify-content:center;
+    background:#fff7ed;
+    color:var(--bvo-orange);
+  }
+  .proof-icon .material-symbols-outlined{font-size:24px;font-variation-settings:'FILL' 1,'wght' 500}
+  .proof p{font-size:13.5px;line-height:1.4;color:var(--navy)}
+  .proof p strong{font-weight:800}
+  .proof small{display:block;margin-top:6px;color:#69758a;font-size:11px;font-style:italic}
+
+  /* === MODAL QUIZ === */
+  .modal-backdrop{
+    position:fixed;inset:0;
+    background:rgba(7,18,37,.78);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    z-index:100;
+    display:none;
+    align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .modal-backdrop.is-open{display:flex;animation:fadeIn .25s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{
+    background:#FBF7EF;
+    color:var(--navy);
+    border-radius:20px;
+    width:100%;max-width:640px;
+    max-height:92vh;
+    display:flex;flex-direction:column;
+    position:relative;
+    box-shadow:0 40px 80px rgba(0,0,0,.45);
+    animation:modalIn .35s cubic-bezier(.18,.89,.32,1.28);
+    overflow:hidden;
+  }
+  .modal.is-results{max-width:980px;background:#fff}
+
+  /* === RESULTS LAYOUT — 3 cartes + table + méthode + benchmark === */
+  .results-stats-3{
+    display:grid;grid-template-columns:1fr 1fr 1fr;
+    gap:14px;margin-bottom:16px;
+  }
+  .results-stats-3 .results-stat{padding:18px 16px}
+  .results-stats-3 .results-stat-label{font-size:12px;margin-bottom:10px}
+  .results-stats-3 .results-stat-value{font-size:28px;margin-bottom:2px}
+  .results-stats-3 .results-stat-value-sub{font-size:14px;margin-bottom:8px}
+  .results-stats-3 .results-stat-sub{font-size:11.5px}
+
+  .results-section{
+    border:1px solid var(--line);border-radius:14px;
+    padding:18px 22px;margin-bottom:14px;background:#fff;
+  }
+  .results-section h3{
+    font-family:'Nunito',sans-serif;
+    font-size:14px;font-weight:800;color:var(--navy);
+    margin-bottom:14px;letter-spacing:0;text-transform:none;
+  }
+
+  .data-table{
+    width:100%;border-collapse:collapse;
+    border:1px solid var(--line);border-radius:8px;overflow:hidden;
+  }
+  .data-table th{
+    background:#f8f8f8;
+    font-size:12.5px;font-weight:700;color:var(--muted);
+    padding:10px 6px;text-align:center;
+    border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    line-height:1.3;
+  }
+  .data-table th:last-child{border-right:0}
+  .data-table td{
+    padding:14px 6px;text-align:center;
+    font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;
+    color:var(--navy);
+    border-right:1px solid var(--line);background:#fff;
+  }
+  .data-table td:last-child{border-right:0}
+
+  .method-line{
+    margin-bottom:12px;
+    font-size:13.5px;line-height:1.55;color:var(--navy);
+  }
+  .method-line:last-child{margin-bottom:0}
+  .method-line .h-line{
+    display:block;font-weight:800;
+    margin-bottom:4px;
+    text-decoration:underline;
+  }
+  .method-line strong{font-weight:800}
+
+  .benchmark-list{
+    font-size:13px;color:var(--navy);line-height:1.7;
+    margin-bottom:8px;
+  }
+  .benchmark-list b{font-weight:800}
+  .benchmark-source{
+    font-size:11px;color:var(--muted);font-style:italic;
+  }
+  @keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+  .modal-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 24px;
+    border-bottom:1px solid #e8e3d6;
+    gap:16px;
+    flex-shrink:0;
+  }
+  .modal-head .logo-svg{height:22px}
+  .modal-trust{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:12px;color:var(--muted);font-weight:600;
+  }
+  .modal-trust .material-symbols-outlined{font-size:16px;color:var(--green)}
+  .modal-close{
+    width:36px;height:36px;border-radius:50%;
+    border:1px solid #d4d8df;background:#fff;color:var(--navy);
+    cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .modal-close:hover{background:#f0eee7}
+  .modal-close .material-symbols-outlined{font-size:20px}
+
+  .progress-bar{height:4px;background:#e8e3d6}
+  .progress-fill{height:100%;background:var(--bvo-orange);width:0%;transition:width .4s ease}
+
+  .modal-body{padding:36px 32px;overflow-y:auto;flex:1}
+
+  .step{display:none}
+  .step.is-active{display:block;animation:stepIn .3s ease}
+  @keyframes stepIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+
+  .step-meta{
+    display:inline-block;
+    font-size:11px;font-weight:800;
+    color:var(--bvo-orange);background:rgba(255,102,0,.1);
+    padding:6px 14px;border-radius:100px;
+    letter-spacing:.8px;text-transform:uppercase;
+    margin-bottom:22px;
+  }
+  .step-q{
+    font-family:'Nunito',sans-serif;
+    font-size:25px;font-weight:800;
+    color:var(--navy);line-height:1.25;
+    margin-bottom:8px;letter-spacing:-.4px;
+  }
+  .step-sub{
+    font-size:14.5px;color:var(--muted);
+    margin-bottom:28px;line-height:1.5;
+  }
+
+  .options{display:grid;gap:12px}
+  .options-3{grid-template-columns:repeat(3,1fr)}
+  .options-2{grid-template-columns:repeat(2,1fr)}
+  .options-4{grid-template-columns:repeat(2,1fr)}
+
+  .opt{
+    background:#fff;
+    border:2px solid #e8e3d6;
+    border-radius:12px;
+    padding:16px 18px;
+    font-family:'Open Sans',sans-serif;
+    font-size:15px;font-weight:700;
+    color:var(--navy);cursor:pointer;
+    transition:all .15s;text-align:center;
+  }
+  .opt:hover{border-color:var(--bvo-orange);color:var(--bvo-orange);transform:translateY(-1px)}
+  .opt.is-selected{
+    background:var(--bvo-orange);border-color:var(--bvo-orange);
+    color:#fff;box-shadow:0 8px 20px rgba(255,102,0,.3);
+  }
+
+  .input-wrap{position:relative;margin-bottom:8px}
+  .q-input{
+    width:100%;
+    font-family:'Nunito',sans-serif;
+    font-size:32px;font-weight:800;
+    border:2px solid #e8e3d6;border-radius:12px;
+    padding:22px 80px 22px 22px;
+    background:#fff;color:var(--navy);
+    outline:none;transition:border-color .2s;
+  }
+  .q-input:focus{border-color:var(--bvo-orange)}
+  .q-input::-webkit-outer-spin-button,.q-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .q-input[type=number]{-moz-appearance:textfield}
+  .input-suffix{
+    position:absolute;right:22px;top:50%;
+    transform:translateY(-50%);
+    font-family:'Nunito',sans-serif;
+    font-size:18px;font-weight:700;
+    color:var(--muted);pointer-events:none;
+  }
+  .q-input-email{
+    font-size:16px;font-weight:600;
+    font-family:'Open Sans',sans-serif;
+    padding:18px 22px;
+  }
+
+  .modal-foot{
+    display:flex;justify-content:space-between;gap:14px;
+    padding:18px 28px;
+    border-top:1px solid #e8e3d6;
+    background:#fff;
+    flex-shrink:0;
+  }
+  .btn-back,.btn-next{
+    font-family:'Nunito',sans-serif;
+    font-weight:700;font-size:14.5px;
+    border-radius:10px;padding:12px 22px;
+    cursor:pointer;border:none;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:all .2s;
+  }
+  .btn-back{
+    background:transparent;color:var(--muted);
+    border:1px solid #d4d8df;
+  }
+  .btn-back:hover{background:#f4f4f4;color:var(--navy)}
+  .btn-back .material-symbols-outlined{font-size:18px}
+  .btn-back[hidden]{display:none}
+
+  .btn-next{
+    background:var(--navy);color:#fff;font-weight:800;
+    margin-left:auto;
+  }
+  .btn-next:hover{background:var(--bvo-orange)}
+  .btn-next:disabled{opacity:.4;cursor:not-allowed}
+  .btn-next:disabled:hover{background:var(--navy)}
+  .btn-next .material-symbols-outlined{font-size:18px}
+
+  /* === RESULTS === */
+  .results-head{text-align:center;margin-bottom:28px}
+  .results-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(22,166,90,.1);color:var(--green);
+    padding:7px 16px;border-radius:100px;
+    font-size:12.5px;font-weight:800;
+    margin-bottom:16px;
+  }
+  .results-badge .material-symbols-outlined{font-size:16px;font-variation-settings:'FILL' 1}
+  .results-h{
+    font-family:'Nunito',sans-serif;
+    font-size:30px;font-weight:800;
+    color:var(--navy);line-height:1.2;letter-spacing:-.5px;
+  }
+  .results-h em{font-style:italic;color:var(--bvo-orange);font-weight:700}
+
+  .results-stats{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:16px;margin-bottom:18px;
+  }
+  .results-stat{
+    border:1px solid var(--line);border-radius:14px;
+    padding:22px;background:#fff;
+  }
+  .results-stat-label{
+    font-size:13.5px;color:var(--navy);
+    margin-bottom:14px;font-weight:700;
+  }
+  .results-stat-value{
+    font-family:'Nunito',sans-serif;
+    font-size:36px;font-weight:900;
+    color:var(--bvo-orange);line-height:1;
+    letter-spacing:-1px;margin-bottom:4px;
+  }
+  .results-stat-value-sub{
+    font-family:'Nunito',sans-serif;
+    font-size:20px;font-weight:800;
+    color:var(--bvo-orange);line-height:1;
+    margin-bottom:10px;
+  }
+  .results-stat-sub{font-size:12.5px;color:var(--muted)}
+
+  .results-callout{
+    display:flex;gap:14px;align-items:center;
+    padding:14px 18px;
+    background:#fff7ed;border:1px solid rgba(255,102,0,.2);
+    border-radius:12px;margin-bottom:20px;
+  }
+  .results-callout-icon{
+    width:36px;height:36px;border-radius:8px;
+    background:var(--bvo-orange);
+    display:flex;align-items:center;justify-content:center;
+    color:white;flex-shrink:0;
+  }
+  .results-callout-icon .material-symbols-outlined{font-size:20px;font-variation-settings:'FILL' 1}
+  .results-callout-text{font-size:14px;line-height:1.45;color:var(--navy)}
+  .results-callout-text strong{font-weight:800}
+
+  .results-detail{
+    border:1px solid var(--line);border-radius:14px;
+    padding:22px;margin-bottom:22px;background:#fff;
+  }
+  .results-detail-title{
+    font-size:14px;font-weight:800;
+    color:var(--navy);margin-bottom:18px;
+  }
+  .results-metrics{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  }
+  .results-metric-icon{
+    width:32px;height:32px;border-radius:50%;
+    background:#f4f6fa;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:12px;color:var(--muted);
+  }
+  .results-metric-icon .material-symbols-outlined{font-size:18px}
+  .results-metric-label{
+    font-size:11.5px;color:var(--muted);
+    margin-bottom:6px;font-weight:600;line-height:1.3;
+  }
+  .results-metric-value{
+    font-family:'Nunito',sans-serif;
+    font-size:22px;font-weight:900;
+    color:var(--navy);margin-bottom:4px;line-height:1;
+  }
+  .results-metric-sub{
+    font-size:11.5px;color:var(--muted);line-height:1.35;
+  }
+
+  .results-cta{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    background:var(--bvo-orange);color:white;
+    width:100%;padding:16px 24px;
+    border-radius:12px;
+    font-family:'Nunito',sans-serif;
+    font-weight:800;font-size:15.5px;
+    border:none;cursor:pointer;
+    text-decoration:none;transition:all .2s;
+  }
+  .results-cta:hover{background:var(--bvo-orange-dark);transform:translateY(-2px)}
+
+  @media(max-width:720px){
+    .modal-body{padding:28px 22px}
+    .step-q{font-size:22px}
+    .options-3{grid-template-columns:1fr}
+    .options-4{grid-template-columns:1fr 1fr}
+    .results-metrics{grid-template-columns:1fr 1fr}
+    .results-stats{grid-template-columns:1fr}
+    .modal-trust{display:none}
+  }
+
+  /* === SECTION 2 — PROBLÈME INVISIBLE === */
+  .problem{
+    background:
+      radial-gradient(circle at 78% 12%, rgba(255,102,0,.14), transparent 38%),
+      radial-gradient(circle at 5% 85%, rgba(255,102,0,.08), transparent 32%),
+      linear-gradient(180deg, var(--bvo-bleu) 0%, var(--bvo-bleu-dark) 100%);
+    color:#fff;
+    padding:80px 42px;
+    position:relative;
+  }
+  .problem-inner{max-width:1100px;margin:0 auto}
+  .problem-eyebrow{
+    display:block;text-align:center;
+    font-size:12px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--bvo-orange);font-weight:800;
+    margin-bottom:20px;
+  }
+  .problem-title{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:42px;line-height:1.18;letter-spacing:-1px;
+    color:#fff;text-align:center;
+    max-width:880px;margin:0 auto 55px;
+  }
+  .problem-title em{color:var(--bvo-orange);font-style:italic;font-weight:900}
+  .problem-title .accent{color:var(--bvo-orange);font-weight:900}
+  .problem-intro{
+    text-align:center;font-size:18px;color:rgba(255,255,255,.80);
+    max-width:680px;margin:0 auto 72px;line-height:1.55;
+  }
+  .problem-intro strong{color:#fff;font-weight:700}
+
+  .problem-bloc{max-width:820px;margin:0 auto 32px}
+
+  .problem-callout{
+    max-width:820px;
+    margin:40px auto 56px;
+    background:rgba(255,255,255,.08);
+    border-left:4px solid var(--bvo-orange);
+    border-radius:0 14px 14px 0;
+    padding:24px 30px;
+    box-shadow:0 6px 20px rgba(0,0,0,.15);
+    backdrop-filter:blur(6px);
+  }
+  .problem-callout p{
+    font-family:'Nunito',sans-serif;
+    font-size:18px;font-weight:700;
+    color:#fff;line-height:1.55;
+    margin:0;
+  }
+  .problem-callout strong{
+    color:var(--bvo-orange);font-weight:900;
+  }
+  .problem-bloc-num{
+    font-family:'Nunito',sans-serif;
+    font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--bvo-orange);margin-bottom:14px;
+  }
+  .problem-bloc-h{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:30px;color:#fff;
+    margin-bottom:5px;letter-spacing:-.5px;line-height:1.2;
+  }
+  .problem-bloc p{
+    font-size:17px;color:rgba(255,255,255,.85);line-height:1.65;margin-bottom:14px;
+  }
+  .problem-bloc p:last-child{margin-bottom:0}
+  .problem-bloc strong{color:#fff;font-weight:800}
+
+  .problem-stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+    max-width:1100px;margin:0 auto;
+  }
+  .problem-stat{
+    background:#fff;border:1px solid #e8e3d6;
+    border-radius:16px;padding:28px 26px;
+    box-shadow:0 8px 28px rgba(7,18,37,.06);
+    transition:transform .25s, box-shadow .25s;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    align-items:center;
+    column-gap:18px;
+  }
+  .problem-stat:hover{
+    transform:translateY(-4px);
+    box-shadow:0 16px 36px rgba(7,18,37,.10);
+  }
+  .problem-stat-icon{
+    width:52px;height:52px;border-radius:50%;
+    background:rgba(255,102,0,.10);
+    color:var(--bvo-orange);
+    display:flex;align-items:center;justify-content:center;
+    grid-column:1;grid-row:1;
+  }
+  .problem-stat-icon .material-symbols-outlined{
+    font-size:28px;
+    font-variation-settings:'FILL' 0,'wght' 600;
+  }
+  .problem-stat-num{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:56px;line-height:1;letter-spacing:-2px;
+    color:var(--bvo-orange);
+    grid-column:2;grid-row:1;
+  }
+  .problem-stat-text{
+    font-size:15px;color:var(--navy);line-height:1.55;
+    grid-column:1/-1;grid-row:2;
+    margin-top:20px;margin-bottom:18px;
+  }
+  .problem-stat-text strong{font-weight:800}
+  .problem-stat-source{
+    font-size:12.5px;color:var(--muted);font-style:italic;
+    border-top:1px solid #e8e3d6;padding-top:14px;
+    grid-column:1/-1;grid-row:3;
+  }
+
+  @media(max-width:1100px){
+    .problem{padding:56px 24px}
+    .problem-title{font-size:32px}
+    .problem-bloc-h{font-size:24px}
+    .problem-stats{grid-template-columns:1fr;gap:16px}
+    .problem-stat-num{font-size:54px}
+  }
+
+  /* === SECTION 3 — COMPARAISON LEBONCOIN (fond bleu BVO) === */
+  .compare{
+    background:
+      radial-gradient(circle at 78% 12%, rgba(255,102,0,.18), transparent 38%),
+      radial-gradient(circle at 5% 85%, rgba(255,102,0,.08), transparent 32%),
+      linear-gradient(180deg, var(--bvo-bleu) 0%, var(--bvo-bleu-dark) 100%);
+    color:#fff;
+    padding:80px 42px;
+  }
+  .compare-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+
+  .compare-title{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:42px;line-height:1.18;letter-spacing:-1px;
+    color:#fff;text-align:center;
+    max-width:880px;margin:0 auto 24px;
+  }
+  .compare-title .accent{color:var(--bvo-orange);font-weight:900}
+
+  .compare-intro{
+    text-align:center;font-size:18px;color:rgba(255,255,255,.82);
+    max-width:760px;margin:0 auto 56px;line-height:1.55;
+  }
+  .compare-intro strong{color:var(--bvo-orange);font-weight:700}
+
+  .compare-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:32px;
+    margin-bottom:32px;
+  }
+
+  .compare-card{
+    background:#FBF7EF;
+    border-radius:16px;padding:32px;
+    box-shadow:0 28px 56px rgba(7,18,37,.32), 0 8px 16px rgba(7,18,37,.18);
+  }
+  .compare-card.positive{
+    border-top:4px solid var(--green);
+  }
+  .compare-card.negative{
+    border-top:4px solid var(--bvo-orange);
+  }
+
+  .compare-card-head{
+    display:flex;align-items:center;gap:16px;
+    margin-bottom:24px;padding-bottom:20px;
+    border-bottom:1px solid rgba(7,18,37,.08);
+  }
+  .compare-card-icon{
+    width:44px;height:44px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;flex-shrink:0;
+  }
+  .compare-card-icon .material-symbols-outlined{
+    font-size:24px;
+    font-variation-settings:'FILL' 1,'wght' 700;
+  }
+  .positive .compare-card-icon{background:var(--green)}
+  .negative .compare-card-icon{background:var(--bvo-orange)}
+
+  .compare-card h3{
+    font-family:'Nunito',sans-serif;
+    font-size:22px;font-weight:800;color:var(--navy);
+    margin:0;line-height:1.25;letter-spacing:-.4px;
+  }
+
+  .compare-line{
+    display:flex;align-items:center;gap:18px;
+    padding:14px 0;
+    border-bottom:1px solid rgba(7,18,37,.06);
+  }
+  .compare-line:last-child{border-bottom:none}
+  .compare-line-icon{
+    width:48px;height:48px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .positive .compare-line-icon{
+    background:rgba(22,166,90,.10);
+    color:var(--green);
+    border:1px solid rgba(22,166,90,.18);
+  }
+  .negative .compare-line-icon{
+    background:rgba(255,102,0,.10);
+    color:var(--bvo-orange);
+    border:1px solid rgba(255,102,0,.18);
+  }
+  .compare-line-icon .material-symbols-outlined{font-size:22px}
+  .compare-line p{
+    font-size:16px;color:var(--navy);line-height:1.45;margin:0;
+  }
+
+  .compare-result{
+    display:flex;align-items:center;gap:22px;
+    background:linear-gradient(135deg, rgba(255,102,0,.22) 0%, rgba(255,102,0,.06) 100%);
+    border:1px solid rgba(255,102,0,.40);
+    border-radius:14px;
+    padding:26px 30px;
+    margin-bottom:36px;
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+  }
+  .compare-result-icon{
+    width:60px;height:60px;border-radius:50%;
+    background:var(--bvo-orange);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:0 12px 28px rgba(255,102,0,.50);
+  }
+  .compare-result-icon .material-symbols-outlined{
+    font-size:28px;
+    font-variation-settings:'FILL' 1,'wght' 700;
+  }
+  .compare-result h3{
+    font-family:'Nunito',sans-serif;
+    font-size:22px;font-weight:800;color:#fff;
+    margin:0 0 6px;line-height:1.3;letter-spacing:-.3px;
+  }
+  .compare-result h3 .accent{color:var(--bvo-orange);font-weight:900}
+  .compare-result p{
+    font-size:16px;color:rgba(255,255,255,.80);
+    margin:0;line-height:1.45;
+  }
+  .compare-result-content{flex:1;text-align:center}
+  .compare-result-illu{
+    flex-shrink:0;width:170px;
+    color:#fff;opacity:.92;
+  }
+  .compare-result-illu svg{width:100%;height:auto;display:block}
+
+  .compare-bottom{
+    border-top:1px solid rgba(255,255,255,.15);
+    padding-top:32px;
+    text-align:center;
+    font-family:'Nunito',sans-serif;
+    font-size:22px;font-weight:800;
+    color:#fff;
+    letter-spacing:-.3px;
+  }
+  .compare-bottom .accent{color:var(--bvo-orange);font-weight:900}
+
+  @media(max-width:1100px){
+    .compare{padding:56px 24px}
+    .compare-title{font-size:32px}
+    .compare-grid{grid-template-columns:1fr;gap:20px}
+    .compare-card{padding:24px}
+    .compare-result{flex-direction:column;align-items:flex-start;text-align:left}
+  }
+
+  /* === SECTION 4 — POURQUOI BOOSTERVO === */
+  .solution-intro{
+    background:#FBF7EF;
+    color:var(--navy);
+    padding:80px 42px;
+  }
+  .solution-intro-inner{max-width:1100px;margin:0 auto}
+
+  .si-title{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:42px;line-height:1.18;letter-spacing:-1px;
+    color:var(--navy);text-align:center;
+    max-width:880px;margin:0 auto 24px;
+  }
+  .si-title .accent{color:var(--bvo-orange);font-weight:900}
+
+  .si-sub{
+    text-align:center;font-size:18px;color:var(--muted);
+    max-width:760px;margin:0 auto 48px;line-height:1.55;
+  }
+
+  /* --- Le problème (cartouche orange + 5 obstacles) --- */
+  .si-problem-box{
+    background:linear-gradient(135deg, rgba(255,102,0,.08) 0%, rgba(255,102,0,.03) 100%);
+    border:1px solid rgba(255,102,0,.25);
+    border-radius:16px;
+    padding:28px 32px;
+    max-width:820px;
+    margin:0 auto 72px;
+    box-shadow:0 8px 24px rgba(255,102,0,.06);
+  }
+  .si-problem-head{
+    display:flex;align-items:center;gap:16px;
+    margin-bottom:28px;
+  }
+  .si-problem-icon{
+    width:44px;height:44px;border-radius:50%;
+    background:var(--bvo-orange);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:0 8px 18px rgba(255,102,0,.30);
+  }
+  .si-problem-icon .material-symbols-outlined{
+    font-size:24px;
+    font-variation-settings:'FILL' 1,'wght' 700;
+  }
+  .si-problem-head p{
+    font-family:'Nunito',sans-serif;
+    font-size:18px;font-weight:700;color:var(--navy);
+    line-height:1.4;margin:0;
+  }
+  .si-problem-head strong{color:var(--bvo-orange);font-weight:800}
+
+  .si-obstacles{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:16px;
+    margin-bottom:22px;
+  }
+  .si-obstacle{text-align:center}
+  .si-obstacle-icon{
+    width:56px;height:56px;border-radius:50%;
+    background:#fff;
+    color:var(--bvo-orange);
+    border:1px solid rgba(255,102,0,.25);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 10px;
+  }
+  .si-obstacle-icon .material-symbols-outlined{font-size:26px}
+  .si-obstacle-label{
+    font-size:13px;font-weight:700;color:var(--navy);
+    line-height:1.3;
+  }
+
+  .si-obstacles-foot{
+    text-align:center;font-size:14.5px;
+    color:var(--muted);font-style:italic;
+    margin:0;line-height:1.5;
+  }
+
+  /* --- Filet séparateur orange --- */
+  .si-divider{
+    width:60px;height:4px;
+    background:var(--bvo-orange);
+    border-radius:999px;
+    margin:0 auto 40px;
+  }
+
+  /* --- Petit filet vert (décoratif au-dessus du bridge) --- */
+  .si-divider-green{
+    width:50px;height:3px;
+    background:var(--green);
+    border-radius:999px;
+    margin:0 auto 32px;
+  }
+
+  /* --- Bridge vers BoosterVO --- */
+  .si-bridge-title{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:34px;line-height:1.15;letter-spacing:-.8px;
+    color:var(--navy);text-align:center;
+    max-width:880px;margin:0 auto 24px;
+  }
+  .si-bridge-title .accent{color:var(--bvo-orange);font-weight:900}
+  .si-bridge-title .accent-green{color:var(--green);font-weight:900}
+
+  .si-bridge-sub{
+    text-align:center;font-size:18px;color:var(--muted);
+    max-width:880px;margin:0 auto 56px;line-height:1.6;
+  }
+  .si-bridge-sub strong{color:var(--navy);font-weight:700}
+
+  /* --- 4 bénéfices verts (grandes cartes) --- */
+  .si-benefits{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:22px;
+    max-width:1200px;margin:0 auto;
+  }
+  .si-benefit{
+    text-align:center;
+    background:linear-gradient(180deg, #fff 0%, rgba(22,166,90,.05) 100%);
+    border:1px solid rgba(22,166,90,.20);
+    border-radius:18px;
+    padding:36px 22px 32px;
+    box-shadow:0 8px 28px rgba(7,18,37,.06);
+    transition:transform .25s, box-shadow .25s;
+  }
+  .si-benefit:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 40px rgba(7,18,37,.10);
+  }
+  .si-benefit-icon{
+    width:88px;height:88px;border-radius:50%;
+    background:radial-gradient(circle, rgba(22,166,90,.22) 0%, rgba(22,166,90,.08) 60%, transparent 100%);
+    color:var(--green);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 22px;
+    border:none;
+  }
+  .si-benefit-icon .material-symbols-outlined{
+    font-size:48px;
+    font-variation-settings:'FILL' 1,'wght' 600;
+  }
+  .si-benefit-icon svg{
+    width:52px;height:52px;display:block;
+  }
+  .si-benefit-divider{
+    width:36px;height:3px;
+    background:var(--green);
+    border-radius:999px;
+    margin:0 auto 22px;
+  }
+  .si-benefit-title{
+    font-family:'Nunito',sans-serif;
+    font-size:17px;font-weight:800;
+    color:var(--navy);
+    line-height:1.35;letter-spacing:-.2px;
+    margin:0 0 14px;
+  }
+  .si-benefit-desc{
+    font-size:14.5px;color:var(--muted);
+    line-height:1.5;margin:0;
+  }
+
+  @media(max-width:1100px){
+    .solution-intro{padding:56px 24px}
+    .si-title{font-size:32px}
+    .si-bridge-title{font-size:24px}
+    .si-obstacles{grid-template-columns:repeat(3,1fr)}
+    .si-benefits{grid-template-columns:repeat(2,1fr);gap:20px}
+    .si-problem-head{flex-direction:column;text-align:center;gap:12px}
+  }
+  @media(max-width:720px){
+    .si-obstacles{grid-template-columns:repeat(2,1fr)}
+    .si-benefits{grid-template-columns:1fr}
+  }
+
+  /* === SECTION 5 — COMMENT ÇA MARCHE === */
+  .how{
+    background:#fff;
+    color:var(--navy);
+    padding:80px 42px;
+    border-top:1px solid #e8e3d6;
+  }
+  .how-inner{max-width:1100px;margin:0 auto}
+
+  .how-eyebrow{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    color:var(--bvo-orange);
+    font-family:'Nunito',sans-serif;
+    font-weight:800;letter-spacing:5px;
+    font-size:13px;text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .how-eyebrow::before,
+  .how-eyebrow::after{
+    content:'';display:block;
+    width:36px;height:1px;
+    background:var(--bvo-orange);
+  }
+
+  .how-title{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:48px;line-height:1.08;letter-spacing:-1.2px;
+    color:var(--navy);text-align:center;
+    max-width:880px;margin:0 auto 2px;
+  }
+
+  .how-subtitle{
+    font-family:'Nunito',sans-serif;
+    text-align:center;
+    font-size:24px;font-weight:800;
+    color:var(--navy);margin:0 auto 2px;
+    letter-spacing:-.4px;
+  }
+  .how-subtitle .accent{color:var(--bvo-orange);font-weight:900}
+
+  .how-intro{
+    text-align:center;font-size:17px;font-weight:700;color:var(--navy);
+    max-width:760px;margin:0 auto 56px;line-height:1.55;
+  }
+
+  /* --- Steps grid 3 colonnes + flèches --- */
+  .how-steps{
+    display:grid;
+    grid-template-columns:1fr auto 1fr auto 1fr;
+    gap:4px;margin-bottom:40px;align-items:start;
+  }
+  .how-step{
+    position:relative;
+    padding:24px 22px;
+    background:#fff;
+    border:1px solid #e8e3d6;
+    border-radius:18px;
+    display:flex;flex-direction:column;align-items:flex-start;
+    box-shadow:0 2px 8px rgba(7,18,37,.04);
+  }
+  .how-step-head{
+    display:flex;align-items:center;gap:14px;
+    margin-bottom:9px;
+  }
+  .how-step-num{
+    width:42px;height:42px;border-radius:50%;
+    background:var(--bvo-orange);color:#fff;
+    font-family:'Nunito',sans-serif;
+    font-size:20px;font-weight:900;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:0 8px 18px rgba(255,102,0,.30);
+  }
+  .how-step-h{
+    font-family:'Nunito',sans-serif;
+    font-size:18px;font-weight:800;color:var(--navy);
+    line-height:1.25;letter-spacing:-.3px;
+    margin:0;
+  }
+  .how-visual{
+    position:relative;
+    width:100%;
+    min-height:270px;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:9px;
+  }
+  .how-visual::before{
+    content:'';position:absolute;
+    width:280px;height:280px;border-radius:50%;
+    background:radial-gradient(circle, rgba(255,102,0,.12) 0%, rgba(255,102,0,.04) 60%, transparent 100%);
+    left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    z-index:0;
+  }
+  /* Step 2 a déjà un cercle peach intégré dans l'image, on désactive le ::before */
+  .how-steps > .how-step:nth-child(3) .how-visual::before{display:none}
+  .how-visual > *{position:relative;z-index:1}
+  .how-step-text{
+    font-size:14px;line-height:1.5;color:var(--muted);
+    text-align:center;margin:0 auto;
+    width:100%;
+  }
+
+  /* --- Flèche entre étapes --- */
+  .how-arrow{
+    width:22px;
+    display:flex;align-items:center;justify-content:center;
+    color:rgba(7,18,37,.30);
+    margin-top:204px;
+  }
+  .how-arrow svg{width:20px;height:auto}
+
+  /* --- Step 1 : annonce Leboncoin + ondes + phone iPhone-like --- */
+  .lbc-pair{
+    display:flex;align-items:center;gap:6px;
+  }
+  .lbc-card{
+    background:#fff;
+    border-radius:14px;
+    box-shadow:0 14px 32px rgba(7,18,37,.14);
+    padding:14px;width:118px;
+    border:1px solid #eef0f4;
+    flex-shrink:0;
+  }
+  .lbc-logo{
+    color:var(--bvo-orange);
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:14px;
+    margin-bottom:10px;
+    letter-spacing:-.3px;
+  }
+  .lbc-car{
+    height:62px;
+    background:#fafbfd;
+    border-radius:8px;margin-bottom:10px;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  .lbc-car img{
+    width:100%;height:100%;
+    object-fit:cover;object-position:center;
+    display:block;
+  }
+  .lbc-car svg{width:90%;height:auto;display:block}
+  .lbc-line{
+    height:6px;background:#e0e3eb;border-radius:6px;
+    margin-bottom:5px;
+  }
+  .lbc-btn{
+    width:42px;height:13px;border-radius:14px;
+    background:var(--bvo-orange);margin-top:10px;
+  }
+  .lbc-waves{
+    color:var(--bvo-orange);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .lbc-waves svg{width:30px;height:auto}
+  .lbc-phone{
+    width:130px;background:#0a0a0a;
+    border-radius:22px;padding:0;
+    border:5px solid #0d0d0d;
+    color:#fff;text-align:center;
+    box-shadow:0 14px 28px rgba(7,18,37,.18);
+    flex-shrink:0;
+    position:relative;overflow:hidden;
+    transform:scale(0.7);
+    transform-origin:left center;
+    margin-right:-39px;
+    min-height:230px;
+    display:flex;flex-direction:column;
+  }
+  .lbc-phone .lbc-phone-screen{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .lbc-phone .notch{
+    width:46px;height:14px;background:#000;
+    border-radius:0 0 10px 10px;
+    margin:0 auto;
+    position:relative;z-index:2;
+  }
+  .lbc-phone-screen{padding:10px 8px 14px}
+  .lbc-phone .top-bar{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:8px;font-weight:700;color:rgba(255,255,255,.8);
+    padding:0 8px;margin-bottom:18px;margin-top:-22px;
+  }
+  .lbc-phone .top-bar .right{display:flex;gap:3px;align-items:center}
+  .lbc-phone .top-bar .dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.6)}
+  .lbc-phone .label{
+    font-size:10px;font-weight:600;color:rgba(255,255,255,.75);
+    margin-bottom:8px;
+  }
+  .lbc-phone .name{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:15px;margin-bottom:4px;
+    letter-spacing:-.3px;
+  }
+  .lbc-phone .num{
+    font-size:11.5px;font-weight:600;color:rgba(255,255,255,.85);
+    margin-bottom:18px;
+  }
+  .lbc-phone .actions{
+    display:flex;justify-content:space-around;align-items:center;
+    padding:0 8px;
+  }
+  .lbc-phone .actions .btn{
+    width:26px;height:26px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    box-shadow:0 4px 10px rgba(0,0,0,.20);
+  }
+  .lbc-phone .actions .btn.hang{background:#ef4444;transform:rotate(135deg)}
+  .lbc-phone .actions .btn.pick{background:#16a34a}
+  .lbc-phone .actions .btn .material-symbols-outlined{font-size:15px;font-variation-settings:'FILL' 1}
+
+  /* --- Step 2 : image casque BoosterVO + carte brand + checks --- */
+  .bvo-center{text-align:center;width:100%}
+  .bvo-headset-img{
+    display:block;
+    width:126px;height:126px;
+    margin:0 auto 8px;
+    object-fit:contain;
+  }
+
+  .bvo-brand-card{
+    background:#fff;
+    border-radius:10px;
+    padding:8px 18px;
+    box-shadow:0 8px 20px rgba(7,18,37,.10);
+    font-family:'Nunito',sans-serif;
+    font-size:18px;font-weight:900;
+    color:var(--bvo-bleu);
+    display:inline-block;margin:0 auto 16px;
+    letter-spacing:-.3px;
+  }
+  .bvo-brand-card span{color:var(--bvo-orange)}
+
+  .bvo-checks{
+    text-align:left;display:block;
+    width:100%;
+    font-size:13.5px;line-height:1.5;
+    color:var(--navy);
+  }
+  .bvo-checks div{
+    display:flex;align-items:center;gap:8px;
+    white-space:nowrap;
+    padding:3px 0;
+  }
+  .bvo-checks div::before{
+    content:'✓';
+    color:var(--green);font-weight:900;font-size:14px;
+    flex-shrink:0;
+  }
+
+  /* --- Step 3 : téléphone prospect + flèche + figure négociant --- */
+  .prospect-pair{
+    display:flex;align-items:center;gap:8px;
+  }
+  .prospect-card{
+    background:#fff;
+    border:5px solid #0d0d0d;border-radius:20px;
+    width:130px;padding:14px 10px 12px;
+    box-shadow:0 14px 28px rgba(7,18,37,.18);
+    flex-shrink:0;
+    transform:scale(0.7);
+    transform-origin:left center;
+    margin-right:-39px;
+  }
+  .prospect-title{
+    font-size:9px;font-weight:700;
+    color:var(--muted);
+    text-transform:none;letter-spacing:0;
+    margin-bottom:10px;text-align:center;
+    padding-bottom:6px;
+    border-bottom:1px solid #eee;
+  }
+  .prospect-avatar{
+    width:32px;height:32px;border-radius:50%;
+    background:#e5e7ed;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 6px;
+  }
+  .prospect-avatar .material-symbols-outlined{font-size:22px;font-variation-settings:'FILL' 1}
+  .prospect-name{
+    font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:12px;
+    color:var(--navy);
+    text-align:center;margin-bottom:4px;
+  }
+  .prospect-detail{
+    font-size:9px;line-height:1.4;
+    color:var(--navy);text-align:center;
+    margin-bottom:10px;
+  }
+  .prospect-detail .phone-line{
+    display:flex;align-items:center;justify-content:center;gap:3px;
+    font-weight:800;color:var(--navy);
+    margin-bottom:4px;
+  }
+  .prospect-detail .phone-line .material-symbols-outlined{font-size:10px;color:var(--bvo-orange)}
+  .prospect-detail .annonce{color:var(--muted)}
+  .prospect-btn{
+    background:var(--bvo-orange);color:#fff;
+    border-radius:6px;padding:7px;
+    text-align:center;
+    font-family:'Nunito',sans-serif;
+    font-weight:800;font-size:10px;
+    margin-bottom:8px;
+  }
+  .prospect-bottom{
+    display:flex;justify-content:space-around;
+    padding-top:6px;border-top:1px solid #eee;
+  }
+  .prospect-bottom div{
+    text-align:center;color:var(--muted);
+    font-size:7px;
+  }
+  .prospect-bottom .material-symbols-outlined{
+    font-size:14px;color:var(--bvo-bleu);display:block;
+    margin-bottom:2px;
+  }
+
+  .prospect-arrow{
+    color:var(--bvo-orange);
+    display:flex;align-items:center;
+    flex-shrink:0;
+  }
+  .prospect-arrow svg{width:22px;height:auto}
+
+  .negociant-fig{
+    text-align:center;
+    color:var(--navy);
+    flex-shrink:0;
+  }
+  .negociant-fig .silhouette{
+    width:48px;height:48px;
+    border:2.5px solid var(--navy);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 6px;
+    background:#fff;
+  }
+  .negociant-fig .silhouette .material-symbols-outlined{
+    font-size:30px;
+    font-variation-settings:'FILL' 0,'wght' 600;
+  }
+  .negociant-fig .label{
+    font-size:12px;font-weight:700;
+    color:var(--navy);
+  }
+
+  /* --- Footer CTA navy --- */
+  .how-cta{
+    margin-top:8px;
+    background:linear-gradient(135deg, var(--bvo-bleu-deep) 0%, #0A1628 100%);
+    color:#fff;
+    border-radius:22px;padding:28px 40px;
+    display:grid;grid-template-columns:auto 1fr auto;gap:28px;
+    align-items:center;
+    box-shadow:0 20px 40px rgba(7,18,37,.20);
+  }
+  .how-cta-shield{
+    width:56px;height:56px;
+    background:var(--bvo-orange);
+    border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    box-shadow:0 8px 18px rgba(255,102,0,.40);
+    flex-shrink:0;
+  }
+  .how-cta-shield svg{width:34px;height:34px}
+  .how-cta-text{
+    font-family:'Nunito',sans-serif;
+    font-size:20px;font-weight:800;
+    line-height:1.35;color:#fff;
+  }
+  .how-cta-text .accent{color:var(--bvo-orange)}
+  .how-cta-btn{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    background:var(--bvo-orange);color:#fff;
+    text-decoration:none;
+    padding:18px 24px;
+    border-radius:14px;
+    font-family:'Nunito',sans-serif;
+    font-size:16px;font-weight:800;
+    line-height:1.3;text-align:center;
+    box-shadow:0 12px 28px rgba(255,102,0,.40);
+    transition:all .25s;
+    cursor:pointer;border:none;
+  }
+  .how-cta-btn:hover{
+    background:var(--bvo-orange-dark);
+    transform:translateY(-2px);
+    box-shadow:0 18px 36px rgba(255,102,0,.50);
+  }
+
+  @media(max-width:1100px){
+    .how{padding:56px 24px}
+    .how-title{font-size:36px}
+    .how-subtitle{font-size:20px}
+    .how-steps{grid-template-columns:1fr;gap:32px}
+    .how-arrow{display:none}
+    .how-cta{grid-template-columns:auto 1fr;text-align:left;padding:24px 24px}
+    .how-cta-btn{grid-column:1/-1}
+  }
+  @media(max-width:720px){
+    .how-cta{grid-template-columns:1fr;text-align:center;justify-items:center}
+    .how-cta-btn{grid-column:auto}
+  }
+
+  /* === RESPONSIVE === */
+  @media(max-width:1100px){
+    header nav{display:none}
+    .hero{grid-template-columns:1fr;gap:48px}
+    h1{font-size:48px;letter-spacing:-1.2px}
+    .proof-row{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:720px){
+    .page{padding:22px 18px 40px}
+    header{margin-bottom:38px}
+    .top-btn{display:none}
+    h1{font-size:36px;letter-spacing:-.8px}
+    .ctas{flex-direction:column;align-items:stretch;gap:14px}
+    .primary{min-width:0;width:100%}
+    .secondary{text-align:center}
+    .video-poster .title{font-size:18px}
+    .video-poster .play-btn{width:64px;height:64px}
+    .video-poster .play-btn .material-symbols-outlined{font-size:32px}
+    .proof-row{grid-template-columns:1fr}
+    .proof{border-right:0;border-bottom:1px solid #e4e7ec}
+    .proof:last-child{border-bottom:0}
+  }
+
+  /* ===================== SECTION — POURQUOI LES APPELS MANQUÉS ===================== */
+  .bvo-why-missed-wrap{
+    background:#FBF7EF;
+    padding:80px 24px;
+  }
+  .bvo-why-missed{
+    max-width:1100px;
+    margin:0 auto;
+    background:#fff;
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(7,18,37,.08);
+    color:#1B4F9B;
+  }
+  .bvo-why-missed .hero-problem{
+    display:grid;
+    grid-template-columns:1.05fr 1fr;
+    min-height:520px;
+    background:linear-gradient(90deg,#ffffff 0%,#ffffff 45%,#FBF7EF 100%);
+  }
+  .bvo-why-missed .hero-text{padding:70px 60px;z-index:2}
+  .bvo-why-missed .eyebrow{
+    color:#FF6600;
+    font-family:'Nunito',sans-serif;
+    font-weight:800;
+    font-size:14px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    margin:0 0 22px;
+  }
+  .bvo-why-missed .hero-text h2{
+    font-family:'Nunito',sans-serif;
+    font-size:48px;
+    line-height:1.12;
+    margin:0;
+    font-weight:900;
+    letter-spacing:-1.2px;
+    color:#1B4F9B;
+  }
+  .bvo-why-missed .orange-line{
+    width:60px;height:4px;background:#FF6600;
+    margin:28px 0 30px;border-radius:20px;
+  }
+  .bvo-why-missed .lead{
+    font-size:20px;line-height:1.45;
+    font-weight:800;
+    margin:0 0 22px;
+    color:#1B4F9B;
+    font-family:'Nunito',sans-serif;
+  }
+  .bvo-why-missed .body-text{
+    font-size:18px;line-height:1.55;margin:0;color:#1B4F9B;
+  }
+  .bvo-why-missed .body-text span{
+    color:#FF6600;font-weight:800;
+  }
+  .bvo-why-missed .hero-image{
+    position:relative;min-height:520px;overflow:hidden;
+  }
+  .bvo-why-missed .hero-image img{
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+  .bvo-why-missed .hero-image::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(255,255,255,.70) 0%,rgba(255,255,255,0) 22%);
+  }
+  .bvo-why-missed .missed-call-card{
+    position:absolute;right:55px;bottom:95px;
+    display:flex;align-items:center;gap:18px;
+    background:#fff;border-radius:22px;
+    padding:22px 28px;
+    box-shadow:0 18px 45px rgba(0,0,0,.16);
+    min-width:280px;
+  }
+  .bvo-why-missed .phone-icon{
+    width:58px;height:58px;border-radius:50%;
+    background:#fff0e8;color:#FF6600;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .bvo-why-missed .phone-icon .material-symbols-outlined{
+    font-size:26px;font-variation-settings:'FILL' 1,'wght' 500;
+  }
+  .bvo-why-missed .missed-call-card strong{
+    display:block;font-family:'Nunito',sans-serif;
+    font-size:18px;color:#1B4F9B;margin-bottom:6px;font-weight:800;
+  }
+  .bvo-why-missed .missed-call-card p{
+    margin:2px 0;color:#667085;font-size:13.5px;
+  }
+  .bvo-why-missed .reasons-block{
+    padding:34px 45px 38px;
+    background:#fff;
+    border-top:1px solid #f0eee9;
+  }
+  .bvo-why-missed .reasons-block h3{
+    text-align:center;
+    font-family:'Nunito',sans-serif;
+    font-size:26px;
+    color:#1B4F9B;
+    margin:0 0 30px;
+    font-weight:900;
+  }
+  .bvo-why-missed .reasons-grid{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:0;
+  }
+  .bvo-why-missed .reason{
+    text-align:center;padding:0 22px;
+    border-right:1px solid #f3ede0;
+  }
+  .bvo-why-missed .reason:last-child{border-right:none}
+  .bvo-why-missed .reason .icon{
+    font-size:38px;color:#FF6600;
+    margin-bottom:14px;display:flex;justify-content:center;
+  }
+  .bvo-why-missed .reason .icon .material-symbols-outlined{
+    font-size:38px;font-variation-settings:'wght' 500;
+  }
+  .bvo-why-missed .reason h4{
+    font-family:'Nunito',sans-serif;
+    font-size:17px;color:#1B4F9B;
+    margin:0 0 10px;font-weight:900;
+  }
+  .bvo-why-missed .reason p{
+    font-size:15px;line-height:1.45;color:#1B4F9B;margin:0;
+  }
+  .bvo-why-missed .bottom-note{
+    text-align:center;
+    font-family:'Nunito',sans-serif;
+    font-size:17px;font-weight:800;
+    color:#1B4F9B;
+    margin:30px 0 0;
+  }
+  @media (max-width:900px){
+    .bvo-why-missed-wrap{padding:56px 16px}
+    .bvo-why-missed .hero-problem{grid-template-columns:1fr}
+    .bvo-why-missed .hero-text{padding:40px 28px}
+    .bvo-why-missed .hero-text h2{font-size:34px}
+    .bvo-why-missed .hero-image{min-height:340px}
+    .bvo-why-missed .missed-call-card{right:18px;bottom:22px;min-width:240px;padding:16px 20px}
+    .bvo-why-missed .reasons-block{padding:28px 20px}
+    .bvo-why-missed .reasons-grid{grid-template-columns:repeat(2,1fr);gap:24px}
+    .bvo-why-missed .reason{border-right:0;padding:0 8px}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <a href="/" aria-label="Accueil BoosterVO">
+      <svg class="logo-svg" viewBox="0 0 145.99789 22.058645" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(-30.128559,-124.16163)">
+          <g transform="matrix(1.0504118,0,0,1.0504118,-8.7366748,-655.24394)">
+            <path d="m 38.2491,742 c -1.6813,0 -1.5843,6.61 -0.194,10.109 1.3903,3.499 5.5289,11.103 8.5359,10.887 3.007,-0.216 7.9862,-8.813 9.5059,-12.183 1.5196,-3.37 0.9376,-8.251 -0.3881,-8.035 -1.3256,0.216 -4.6235,9.504 -7.5658,9.331 C 45.2007,751.936 39.9304,742 38.2491,742 Z" fill="#ffffff"/>
+          </g>
+          <g transform="translate(-3.3792668,-51.815424)">
+            <text x="54.429226" y="194.54926" style="font-weight:900;font-size:21.4434px;font-family:Montserrat,'Helvetica Neue','Arial Black',Arial,sans-serif;letter-spacing:-0.415035px;fill:#ffffff">Booster</text>
+            <text x="142.72086" y="194.63264" style="font-weight:900;font-size:23.5703px;font-family:Montserrat,'Helvetica Neue','Arial Black',Arial,sans-serif;letter-spacing:-0.456201px;fill:#ff6600">VO</text>
+            <ellipse style="fill:#ff6600" cx="45.054859" cy="180.64177" rx="2.5887949" ry="2.5224156"/>
+          </g>
+        </g>
+      </svg>
+    </a>
+    <nav>
+      <a href="#">Pourquoi BoosterVO ?</a>
+      <a href="#">Fonctionnalités</a>
+      <a href="#">Résultats</a>
+      <a href="#">Programme fondateur</a>
+    </nav>
+    <a class="top-btn" href="#">Réserver une place <span class="material-symbols-outlined">arrow_forward</span></a>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="copy">
+      <h1><span class="accent">Vos appels</span> Leboncoin vous<br>rapportent <em>combien, vraiment</em>&nbsp;?</h1>
+
+      <p class="subtitle">
+        Aujourd'hui, très peu de négociants disposent d'une vraie visibilité sur&nbsp;:
+      </p>
+
+      <ul class="bullets">
+        <li>
+          <span class="check">✓</span>
+          <div>
+            <strong>les délais réels de rappel des appels manqués</strong>
+          </div>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <div>
+            <strong>l'impact du temps de rappel sur leurs ventes</strong>
+          </div>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <div>
+            <strong>les prospects partis à la concurrence faute d'avoir été rappelés assez vite</strong>
+          </div>
+        </li>
+      </ul>
+
+      <div class="money-box">
+        <div class="money-icon">€</div>
+        <div>
+          Une seule vente perdue peut représenter<br>
+          <strong>800 à 1 500 €</strong> de marge envolée.
+        </div>
+      </div>
+
+      <div class="ctas">
+        <a class="primary" href="#" id="open-quiz">Voir combien mes appels me coûtent ou me rapportent <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+
+    </div>
+
+    <!-- VIDÉO VSL -->
+    <aside class="video-wrap" id="vsl">
+      <video
+        id="vsl-video"
+        src="https://boostervo.com/simulateur/Vsl_BoosterVo.mp4"
+        controls
+        playsinline
+        preload="metadata"
+      ></video>
+      <div class="video-poster" id="vsl-poster">
+        <div class="label">⚡ La vidéo de 2 min à voir</div>
+        <div class="play-btn"><span class="material-symbols-outlined">play_arrow</span></div>
+        <div class="title">Ce que 90 % des négociants ne voient pas&nbsp;:</div>
+        <div class="quote">« Le profit caché derrière les appels manqués ou mal exploités. »</div>
+      </div>
+    </aside>
+  </section>
+  </div>
+
+  <!-- ===================== SECTION — POURQUOI LES APPELS MANQUÉS ===================== -->
+  <div class="bvo-why-missed-wrap">
+  <section class="bvo-why-missed">
+    <div class="hero-problem">
+      <div class="hero-text">
+        <p class="eyebrow">Le problème</p>
+
+        <h2>
+          Pourquoi la majorité<br>
+          des négociants VO<br>
+          ont des appels manqués
+        </h2>
+
+        <div class="orange-line"></div>
+
+        <p class="lead">
+          Ce n'est pas un manque de sérieux.<br>
+          C'est la réalité du terrain.
+        </p>
+
+        <p class="body-text">
+          Entre les clients, les essais, l'administratif et
+          les déplacements,
+          <span>décrocher 100&nbsp;% des appels est presque impossible.</span>
+        </p>
+      </div>
+
+      <div class="hero-image">
+        <img src="image%20vendeur%20VO.png" alt="Négociant VO au téléphone devant son parc">
+        <div class="missed-call-card">
+          <div class="phone-icon"><span class="material-symbols-outlined">call</span></div>
+          <div>
+            <strong>Appel manqué</strong>
+            <p>Numéro masqué</p>
+            <p>Aujourd'hui à 11:42</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reasons-block">
+      <h3>Des appels qui arrivent&hellip; au pire moment</h3>
+
+      <div class="reasons-grid">
+        <div class="reason">
+          <div class="icon"><span class="material-symbols-outlined">groups</span></div>
+          <h4>Clients sur parc</h4>
+          <p>Vous êtes occupé<br>avec un client.</p>
+        </div>
+
+        <div class="reason">
+          <div class="icon"><span class="material-symbols-outlined">directions_car</span></div>
+          <h4>Essais</h4>
+          <p>Vous êtes en essai<br>routier.</p>
+        </div>
+
+        <div class="reason">
+          <div class="icon"><span class="material-symbols-outlined">description</span></div>
+          <h4>Administratif</h4>
+          <p>Vous gérez papiers,<br>annonces, messages&hellip;</p>
+        </div>
+
+        <div class="reason">
+          <div class="icon"><span class="material-symbols-outlined">location_on</span></div>
+          <h4>Déplacements</h4>
+          <p>Vous êtes sur la route<br>ou en rendez-vous.</p>
+        </div>
+
+        <div class="reason">
+          <div class="icon"><span class="material-symbols-outlined">schedule</span></div>
+          <h4>Multitâche</h4>
+          <p>Trop de choses à gérer<br>en même temps.</p>
+        </div>
+      </div>
+
+      <p class="bottom-note">
+        Les appels arrivent à tout moment&hellip; et vous ne pouvez pas être partout à la fois.
+      </p>
+    </div>
+  </section>
+  </div>
+
+  <!-- ===================== SECTION 2 — LE PROBLÈME INVISIBLE ===================== -->
+  <section class="problem">
+    <div class="problem-inner">
+      <h2 class="problem-title">
+        Le problème, c'est <em>le temps</em> que vous mettez à rappeler des <span class="accent">appels manqués</span>.
+      </h2>
+
+      <article class="problem-bloc">
+        <h3 class="problem-bloc-h">Le prospect ne vous attend pas</h3>
+        <p>Avant d'appeler, le prospect sélectionne plusieurs annonces et une liste de vendeurs à contacter. Le premier qui décroche crée le contact, le rassure… et <strong>prend souvent l'avantage sur la vente</strong>.</p>
+      </article>
+
+      <article class="problem-bloc">
+        <h3 class="problem-bloc-h">La conversion s'effondre avec le délai de rappel</h3>
+        <p>Quand un appel n'est pas décroché immédiatement, le temps commence à jouer contre vous. <strong>Plus votre rappel est tardif, plus vos chances de prendre rendez-vous et de vendre chutent</strong>.</p>
+      </article>
+
+      <div class="problem-callout">
+        <p>Chaque appel généré par vos annonces Leboncoin vous coûte déjà de l'argent.<br>
+        Quand le rappel arrive trop tard, <strong>une partie de cet investissement est perdue</strong>.</p>
+      </div>
+
+      <div class="problem-stats">
+        <div class="problem-stat">
+          <div class="problem-stat-icon"><span class="material-symbols-outlined">bolt</span></div>
+          <div class="problem-stat-num">21×</div>
+          <p class="problem-stat-text">Un prospect contacté <strong>sous 5 minutes</strong> a 21 fois plus de chances d'être qualifié qu'un prospect rappelé après 30 minutes.</p>
+          <div class="problem-stat-source">Étude MIT / Harvard Business Review</div>
+        </div>
+        <div class="problem-stat">
+          <div class="problem-stat-icon"><span class="material-symbols-outlined">emoji_events</span></div>
+          <div class="problem-stat-num">78 %</div>
+          <p class="problem-stat-text">Des acheteurs achètent <strong>au premier vendeur</strong> qui répond sérieusement à leur sollicitation.</p>
+          <div class="problem-stat-source">Lead Response Management Study</div>
+        </div>
+        <div class="problem-stat">
+          <div class="problem-stat-icon"><span class="material-symbols-outlined">schedule</span></div>
+          <div class="problem-stat-num">89 %</div>
+          <p class="problem-stat-text">Des transactions VO se concluent <strong>dans les 8 heures</strong> qui suivent le premier contact du prospect.</p>
+          <div class="problem-stat-source">Baromètre Carvivo 2022 — 943 189 leads analysés</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 3 — COMPARAISON LEBONCOIN ===================== -->
+  <section class="compare">
+    <div class="compare-inner">
+      <h2 class="compare-title">
+        Aujourd'hui, vous pilotez votre activité<br>
+        au volume d'appels, <span class="accent">pas au résultat</span>.
+      </h2>
+
+      <p class="compare-intro">
+        Leboncoin vous donne de la visibilité sur l'activité de vos annonces,<br>
+        mais <strong>pas sur ce qu'elles vous rapportent vraiment</strong>.
+      </p>
+
+      <div class="compare-grid">
+        <div class="compare-card positive">
+          <div class="compare-card-head">
+            <div class="compare-card-icon"><span class="material-symbols-outlined">check_circle</span></div>
+            <h3>Ce que Leboncoin vous montre</h3>
+          </div>
+          <div class="compare-line">
+            <div class="compare-line-icon"><span class="material-symbols-outlined">analytics</span></div>
+            <p>Le volume d'activité de vos annonces</p>
+          </div>
+          <div class="compare-line">
+            <div class="compare-line-icon"><span class="material-symbols-outlined">call</span></div>
+            <p>Le nombre d'appels reçus</p>
+          </div>
+          <div class="compare-line">
+            <div class="compare-line-icon"><span class="material-symbols-outlined">phone_missed</span></div>
+            <p>Le nombre d'appels manqués</p>
+          </div>
+        </div>
+
+        <div class="compare-card negative">
+          <div class="compare-card-head">
+            <div class="compare-card-icon"><span class="material-symbols-outlined">cancel</span></div>
+            <h3>Ce que Leboncoin ne vous montre pas</h3>
+          </div>
+          <div class="compare-line">
+            <div class="compare-line-icon"><span class="material-symbols-outlined">event</span></div>
+            <p>Quels appels ont généré un rendez-vous</p>
+          </div>
+          <div class="compare-line">
+            <div class="compare-line-icon"><span class="material-symbols-outlined">directions_car</span></div>
+            <p>Quels appels ont abouti à une vente</p>
+          </div>
+          <div class="compare-line">
+            <div class="compare-line-icon"><span class="material-symbols-outlined">payments</span></div>
+            <p>Combien chaque appel vous a réellement rapporté</p>
+          </div>
+          <div class="compare-line">
+            <div class="compare-line-icon"><span class="material-symbols-outlined">hourglass_top</span></div>
+            <p>Combien votre délai de rappel vous coûte en ventes perdues</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-result">
+        <div class="compare-result-icon"><span class="material-symbols-outlined">trending_up</span></div>
+        <div class="compare-result-content">
+          <h3>Résultat&nbsp;: vous investissez sans mesurer <span class="accent">votre rentabilité réelle</span></h3>
+          <p>Vous voyez l'activité. Mais pas la performance commerciale derrière chaque appel.</p>
+        </div>
+        <div class="compare-result-illu" aria-hidden="true">
+          <svg viewBox="0 0 175 95" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Browser + barres -->
+            <g transform="translate(2,6)">
+              <rect x="2" y="2" width="86" height="78" rx="6"/>
+              <line x1="2" y1="20" x2="88" y2="20"/>
+              <circle cx="10" cy="11" r="1.6" fill="currentColor"/>
+              <circle cx="17" cy="11" r="1.6" fill="currentColor"/>
+              <circle cx="24" cy="11" r="1.6" fill="currentColor"/>
+              <rect x="14" y="60" width="10" height="14" rx="1.5" fill="currentColor" stroke="none"/>
+              <rect x="29" y="50" width="10" height="24" rx="1.5" fill="currentColor" stroke="none"/>
+              <rect x="44" y="40" width="10" height="34" rx="1.5" fill="currentColor" stroke="none"/>
+              <rect x="59" y="30" width="10" height="44" rx="1.5" fill="#FF6600" stroke="none"/>
+              <line x1="10" y1="74" x2="80" y2="74"/>
+            </g>
+            <!-- Camembert + € -->
+            <g transform="translate(108,10)">
+              <circle cx="35" cy="35" r="30" stroke-dasharray="4 3"/>
+              <path d="M35,35 L35,5 A30,30 0 0,1 65,35 Z" fill="#FF6600" stroke="none"/>
+              <text x="35" y="44" text-anchor="middle" font-family="Nunito,Arial,sans-serif" font-weight="900" font-size="22" fill="#fff" stroke="none">€</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 4 — POURQUOI BOOSTERVO ===================== -->
+  <section class="solution-intro">
+    <div class="solution-intro-inner">
+
+      <h2 class="si-title">
+        Le seul moyen de résoudre vos problèmes,<br>
+        c'est de traiter <span class="accent">100 % de vos appels</span>.
+      </h2>
+
+      <p class="si-sub">
+        Chaque appel entrant est une opportunité déjà payée par votre budget Leboncoin.<br>
+        Ne pas le traiter au bon moment, c'est prendre le risque de perdre une vente.
+      </p>
+
+      <!-- Bridge vers BoosterVO -->
+      <h2 class="si-bridge-title">
+        Parce qu'un appel<br>
+        <span class="accent">décroché immédiatement</span>&nbsp;:
+      </h2>
+
+      <!-- 4 bénéfices verts (grandes cartes) -->
+      <div class="si-benefits">
+        <div class="si-benefit">
+          <div class="si-benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 3 L41 8 L41 24 C41 34 33.5 42 24 45 C14.5 42 7 34 7 24 L7 8 Z" fill="currentColor"/>
+              <path d="M16 24 L22 30 L33 18" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="si-benefit-divider"></div>
+          <h3 class="si-benefit-title">Réduit presque à zéro le risque de perdre le prospect</h3>
+          <p class="si-benefit-desc">Le premier vendeur qui répond prend souvent l'avantage.</p>
+        </div>
+        <div class="si-benefit">
+          <div class="si-benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <rect x="13" y="4" width="4" height="11" rx="2" fill="currentColor"/>
+              <rect x="31" y="4" width="4" height="11" rx="2" fill="currentColor"/>
+              <rect x="6" y="10" width="36" height="34" rx="3" fill="currentColor"/>
+              <rect x="6" y="20" width="36" height="2" fill="rgba(255,255,255,.4)"/>
+              <g fill="#fff">
+                <circle cx="14" cy="28" r="2"/><circle cx="22" cy="28" r="2"/><circle cx="30" cy="28" r="2"/><circle cx="38" cy="28" r="2"/>
+                <circle cx="14" cy="34" r="2"/><circle cx="22" cy="34" r="2"/><circle cx="30" cy="34" r="2"/><circle cx="38" cy="34" r="2"/>
+                <circle cx="14" cy="40" r="2"/><circle cx="22" cy="40" r="2"/><circle cx="30" cy="40" r="2"/>
+              </g>
+            </svg>
+          </div>
+          <div class="si-benefit-divider"></div>
+          <h3 class="si-benefit-title">Améliore fortement les chances de fixer un rendez-vous</h3>
+          <p class="si-benefit-desc">Le prospect est en demande, encore disponible et intéressé.</p>
+        </div>
+        <div class="si-benefit">
+          <div class="si-benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="30" width="9" height="14" rx="1.5" fill="currentColor"/>
+              <rect x="18" y="22" width="9" height="22" rx="1.5" fill="currentColor"/>
+              <rect x="30" y="14" width="9" height="30" rx="1.5" fill="currentColor"/>
+              <path d="M9 22 L21 14 L33 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M28 6 L33 6 L33 11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="si-benefit-divider"></div>
+          <h3 class="si-benefit-title">Augmente naturellement le taux de conversion</h3>
+          <p class="si-benefit-desc">Un contact immédiat rassure le prospect et augmente vos chances de ventes.</p>
+        </div>
+        <div class="si-benefit">
+          <div class="si-benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <text x="24" y="40" text-anchor="middle" font-family="Nunito,Arial Black,sans-serif" font-weight="900" font-size="46" fill="currentColor">€</text>
+            </svg>
+          </div>
+          <div class="si-benefit-divider"></div>
+          <h3 class="si-benefit-title">Maximise la rentabilité de vos annonces Leboncoin</h3>
+          <p class="si-benefit-desc">Chaque appel devient une opportunité réellement exploitée.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 5 — COMMENT ÇA MARCHE ===================== -->
+  <section class="how">
+    <div class="how-inner">
+
+      <h2 class="how-title">Solution Zéro Appel Manqué</h2>
+
+      <p class="how-subtitle">
+        100 % des appels pris en charge <span class="accent">immédiatement</span>.
+      </p>
+
+      <!-- 3 étapes + flèches -->
+      <div class="how-steps">
+
+        <!-- ÉTAPE 1 -->
+        <div class="how-step">
+          <div class="how-step-head">
+            <div class="how-step-num">1</div>
+            <h3 class="how-step-h">Vos annonces génèrent des appels</h3>
+          </div>
+          <div class="how-visual">
+            <div class="lbc-pair">
+              <!-- Annonce Leboncoin -->
+              <div class="lbc-card">
+                <div class="lbc-logo">leboncoin</div>
+                <div class="lbc-car">
+                  <img src="suv.png" alt="SUV"/>
+                </div>
+                <div class="lbc-line"></div>
+                <div class="lbc-line"></div>
+                <div class="lbc-line" style="width:70%;"></div>
+                <div class="lbc-btn"></div>
+              </div>
+              <!-- Ondes sonores orange -->
+              <div class="lbc-waves" aria-hidden="true">
+                <svg viewBox="0 0 30 36" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <path d="M6 12 Q11 18 6 24"/>
+                  <path d="M14 7 Q23 18 14 29"/>
+                  <path d="M22 3 Q34 18 22 33" opacity=".55"/>
+                </svg>
+              </div>
+              <!-- Téléphone iPhone-like avec appel entrant -->
+              <div class="lbc-phone">
+                <div class="notch"></div>
+                <div class="lbc-phone-screen">
+                  <div class="top-bar">
+                    <span>9:41</span>
+                    <span class="right"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+                  </div>
+                  <div class="label">Appel entrant</div>
+                  <div class="name">Prospect VO</div>
+                  <div class="num">06 12 34 56 78</div>
+                  <div class="actions">
+                    <div class="btn hang"><span class="material-symbols-outlined">call</span></div>
+                    <div class="btn pick"><span class="material-symbols-outlined">call</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="how-step-text">Chaque appel entrant représente<br>une opportunité commerciale potentielle.</p>
+        </div>
+
+        <!-- Flèche 1 → 2 -->
+        <div class="how-arrow" aria-hidden="true">
+          <svg viewBox="0 0 28 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="2" y1="6" x2="24" y2="6"/>
+            <polyline points="20,2 26,6 20,10"/>
+          </svg>
+        </div>
+
+        <!-- ÉTAPE 2 -->
+        <div class="how-step">
+          <div class="how-step-head">
+            <div class="how-step-num">2</div>
+            <h3 class="how-step-h">L'agent BVO répond immédiatement</h3>
+          </div>
+          <div class="how-visual">
+            <div class="bvo-center">
+              <img class="bvo-headset-img" src="Pictogramme%20Casque%20Audio%20v2.png" alt="Casque BoosterVO" />
+              <div class="bvo-checks">
+                <div>Décroché immédiat</div>
+                <div>Identification des prospects chauds</div>
+                <div>Qualification du véhicule recherché</div>
+                <div>Confirmation immédiate de disponibilité</div>
+                <div>Envoi fiche VO et devis</div>
+                <div>Programmation RDV ou rappel</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flèche 2 → 3 -->
+        <div class="how-arrow" aria-hidden="true">
+          <svg viewBox="0 0 28 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="2" y1="6" x2="24" y2="6"/>
+            <polyline points="20,2 26,6 20,10"/>
+          </svg>
+        </div>
+
+        <!-- ÉTAPE 3 -->
+        <div class="how-step">
+          <div class="how-step-head">
+            <div class="how-step-num">3</div>
+            <h3 class="how-step-h">Le prospect est transmis au négociant</h3>
+          </div>
+          <div class="how-visual">
+            <div class="prospect-pair">
+              <div class="prospect-card">
+                <div class="prospect-title">Nouveau prospect</div>
+                <div class="prospect-avatar"><span class="material-symbols-outlined">person</span></div>
+                <div class="prospect-name">Prospect VO</div>
+                <div class="prospect-detail">
+                  <div class="phone-line"><span class="material-symbols-outlined">call</span> 06 12 34 56 78</div>
+                  <div class="annonce">Annonce concernée<br>Peugeot 3008 — 2020</div>
+                </div>
+                <div class="prospect-btn">Transmettre</div>
+                <div class="prospect-bottom">
+                  <div><span class="material-symbols-outlined">call</span>Appeler</div>
+                  <div><span class="material-symbols-outlined">chat</span>Message</div>
+                </div>
+              </div>
+              <div class="prospect-arrow" aria-hidden="true">
+                <svg viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="2" y1="6" x2="18" y2="6"/>
+                  <polyline points="15,2 20,6 15,10"/>
+                </svg>
+              </div>
+              <div class="negociant-fig">
+                <div class="silhouette"><span class="material-symbols-outlined">person</span></div>
+                <div class="label">Négociant</div>
+              </div>
+            </div>
+          </div>
+          <p class="how-step-text">Le négociant récupère un prospect<br>déjà pris en charge et sécurisé.</p>
+        </div>
+
+      </div>
+
+      <!-- CTA navy + shield + bouton orange -->
+      <div class="how-cta">
+        <div class="how-cta-shield" aria-hidden="true">
+          <svg viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 2 L29 6 L29 17 C29 24 24 30 17 32 C10 30 5 24 5 17 L5 6 Z" fill="#fff"/>
+            <path d="M11.5 17 L15.5 21.5 L23 13" stroke="#FF6600" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
+        <div class="how-cta-text">
+          Une prise de contact immédiate <span class="accent">rassure le prospect</span> et crée l'engagement.
+        </div>
+        <a href="#" class="how-cta-btn" onclick="document.getElementById('open-quiz').click(); return false;">
+          Tester BoosterVO gratuitement<br>pendant 10 jours →
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== QUIZ MODAL ===================== -->
+<div class="modal-backdrop" id="quiz-backdrop" role="dialog" aria-modal="true" aria-label="Estimation BoosterVO">
+  <div class="modal" id="quiz-modal">
+    <header class="modal-head">
+      <svg class="logo-svg" viewBox="0 0 145.99789 22.058645" xmlns="http://www.w3.org/2000/svg" aria-label="BoosterVO">
+        <g transform="translate(-30.128559,-124.16163)">
+          <g transform="matrix(1.0504118,0,0,1.0504118,-8.7366748,-655.24394)">
+            <path d="m 38.2491,742 c -1.6813,0 -1.5843,6.61 -0.194,10.109 1.3903,3.499 5.5289,11.103 8.5359,10.887 3.007,-0.216 7.9862,-8.813 9.5059,-12.183 1.5196,-3.37 0.9376,-8.251 -0.3881,-8.035 -1.3256,0.216 -4.6235,9.504 -7.5658,9.331 C 45.2007,751.936 39.9304,742 38.2491,742 Z" fill="#1B4F9B"/>
+          </g>
+          <g transform="translate(-3.3792668,-51.815424)">
+            <text x="54.429226" y="194.54926" style="font-weight:900;font-size:21.4434px;font-family:Montserrat,'Helvetica Neue','Arial Black',Arial,sans-serif;letter-spacing:-0.415035px;fill:#1B4F9B">Booster</text>
+            <text x="142.72086" y="194.63264" style="font-weight:900;font-size:23.5703px;font-family:Montserrat,'Helvetica Neue','Arial Black',Arial,sans-serif;letter-spacing:-0.456201px;fill:#ff6600">VO</text>
+            <ellipse style="fill:#ff6600" cx="45.054859" cy="180.64177" rx="2.5887949" ry="2.5224156"/>
+          </g>
+        </g>
+      </svg>
+      <span class="modal-trust"><span class="material-symbols-outlined">verified_user</span> Données 100&nbsp;% sécurisées</span>
+      <button class="modal-close" id="quiz-close" aria-label="Fermer"><span class="material-symbols-outlined">close</span></button>
+    </header>
+    <div class="progress-bar"><div class="progress-fill" id="quiz-progress"></div></div>
+    <div class="modal-body" id="quiz-body"></div>
+    <footer class="modal-foot" id="quiz-foot">
+      <button class="btn-back" id="quiz-back" hidden><span class="material-symbols-outlined">arrow_back</span> Précédent</button>
+      <button class="btn-next" id="quiz-next" disabled>Suivant <span class="material-symbols-outlined">arrow_forward</span></button>
+    </footer>
+  </div>
+</div>
+
+<script>
+  // ===== POSTER VSL VIDÉO =====
+  (function(){
+    var wrap = document.getElementById('vsl');
+    var video = document.getElementById('vsl-video');
+    var poster = document.getElementById('vsl-poster');
+    if(!wrap || !video || !poster) return;
+    poster.addEventListener('click', function(){
+      wrap.classList.add('is-playing');
+      video.play().catch(function(){});
+    });
+    video.addEventListener('pause', function(){
+      if(video.currentTime === 0) wrap.classList.remove('is-playing');
+    });
+  })();
+</script>
+
+<script>
+  // ===== QUIZ ESTIMATION =====
+  (function(){
+    var quiz = { step:'q1', history:['q1'], answers:{}, branch:null };
+
+    var QUESTIONS = {
+      q1: {
+        type:'choice', step:'Étape 1',
+        label:"Avez-vous les statistiques du nombre d'appels reçus et manqués Leboncoin ?",
+        sub:"Disponibles dans votre espace pro Leboncoin (rapport mensuel).",
+        cols:3,
+        options:[
+          {v:'oui', l:'Oui', next:'A2'},
+          {v:'non', l:'Non', next:'B2'},
+          {v:'nsp', l:'Je ne sais pas', next:'B2'}
+        ]
+      },
+      A2: {
+        type:'number', step:'Étape 2 / 6',
+        label:"Combien d'appels avez-vous reçus le mois dernier ?",
+        sub:"Reportez le chiffre exact affiché par Leboncoin.",
+        placeholder:'ex : 187', suffix:'appels', next:'A3'
+      },
+      A3: {
+        type:'number', step:'Étape 3 / 6',
+        label:"Et combien d'appels manqués sur cette période ?",
+        sub:"Le nombre d'appels manqués affiché par Leboncoin.",
+        placeholder:'ex : 42', suffix:'manqués', next:'A4'
+      },
+      A4: {
+        type:'choice', step:'Étape 4 / 6',
+        label:"Quel est votre délai moyen de rappel ?",
+        sub:"Temps moyen écoulé entre l'appel manqué et votre rappel.",
+        cols:4,
+        options:[
+          {v:'fast', l:'≤ 5 min',           next:'A5'},
+          {v:'mid',  l:'≤ 20 min',          next:'A5'},
+          {v:'slow', l:'≥ 30 min',          next:'A5'},
+          {v:'nsp',  l:'Je ne sais pas',    next:'A5'}
+        ]
+      },
+      A5: {
+        type:'choice', step:'Étape 5 / 6',
+        label:"Ce délai est-il mesuré ou un ressenti ?",
+        sub:"Un ressenti étant souvent optimiste, nous corrigeons légèrement le calcul.",
+        cols:3,
+        options:[
+          {v:'mesure', l:'Réellement mesuré',          next:'A6'},
+          {v:'estime', l:'Principalement estimé',      next:'A6'},
+          {v:'nsp',    l:'Je ne sais pas précisément', next:'A6'}
+        ]
+      },
+      A6: {
+        type:'number', step:'Étape 6 / 6',
+        label:"Quelle est votre marge moyenne par véhicule vendu ?",
+        sub:"Marge nette moyenne réalisée sur un VO.",
+        placeholder:'ex : 1500', suffix:'€', next:'email'
+      },
+      B2: {
+        type:'number', step:'Étape 2 / 5',
+        label:"Combien d'appels traitez-vous par mois en moyenne ?",
+        sub:"Estimation du nombre d'appels entrants liés à vos annonces Leboncoin.",
+        placeholder:'ex : 100', suffix:'appels', next:'B3'
+      },
+      B3: {
+        type:'choice', step:'Étape 3 / 5',
+        label:"Quel pourcentage de vos appels décrochez-vous immédiatement ?",
+        sub:"Soyez honnête, c'est essentiel pour la fiabilité du calcul.",
+        cols:4,
+        options:[
+          {v:100, l:'100 % (toujours)', next:'B4'},
+          {v:80,  l:'~ 80 %', next:'B4'},
+          {v:60,  l:'~ 60 %', next:'B4'},
+          {v:40,  l:'< 50 %', next:'B4'}
+        ]
+      },
+      B4: {
+        type:'choice', step:'Étape 4 / 5',
+        label:"Cette estimation, c'est un ressenti ou une donnée mesurée ?",
+        sub:"Un ressenti étant souvent optimiste, nous corrigeons légèrement le calcul.",
+        cols:2,
+        options:[
+          {v:'mesure',   l:'Donnée mesurée', next:'B5'},
+          {v:'ressenti', l:'Ressenti',       next:'B5'}
+        ]
+      },
+      B5: {
+        type:'number', step:'Étape 5 / 5',
+        label:"Quelle est votre marge moyenne par véhicule vendu ?",
+        sub:"Marge nette moyenne réalisée sur un VO.",
+        placeholder:'ex : 1500', suffix:'€', next:'email'
+      },
+      email: {
+        type:'email', step:'Dernière étape',
+        label:"Recevez votre diagnostic complet",
+        sub:"Nous vous envoyons immédiatement votre rapport personnalisé par email.",
+        placeholder:'votre.email@pro.fr', next:'results'
+      }
+    };
+
+    var $bd   = document.getElementById('quiz-backdrop');
+    var $modal= document.getElementById('quiz-modal');
+    var $body = document.getElementById('quiz-body');
+    var $foot = document.getElementById('quiz-foot');
+    var $back = document.getElementById('quiz-back');
+    var $next = document.getElementById('quiz-next');
+    var $prog = document.getElementById('quiz-progress');
+    var $close= document.getElementById('quiz-close');
+    var $open = document.getElementById('open-quiz');
+
+    function progressPct(){
+      // Branche A : q1 + 5 questions + email = 7 écrans
+      // Branche B : q1 + 4 questions + email = 6 écrans
+      var total = quiz.branch === 'A' ? 7 : 6;
+      if(!quiz.branch) total = 7;
+      return Math.min(100, (quiz.history.length / total) * 100);
+    }
+
+    function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || ''); }
+    function fmtEUR(n){ return Number(n).toLocaleString('fr-FR',{maximumFractionDigits:0}); }
+
+    function render(){
+      var q = QUESTIONS[quiz.step];
+      if(!q) return;
+      $prog.style.width = progressPct() + '%';
+      $back.hidden = quiz.history.length <= 1;
+
+      var html = '<section class="step is-active">' +
+                 '<div class="step-meta">'+ q.step +'</div>' +
+                 '<h2 class="step-q">'+ q.label +'</h2>' +
+                 '<p class="step-sub">'+ q.sub +'</p>';
+
+      if(q.type === 'choice'){
+        html += '<div class="options options-'+ q.cols +'">';
+        q.options.forEach(function(o){
+          html += '<button type="button" class="opt" data-val="'+ o.v +'" data-next="'+ o.next +'">'+ o.l +'</button>';
+        });
+        html += '</div>';
+        $next.style.display = 'none';
+      } else if(q.type === 'number'){
+        var cur = quiz.answers[quiz.step] != null ? quiz.answers[quiz.step] : '';
+        html += '<div class="input-wrap">' +
+                '<input class="q-input" type="number" id="q-input" min="0" placeholder="'+ q.placeholder +'" value="'+ cur +'" autocomplete="off" />' +
+                '<span class="input-suffix">'+ q.suffix +'</span>' +
+                '</div>';
+        $next.style.display = 'inline-flex';
+        $next.innerHTML = 'Suivant <span class="material-symbols-outlined">arrow_forward</span>';
+        $next.disabled = !cur || parseFloat(cur) <= 0;
+      } else if(q.type === 'email'){
+        var ce = quiz.answers.email || '';
+        html += '<div class="input-wrap">' +
+                '<input class="q-input q-input-email" type="email" id="q-input" placeholder="'+ q.placeholder +'" value="'+ ce +'" autocomplete="email" />' +
+                '</div>';
+        $next.style.display = 'inline-flex';
+        $next.innerHTML = 'Voir mon estimation <span class="material-symbols-outlined">arrow_forward</span>';
+        $next.disabled = !validEmail(ce);
+      }
+      html += '</section>';
+      $body.innerHTML = html;
+      bindStep();
+    }
+
+    function bindStep(){
+      var q = QUESTIONS[quiz.step];
+      if(q.type === 'choice'){
+        document.querySelectorAll('.opt').forEach(function(b){
+          b.addEventListener('click', function(){
+            document.querySelectorAll('.opt').forEach(function(x){x.classList.remove('is-selected')});
+            b.classList.add('is-selected');
+            var raw = b.dataset.val;
+            var val = isNaN(parseFloat(raw)) ? raw : parseFloat(raw);
+            quiz.answers[quiz.step] = val;
+            if(quiz.step === 'q1'){ quiz.branch = (raw === 'oui') ? 'A' : 'B'; }
+            setTimeout(function(){ goTo(b.dataset.next); }, 240);
+          });
+        });
+      } else {
+        var $in = document.getElementById('q-input');
+        if(!$in) return;
+        setTimeout(function(){ $in.focus(); }, 50);
+        $in.addEventListener('input', function(){
+          var v = $in.value.trim();
+          if(quiz.step === 'email'){
+            quiz.answers.email = v;
+            $next.disabled = !validEmail(v);
+          } else {
+            quiz.answers[quiz.step] = v;
+            $next.disabled = !v || parseFloat(v) <= 0;
+          }
+        });
+        $in.addEventListener('keydown', function(e){
+          if(e.key === 'Enter' && !$next.disabled){ e.preventDefault(); $next.click(); }
+        });
+      }
+    }
+
+    function goTo(stepId){
+      if(stepId === 'results'){ showResults(); return; }
+      quiz.step = stepId;
+      quiz.history.push(stepId);
+      render();
+    }
+
+    function goBack(){
+      if(quiz.history.length <= 1) return;
+      quiz.history.pop();
+      quiz.step = quiz.history[quiz.history.length - 1];
+      if(quiz.step === 'q1') quiz.branch = null;
+      $modal.classList.remove('is-results');
+      $foot.style.display = 'flex';
+      render();
+    }
+
+    function compute(){
+      var appels, manques, marge;
+      // Taux de conversion d'un appel décroché immédiatement (référence VO)
+      var convImmediate = 0.20; // 20 %
+
+      // Conservation de conversion selon le délai de rappel — calé sur benchmark
+      //   ≤ 5 min  → 90 % retention → 18 % conv rappel
+      //   ≤ 20 min → 60 % retention → 12 % conv rappel
+      //   ≥ 30 min → 35 % retention →  7 % conv rappel
+      //   nsp      → 30 % retention →  6 % conv rappel (prudent)
+      var DELAYS = {
+        fast: { retention: 0.90, label: '≤ 5 min',    displayMin: '5 minutes' },
+        mid:  { retention: 0.60, label: '≤ 20 min',   displayMin: '10 minutes' },
+        slow: { retention: 0.35, label: '≥ 30 min',   displayMin: '30 minutes' },
+        nsp:  { retention: 0.30, label: 'non mesuré', displayMin: '20 minutes' }
+      };
+
+      var delay = DELAYS.mid; // par défaut
+
+      if(quiz.branch === 'A'){
+        appels  = parseInt(quiz.answers.A2) || 0;
+        manques = parseInt(quiz.answers.A3) || 0;
+        marge   = parseInt(quiz.answers.A6) || 0;
+        delay   = DELAYS[quiz.answers.A4] || DELAYS.mid;
+      } else {
+        appels = parseInt(quiz.answers.B2) || 0;
+        var pct = parseInt(quiz.answers.B3);
+        if(isNaN(pct)) pct = 80;
+        if(quiz.answers.B4 === 'ressenti'){ pct = Math.max(20, pct - 15); }
+        manques = Math.round(appels * (100 - pct) / 100);
+        marge = parseInt(quiz.answers.B5) || 0;
+        delay = { retention: DELAYS.mid.retention, label: '≤ 20 min (estimé)', displayMin: '10 minutes' };
+      }
+
+      var convRappels = convImmediate * delay.retention;
+      var decrochesImmediats = Math.max(0, appels - manques);
+
+      var ventesIfImmediat = manques * convImmediate;
+      var margeIfImmediat  = ventesIfImmediat * marge;
+
+      var ventesAvecDelai = manques * convRappels;
+      var margeAvecDelai  = ventesAvecDelai * marge;
+
+      var ventesPerdues = ventesIfImmediat - ventesAvecDelai;
+      var margeMois     = margeIfImmediat - margeAvecDelai;
+
+      return {
+        appels: appels,
+        manques: manques,
+        marge: marge,
+        decrochesImmediats: decrochesImmediats,
+        convImmediate: convImmediate,
+        convRappels: convRappels,
+        delayLabel: delay.label,
+        delayDisplayMin: delay.displayMin,
+        ventesIfImmediat: Math.round(ventesIfImmediat),
+        margeIfImmediat:  Math.round(margeIfImmediat),
+        ventesAvecDelai:  Math.round(ventesAvecDelai),
+        margeAvecDelai:   Math.round(margeAvecDelai),
+        ventes:    Math.max(0, Math.round(ventesPerdues)),
+        margeMois: Math.round(margeMois),
+        margeAn:   Math.round(margeMois * 12)
+      };
+    }
+
+    function showResults(){
+      var r = compute();
+      $modal.classList.add('is-results');
+      $prog.style.width = '100%';
+      $foot.style.display = 'none';
+      quiz.step = 'results';
+
+      $body.innerHTML =
+        '<div class="results-head">' +
+          '<h2 class="results-h">Voici ce que vous perdez chaque mois <em>(sans le savoir)</em></h2>' +
+        '</div>' +
+
+        '<div class="results-stats-3">' +
+          '<div class="results-stat">' +
+            '<div class="results-stat-label">Votre marge par VO vendu</div>' +
+            '<div class="results-stat-value">'+ fmtEUR(r.marge) +' €</div>' +
+            '<div class="results-stat-sub">sur la base de vos réponses</div>' +
+          '</div>' +
+          '<div class="results-stat">' +
+            '<div class="results-stat-label">Marge potentiellement perdue</div>' +
+            '<div class="results-stat-value">'+ fmtEUR(r.margeMois) +' €</div>' +
+            '<div class="results-stat-value-sub">/ mois</div>' +
+            '<div class="results-stat-sub">Soit '+ fmtEUR(r.margeAn) +' € / an</div>' +
+          '</div>' +
+          '<div class="results-stat">' +
+            '<div class="results-stat-label">Ventes potentiellement perdues</div>' +
+            '<div class="results-stat-value">'+ r.ventes +'</div>' +
+            '<div class="results-stat-value-sub">vente(s) / mois</div>' +
+            '<div class="results-stat-sub">sur la base de vos réponses</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="results-section">' +
+          '<h3>Vos données</h3>' +
+          '<table class="data-table">' +
+            '<thead><tr>' +
+              '<th>Nb appels traités<br>/ mois</th>' +
+              '<th>Nb décrochés<br>immédiats</th>' +
+              '<th>% conversion<br>décrochés</th>' +
+              '<th>Nb appels manqués<br>/ mois</th>' +
+              '<th>Délai moyen<br>de rappel</th>' +
+              '<th>% conversion<br>rappels</th>' +
+            '</tr></thead>' +
+            '<tbody><tr>' +
+              '<td>'+ r.appels +'</td>' +
+              '<td>'+ r.decrochesImmediats +'</td>' +
+              '<td>'+ Math.round(r.convImmediate * 100) +' %</td>' +
+              '<td>'+ r.manques +'</td>' +
+              '<td>'+ r.delayLabel +'</td>' +
+              '<td>'+ Math.round(r.convRappels * 100) +' %</td>' +
+            '</tr></tbody>' +
+          '</table>' +
+        '</div>' +
+
+        '<div class="results-section">' +
+          '<h3>Méthode de calcul</h3>' +
+          '<div class="method-line">' +
+            '<span class="h-line">Si vos '+ r.manques +' appels manqués avaient été décrochés immédiatement</span>' +
+            'Vous auriez eu <strong>'+ r.ventesIfImmediat +' ventes</strong> ('+ r.manques +' × '+ Math.round(r.convImmediate * 100) +' %) pour une marge égale à <strong>'+ fmtEUR(r.margeIfImmediat) +' €</strong> ('+ r.ventesIfImmediat +' × '+ fmtEUR(r.marge) +' €)' +
+          '</div>' +
+          '<div class="method-line">' +
+            '<span class="h-line">Avec un délai de rappel moyen à '+ r.delayDisplayMin +'</span>' +
+            'Vous auriez eu <strong>'+ r.ventesAvecDelai +' ventes</strong> ('+ r.manques +' × '+ Math.round(r.convRappels * 100) +' %) pour une marge égale à <strong>'+ fmtEUR(r.margeAvecDelai) +' €</strong> ('+ r.ventesAvecDelai +' × '+ fmtEUR(r.marge) +' €)' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="results-section">' +
+          '<h3>Benchmark taux de conversion appels VO</h3>' +
+          '<div class="benchmark-list">' +
+            'Décrochés immédiats <b>20 à 40 %</b> — Rappels ≤ 5 min <b>15 à 30 %</b><br>' +
+            'Rappels ≤ 10 min <b>12 à 20 %</b> — Rappels ≤ 30 min <b>5 à 10 %</b>' +
+          '</div>' +
+          '<div class="benchmark-source">(source : Carvivo 2022-2025 — Audits BoosterVO)</div>' +
+        '</div>' +
+
+        '<button class="results-cta" id="results-cta"><span class="material-symbols-outlined">mail</span> Recevoir mon rapport détaillé</button>';
+
+      var $cta = document.getElementById('results-cta');
+      if($cta){
+        $cta.addEventListener('click', function(){
+          // TODO: connecter à ton endpoint Zoho/SMTP
+          alert("Rapport envoyé à : " + (quiz.answers.email || '—') + "\n\n(À brancher sur le backend.)");
+        });
+      }
+    }
+
+    function open(){
+      quiz.step = 'q1';
+      quiz.history = ['q1'];
+      quiz.answers = {};
+      quiz.branch = null;
+      $modal.classList.remove('is-results');
+      $foot.style.display = 'flex';
+      $next.style.display = 'inline-flex';
+      $next.innerHTML = 'Suivant <span class="material-symbols-outlined">arrow_forward</span>';
+      $next.disabled = true;
+      render();
+      $bd.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close(){
+      $bd.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    if($open){
+      $open.addEventListener('click', function(e){ e.preventDefault(); open(); });
+    }
+    $close.addEventListener('click', close);
+    $bd.addEventListener('click', function(e){ if(e.target === $bd) close(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && $bd.classList.contains('is-open')) close();
+    });
+    $next.addEventListener('click', function(){
+      var q = QUESTIONS[quiz.step];
+      if(!q) return;
+      if(q.type === 'number' || q.type === 'email'){ goTo(q.next); }
+    });
+    $back.addEventListener('click', goBack);
+  })();
+</script>
+
+</body>
+</html>

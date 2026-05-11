@@ -9,7 +9,7 @@ export default function Solution() {
     {
       num: "2",
       icon: "query_stats",
-      titre: "On mesure tous les appels de vos annonces pendant 15 jours",
+      titre: "On mesure tous les appels de vos annonces pendant 10 jours",
       desc: "Volume d\u2019appels, appels décrochés, appels manqués, délais de rappels, opportunités définitivement perdues, heures creuses.",
     },
     {
@@ -29,10 +29,10 @@ export default function Solution() {
         {/* En-tête aligné à gauche */}
         <div className="max-w-3xl mb-20">
           <h2 className="font-nunito text-[36px] font-extrabold text-bleu leading-[1.1] tracking-tight mb-8">
-            Avec l&apos;Audit BVO, mesurez la marge<br />invisible que vous perdez chaque mois
+            L&apos;audit gratuit BoosterVO, comment &ccedil;a marche&nbsp;?
           </h2>
           <p className="font-opensans text-lg sm:text-xl text-gray-500 leading-relaxed">
-            Pendant 15 jours, vous voyez ce qui se passe vraiment sur vos appels.
+            Pendant 10 jours, vous voyez vraiment ce qui se passe sur vos appels.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function Solution() {
           <div className="bg-bleu px-8 py-10 md:px-16 md:py-14 rounded-lg flex flex-col md:flex-row items-center justify-between gap-8">
             <div>
               <h4 className="text-white font-nunito text-2xl md:text-3xl font-bold mb-2">
-                Pr&ecirc;t &agrave; arr&ecirc;ter l&apos;h&eacute;morragie ?
+                Pr&ecirc;t &agrave; voir le r&eacute;sultat de vos appels&nbsp;?
               </h4>
               <p className="text-white/60 text-base sm:text-lg">
                 Lancez votre audit gratuit d&egrave;s aujourd&apos;hui.
@@ -79,7 +79,7 @@ export default function Solution() {
               href="#audit"
               className="bg-orange hover:bg-orange-dark text-white px-10 py-5 rounded-lg font-bold text-lg transition-all duration-300 active:scale-95 whitespace-nowrap shadow-lg"
             >
-              D&eacute;marrer l&apos;audit (15 jours)
+              D&eacute;marrer l&apos;audit (10 jours)
             </a>
           </div>
         </div>

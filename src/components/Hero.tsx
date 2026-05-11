@@ -8,20 +8,22 @@ export default function Hero() {
           <div className="flex flex-col justify-between lg:w-1/2 text-center lg:text-left text-white">
             <div>
               <h1 className="animate-fade-up font-nunito font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-tight mb-6">
-                Combien d&apos;argent perdez-vous chaque mois&hellip; sans le savoir ?
+                Quelle part de votre budget Leboncoin part dans des appels que vous{" "}
+                <em className="text-orange italic">ne traitez pas</em>&nbsp;?
               </h1>
               <p className="animate-fade-up delay-200 text-white/80 text-base sm:text-lg leading-relaxed mb-8">
-                Vos annonces leboncoin g&eacute;n&egrave;rent des contacts. Mais une partie de
-                ces appels disparaissent ou ne sont pas correctement trait&eacute;s.
+                Vos annonces g&eacute;n&egrave;rent des appels. Une partie n&apos;est jamais
+                d&eacute;croch&eacute;e, ou rappel&eacute;e trop tard.
               </p>
             </div>
             <div className="animate-fade-up delay-300 border-l-4 border-orange bg-white/10 rounded-r-lg p-5 text-left">
               <p className="text-white/90 text-sm sm:text-base leading-relaxed">
-                <strong className="text-orange">BoosterVO</strong> vous permet
-                d&apos;identifier pr&eacute;cis&eacute;ment ces pertes et de
-                r&eacute;cup&eacute;rer entre{" "}
-                <strong>1&nbsp;500&nbsp;&euro; et 3&nbsp;000&nbsp;&euro; de marge par mois</strong>{" "}
-                &mdash; sans augmenter votre budget.
+                <strong className="text-white">
+                  C&apos;est de l&apos;argent que vous avez investi pour ne rien produire.
+                </strong>{" "}
+                <strong className="text-orange">BoosterVO</strong> d&eacute;croche, qualifie et
+                convertit chaque appel &mdash; pour que votre budget publicitaire arr&ecirc;te
+                de fuir.
               </p>
             </div>
           </div>
