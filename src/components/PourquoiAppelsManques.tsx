@@ -61,29 +61,28 @@ const raisons = [
 export default function PourquoiAppelsManques() {
   return (
     <section className="bg-creme py-20 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto bg-white rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(7,18,37,0.08)]">
+      <div className="max-w-[1280px] mx-auto bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(7,18,37,0.08)]">
         {/* Bloc haut — texte + image */}
-        <div className="grid lg:grid-cols-[1.05fr_1fr] min-h-[520px] bg-gradient-to-r from-white from-45% to-creme">
+        <div className="grid lg:grid-cols-[1.05fr_1fr] bg-gradient-to-r from-white from-45% to-creme">
           {/* Colonne texte */}
-          <div className="px-7 py-12 sm:px-12 sm:py-16 lg:px-16 lg:py-20 z-10">
-            <p className="text-orange font-nunito font-extrabold text-sm tracking-[0.18em] mb-5">
-              LE PROBLÈME
-            </p>
-
-            <h2 className="font-nunito font-black text-bleu text-3xl sm:text-4xl lg:text-5xl leading-[1.1] tracking-tight">
-              Pourquoi la majorité
+          <div className="px-7 py-8 sm:px-12 sm:py-10 lg:px-16 lg:py-12 z-10">
+            <h2 className="font-nunito font-black text-bleu text-3xl sm:text-4xl lg:text-[42px] leading-[1.18] tracking-tight">
+              Pourquoi les{" "}
+              <span className="text-orange">
+                appels
+                <br />
+                manqués
+              </span>{" "}
+              sont inévitables
               <br />
-              des négociants VO
-              <br />
-              ont des appels manqués
+              dans le VO
             </h2>
 
             <div className="w-14 h-1 bg-orange rounded-full my-7 lg:my-8" />
 
             <p className="font-opensans font-bold text-bleu text-lg sm:text-xl leading-snug mb-5">
-              Ce n&apos;est pas un manque de sérieux.
-              <br />
-              C&apos;est la réalité du terrain.
+              Ce n&apos;est pas un manque de sérieux, c&apos;est une réalité
+              structurelle liée à l&apos;activité VO
             </p>
 
             <p className="font-opensans text-bleu text-base sm:text-lg lg:text-[19px] leading-relaxed">
@@ -96,34 +95,34 @@ export default function PourquoiAppelsManques() {
           </div>
 
           {/* Colonne image */}
-          <div className="relative min-h-[380px] lg:min-h-[520px] overflow-hidden">
+          <div className="relative min-h-[380px] lg:min-h-0 overflow-hidden">
             <Image
               src="/images/vendeur-vo-telephone.png"
               alt="Négociant VO au téléphone devant son parc de véhicules d'occasion"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-cover object-[50%_15%]"
               priority={false}
             />
             {/* Fondu blanc côté gauche pour transition douce avec le texte */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/70 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/45 to-transparent z-[1]" />
 
-            {/* Carte "Appel manqué" */}
-            <div className="absolute right-5 sm:right-8 lg:right-12 bottom-6 sm:bottom-10 lg:bottom-20 flex items-center gap-4 bg-white rounded-2xl px-5 py-4 sm:px-7 sm:py-5 shadow-[0_18px_45px_rgba(0,0,0,0.16)] min-w-[260px] sm:min-w-[300px]">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-orange-50 text-orange flex items-center justify-center shrink-0">
+            {/* Carte "Appel manqué" — taille réduite 50% */}
+            <div className="absolute right-3 sm:right-5 lg:right-7 bottom-3 sm:bottom-8 lg:bottom-12 z-[2] flex items-center gap-2.5 bg-white rounded-xl px-3.5 py-2.5 shadow-[0_10px_24px_rgba(0,0,0,0.16)] min-w-[140px] sm:min-w-[160px]">
+              <div className="w-7 h-7 sm:w-[30px] sm:h-[30px] rounded-full bg-orange-50 text-orange flex items-center justify-center shrink-0">
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: "26px" }}
+                  style={{ fontSize: "15px", fontVariationSettings: "'FILL' 1" }}
                 >
                   call
                 </span>
               </div>
               <div>
-                <strong className="block font-nunito font-extrabold text-bleu text-base sm:text-lg mb-1">
+                <strong className="block font-nunito font-extrabold text-bleu text-xs mb-0.5">
                   Appel manqué
                 </strong>
-                <p className="text-gray-500 text-sm">Numéro masqué</p>
-                <p className="text-gray-500 text-sm">Aujourd&apos;hui à 11:42</p>
+                <p className="text-gray-500 text-[10px] leading-tight">Numéro masqué</p>
+                <p className="text-gray-500 text-[10px] leading-tight">Aujourd&apos;hui à 11:42</p>
               </div>
             </div>
           </div>
@@ -131,10 +130,6 @@ export default function PourquoiAppelsManques() {
 
         {/* Bloc bas — 5 raisons */}
         <div className="px-6 py-10 sm:px-10 sm:py-12 border-t border-creme-dark">
-          <h3 className="text-center font-nunito font-black text-bleu text-xl sm:text-2xl lg:text-[28px] mb-10">
-            Des appels qui arrivent&hellip; au pire moment
-          </h3>
-
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-8">
             {raisons.map((r, i) => (
               <div
@@ -149,7 +144,7 @@ export default function PourquoiAppelsManques() {
                   <span
                     className="material-symbols-outlined"
                     style={{
-                      fontSize: "38px",
+                      fontSize: "50px",
                       fontVariationSettings: "'wght' 500",
                     }}
                   >

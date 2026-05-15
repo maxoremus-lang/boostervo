@@ -38,20 +38,28 @@
 
   .page{
     min-height:auto;
-    padding:24px 42px 80px;
+    padding:48px 42px 80px;
     background:
       radial-gradient(circle at 78% 12%, rgba(255,102,0,.18), transparent 38%),
       radial-gradient(circle at 5% 85%, rgba(255,102,0,.08), transparent 32%),
       linear-gradient(180deg, var(--bvo-bleu) 0%, var(--bvo-bleu-dark) 100%);
   }
 
-  /* === HEADER === */
+  /* === HEADER (sticky) === */
+  .site-header-wrap{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    padding:18px 42px;
+    background:var(--bvo-bleu);
+    box-shadow:0 4px 20px rgba(7,18,37,.18);
+  }
   header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    max-width:1280px;
-    margin:0 auto 56px;
+    max-width:1100px;
+    margin:0 auto;
   }
   .logo-svg{height:28px;width:auto;display:block}
   nav{
@@ -86,7 +94,7 @@
 
   /* === HERO === */
   .hero{
-    max-width:1280px;
+    max-width:1100px;
     margin:0 auto;
     display:grid;
     grid-template-columns:1fr 1.1fr;
@@ -138,7 +146,7 @@
   .subtitle{
     max-width:560px;
     color:rgba(255,255,255,.82);
-    font-size:15.5px;
+    font-size:15px;
     line-height:1.5;
     margin-bottom:4px;
   }
@@ -165,7 +173,7 @@
   .bullets li strong{
     font-weight:800;
     color:#fff;
-    font-size:14.5px;
+    font-size:15px;
     line-height:1.35;
   }
   .bullets li span.desc{
@@ -205,7 +213,7 @@
     font-family:'Nunito',sans-serif;
   }
   .money-box strong{color:var(--bvo-orange);font-weight:800}
-  .money-box > div:last-child{font-size:13.5px;line-height:1.4;color:#fff}
+  .money-box > div:last-child{font-size:15px;line-height:1.4;color:#fff}
 
   .ctas{
     display:flex;
@@ -253,7 +261,7 @@
     display:flex;
     gap:14px;
     flex-wrap:wrap;
-    font-size:12px;
+    font-size:13px;
     font-weight:600;
     color:rgba(255,255,255,.82);
     margin-top:0;
@@ -350,7 +358,7 @@
     margin-bottom:10px;
   }
   .video-poster .quote{
-    font-size:14.5px;
+    font-size:15px;
     line-height:1.55;
     font-style:italic;
     color:rgba(255,255,255,.78);
@@ -363,7 +371,7 @@
 
   /* === PROOF ROW === */
   .proof-row{
-    max-width:1280px;
+    max-width:1100px;
     margin:54px auto 0;
     background:#fff;
     border-radius:16px;
@@ -474,6 +482,31 @@
     text-decoration:underline;
   }
   .method-line strong{font-weight:800}
+
+  .method-section h3{text-decoration:underline}
+  .method-bullets{
+    list-style:none;padding:0;margin:0 0 12px;
+  }
+  .method-bullets li{
+    position:relative;padding-left:18px;margin-bottom:4px;
+    font-size:13.5px;line-height:1.55;color:var(--navy);
+  }
+  .method-bullets li::before{
+    content:'-';position:absolute;left:4px;top:0;
+    color:var(--navy);font-weight:700;
+  }
+  .method-bullets strong{font-weight:800}
+  .method-note{
+    display:inline-block;font-style:italic;font-weight:400;
+    color:var(--navy);margin-top:2px;
+  }
+  .method-narrative{
+    font-size:13.5px;line-height:1.55;color:var(--navy);
+    margin-bottom:8px;
+  }
+  .method-narrative:last-child{margin-bottom:0}
+  .method-narrative strong{font-weight:800}
+  .method-money{color:var(--bvo-orange);font-weight:800}
 
   .benchmark-list{
     font-size:13px;color:var(--navy);line-height:1.7;
@@ -745,7 +778,7 @@
   }
   .problem-title{
     font-family:'Nunito',sans-serif;
-    font-weight:900;font-size:42px;line-height:1.18;letter-spacing:-1px;
+    font-weight:900;font-size:34px;line-height:1.18;letter-spacing:-1px;
     color:#fff;text-align:center;
     max-width:880px;margin:0 auto 55px;
   }
@@ -785,11 +818,11 @@
   }
   .problem-bloc-h{
     font-family:'Nunito',sans-serif;
-    font-weight:900;font-size:30px;color:#fff;
+    font-weight:900;font-size:22px;color:#fff;
     margin-bottom:5px;letter-spacing:-.5px;line-height:1.2;
   }
   .problem-bloc p{
-    font-size:17px;color:rgba(255,255,255,.85);line-height:1.65;margin-bottom:14px;
+    font-size:15px;color:rgba(255,255,255,.85);line-height:1.65;margin-bottom:14px;
   }
   .problem-bloc p:last-child{margin-bottom:0}
   .problem-bloc strong{color:#fff;font-weight:800}
@@ -836,7 +869,7 @@
   }
   .problem-stat-text strong{font-weight:800}
   .problem-stat-source{
-    font-size:12.5px;color:var(--muted);font-style:italic;
+    font-size:13px;color:var(--muted);font-style:italic;
     border-top:1px solid #e8e3d6;padding-top:14px;
     grid-column:1/-1;grid-row:3;
   }
@@ -844,7 +877,7 @@
   @media(max-width:1100px){
     .problem{padding:56px 24px}
     .problem-title{font-size:32px}
-    .problem-bloc-h{font-size:24px}
+    .problem-bloc-h{font-size:20px}
     .problem-stats{grid-template-columns:1fr;gap:16px}
     .problem-stat-num{font-size:54px}
   }
@@ -862,7 +895,7 @@
 
   .compare-title{
     font-family:'Nunito',sans-serif;
-    font-weight:900;font-size:42px;line-height:1.18;letter-spacing:-1px;
+    font-weight:900;font-size:34px;line-height:1.18;letter-spacing:-1px;
     color:#fff;text-align:center;
     max-width:880px;margin:0 auto 24px;
   }
@@ -1007,9 +1040,9 @@
 
   .si-title{
     font-family:'Nunito',sans-serif;
-    font-weight:900;font-size:42px;line-height:1.18;letter-spacing:-1px;
-    color:var(--navy);text-align:center;
-    max-width:880px;margin:0 auto 24px;
+    font-weight:900;font-size:34px;line-height:1.18;letter-spacing:-1px;
+    color:var(--bvo-bleu);text-align:center;
+    max-width:1080px;margin:0 auto 24px;
   }
   .si-title .accent{color:var(--bvo-orange);font-weight:900}
 
@@ -1095,7 +1128,7 @@
   .si-bridge-title{
     font-family:'Nunito',sans-serif;
     font-weight:900;font-size:34px;line-height:1.15;letter-spacing:-.8px;
-    color:var(--navy);text-align:center;
+    color:var(--bvo-bleu);text-align:center;
     max-width:880px;margin:0 auto 24px;
   }
   .si-bridge-title .accent{color:var(--bvo-orange);font-weight:900}
@@ -1173,10 +1206,12 @@
 
   /* === SECTION 5 — COMMENT ÇA MARCHE === */
   .how{
-    background:#fff;
-    color:var(--navy);
+    background:
+      radial-gradient(circle at 78% 12%, rgba(255,102,0,.14), transparent 38%),
+      radial-gradient(circle at 5% 85%, rgba(255,102,0,.08), transparent 32%),
+      linear-gradient(180deg, var(--bvo-bleu) 0%, var(--bvo-bleu-dark) 100%);
+    color:#fff;
     padding:80px 42px;
-    border-top:1px solid #e8e3d6;
   }
   .how-inner{max-width:1100px;margin:0 auto}
 
@@ -1197,22 +1232,22 @@
 
   .how-title{
     font-family:'Nunito',sans-serif;
-    font-weight:900;font-size:48px;line-height:1.08;letter-spacing:-1.2px;
-    color:var(--navy);text-align:center;
+    font-weight:900;font-size:34px;line-height:1.18;letter-spacing:-1px;
+    color:#fff;text-align:center;
     max-width:880px;margin:0 auto 2px;
   }
 
   .how-subtitle{
     font-family:'Nunito',sans-serif;
     text-align:center;
-    font-size:24px;font-weight:800;
-    color:var(--navy);margin:0 auto 2px;
+    font-size:20px;font-weight:800;
+    color:#fff;margin:0 auto 2px;
     letter-spacing:-.4px;
   }
   .how-subtitle .accent{color:var(--bvo-orange);font-weight:900}
 
   .how-intro{
-    text-align:center;font-size:17px;font-weight:700;color:var(--navy);
+    text-align:center;font-size:18px;font-weight:700;color:var(--navy);
     max-width:760px;margin:0 auto 56px;line-height:1.55;
   }
 
@@ -1278,7 +1313,7 @@
   .how-arrow{
     width:22px;
     display:flex;align-items:center;justify-content:center;
-    color:rgba(7,18,37,.30);
+    color:rgba(255,255,255,.40);
     margin-top:204px;
   }
   .how-arrow svg{width:20px;height:auto}
@@ -1524,8 +1559,9 @@
   /* --- Footer CTA navy --- */
   .how-cta{
     margin-top:8px;
-    background:linear-gradient(135deg, var(--bvo-bleu-deep) 0%, #0A1628 100%);
-    color:#fff;
+    background:#fff;
+    color:var(--navy);
+    border:1px solid #e8e3d6;
     border-radius:22px;padding:28px 40px;
     display:grid;grid-template-columns:auto 1fr auto;gap:28px;
     align-items:center;
@@ -1544,7 +1580,7 @@
   .how-cta-text{
     font-family:'Nunito',sans-serif;
     font-size:20px;font-weight:800;
-    line-height:1.35;color:#fff;
+    line-height:1.35;color:var(--navy);
   }
   .how-cta-text .accent{color:var(--bvo-orange)}
   .how-cta-btn{
@@ -1568,8 +1604,8 @@
 
   @media(max-width:1100px){
     .how{padding:56px 24px}
-    .how-title{font-size:36px}
-    .how-subtitle{font-size:20px}
+    .how-title{font-size:32px}
+    .how-subtitle{font-size:18px}
     .how-steps{grid-template-columns:1fr;gap:32px}
     .how-arrow{display:none}
     .how-cta{grid-template-columns:auto 1fr;text-align:left;padding:24px 24px}
@@ -1612,6 +1648,7 @@
     max-width:1100px;
     margin:0 auto;
     background:#fff;
+    border:1px solid #e5e7eb;
     border-radius:28px;
     overflow:hidden;
     box-shadow:0 20px 60px rgba(7,18,37,.08);
@@ -1620,10 +1657,9 @@
   .bvo-why-missed .hero-problem{
     display:grid;
     grid-template-columns:1.05fr 1fr;
-    min-height:520px;
     background:linear-gradient(90deg,#ffffff 0%,#ffffff 45%,#FBF7EF 100%);
   }
-  .bvo-why-missed .hero-text{padding:70px 60px;z-index:2}
+  .bvo-why-missed .hero-text{padding:48px 60px 17px;z-index:2}
   .bvo-why-missed .eyebrow{
     color:#FF6600;
     font-family:'Nunito',sans-serif;
@@ -1635,12 +1671,15 @@
   }
   .bvo-why-missed .hero-text h2{
     font-family:'Nunito',sans-serif;
-    font-size:48px;
-    line-height:1.12;
+    font-size:34px;
+    line-height:1.18;
     margin:0;
     font-weight:900;
-    letter-spacing:-1.2px;
+    letter-spacing:-1px;
     color:#1B4F9B;
+  }
+  .bvo-why-missed .hero-text h2 .accent{
+    color:#FF6600;
   }
   .bvo-why-missed .orange-line{
     width:60px;height:4px;background:#FF6600;
@@ -1654,46 +1693,51 @@
     font-family:'Nunito',sans-serif;
   }
   .bvo-why-missed .body-text{
-    font-size:18px;line-height:1.55;margin:0;color:#1B4F9B;
+    font-size:20px;line-height:2;margin:0;color:#1B4F9B;
   }
   .bvo-why-missed .body-text span{
     color:#FF6600;font-weight:800;
   }
   .bvo-why-missed .hero-image{
-    position:relative;min-height:520px;overflow:hidden;
+    position:relative;overflow:hidden;
+    align-self:start;
+    height:460px;
   }
   .bvo-why-missed .hero-image img{
-    width:100%;height:100%;object-fit:cover;display:block;
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    object-fit:cover;object-position:50% 15%;
+    display:block;
   }
   .bvo-why-missed .hero-image::before{
-    content:"";position:absolute;inset:0;
-    background:linear-gradient(90deg,rgba(255,255,255,.70) 0%,rgba(255,255,255,0) 22%);
+    content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(90deg,#ffffff 0%,rgba(255,255,255,.45) 28%,rgba(255,255,255,0) 60%);
   }
   .bvo-why-missed .missed-call-card{
-    position:absolute;right:55px;bottom:95px;
-    display:flex;align-items:center;gap:18px;
-    background:#fff;border-radius:22px;
-    padding:22px 28px;
-    box-shadow:0 18px 45px rgba(0,0,0,.16);
-    min-width:280px;
+    position:absolute;right:28px;bottom:48px;z-index:2;
+    display:flex;align-items:center;gap:10px;
+    background:#fff;border-radius:14px;
+    padding:11px 14px;
+    box-shadow:0 10px 24px rgba(0,0,0,.16);
+    min-width:160px;
   }
   .bvo-why-missed .phone-icon{
-    width:58px;height:58px;border-radius:50%;
+    width:30px;height:30px;border-radius:50%;
     background:#fff0e8;color:#FF6600;
     display:flex;align-items:center;justify-content:center;flex-shrink:0;
   }
   .bvo-why-missed .phone-icon .material-symbols-outlined{
-    font-size:26px;font-variation-settings:'FILL' 1,'wght' 500;
+    font-size:15px;font-variation-settings:'FILL' 1,'wght' 500;
   }
   .bvo-why-missed .missed-call-card strong{
     display:block;font-family:'Nunito',sans-serif;
-    font-size:18px;color:#1B4F9B;margin-bottom:6px;font-weight:800;
+    font-size:12px;color:#1B4F9B;margin-bottom:2px;font-weight:800;
   }
   .bvo-why-missed .missed-call-card p{
-    margin:2px 0;color:#667085;font-size:13.5px;
+    margin:1px 0;color:#667085;font-size:9.5px;line-height:1.3;
   }
   .bvo-why-missed .reasons-block{
-    padding:34px 45px 38px;
+    padding:17px 45px 38px;
     background:#fff;
     border-top:1px solid #f0eee9;
   }
@@ -1714,11 +1758,11 @@
   }
   .bvo-why-missed .reason:last-child{border-right:none}
   .bvo-why-missed .reason .icon{
-    font-size:38px;color:#FF6600;
+    font-size:50px;color:#FF6600;
     margin-bottom:14px;display:flex;justify-content:center;
   }
   .bvo-why-missed .reason .icon .material-symbols-outlined{
-    font-size:38px;font-variation-settings:'wght' 500;
+    font-size:50px;font-variation-settings:'wght' 500;
   }
   .bvo-why-missed .reason h4{
     font-family:'Nunito',sans-serif;
@@ -1733,7 +1777,7 @@
     font-family:'Nunito',sans-serif;
     font-size:17px;font-weight:800;
     color:#1B4F9B;
-    margin:30px 0 0;
+    margin:6px 0 0;
   }
   @media (max-width:900px){
     .bvo-why-missed-wrap{padding:56px 16px}
@@ -1750,32 +1794,35 @@
 </head>
 <body>
 <main>
-  <div class="page">
 
-  <!-- HEADER -->
-  <header>
-    <a href="/" aria-label="Accueil BoosterVO">
-      <svg class="logo-svg" viewBox="0 0 145.99789 22.058645" xmlns="http://www.w3.org/2000/svg">
-        <g transform="translate(-30.128559,-124.16163)">
-          <g transform="matrix(1.0504118,0,0,1.0504118,-8.7366748,-655.24394)">
-            <path d="m 38.2491,742 c -1.6813,0 -1.5843,6.61 -0.194,10.109 1.3903,3.499 5.5289,11.103 8.5359,10.887 3.007,-0.216 7.9862,-8.813 9.5059,-12.183 1.5196,-3.37 0.9376,-8.251 -0.3881,-8.035 -1.3256,0.216 -4.6235,9.504 -7.5658,9.331 C 45.2007,751.936 39.9304,742 38.2491,742 Z" fill="#ffffff"/>
+  <!-- HEADER (sticky) -->
+  <div class="site-header-wrap">
+    <header>
+      <a href="/" aria-label="Accueil BoosterVO">
+        <svg class="logo-svg" viewBox="0 0 145.99789 22.058645" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(-30.128559,-124.16163)">
+            <g transform="matrix(1.0504118,0,0,1.0504118,-8.7366748,-655.24394)">
+              <path d="m 38.2491,742 c -1.6813,0 -1.5843,6.61 -0.194,10.109 1.3903,3.499 5.5289,11.103 8.5359,10.887 3.007,-0.216 7.9862,-8.813 9.5059,-12.183 1.5196,-3.37 0.9376,-8.251 -0.3881,-8.035 -1.3256,0.216 -4.6235,9.504 -7.5658,9.331 C 45.2007,751.936 39.9304,742 38.2491,742 Z" fill="#ffffff"/>
+            </g>
+            <g transform="translate(-3.3792668,-51.815424)">
+              <text x="54.429226" y="194.54926" style="font-weight:900;font-size:21.4434px;font-family:Montserrat,'Helvetica Neue','Arial Black',Arial,sans-serif;letter-spacing:-0.415035px;fill:#ffffff">Booster</text>
+              <text x="142.72086" y="194.63264" style="font-weight:900;font-size:23.5703px;font-family:Montserrat,'Helvetica Neue','Arial Black',Arial,sans-serif;letter-spacing:-0.456201px;fill:#ff6600">VO</text>
+              <ellipse style="fill:#ff6600" cx="45.054859" cy="180.64177" rx="2.5887949" ry="2.5224156"/>
+            </g>
           </g>
-          <g transform="translate(-3.3792668,-51.815424)">
-            <text x="54.429226" y="194.54926" style="font-weight:900;font-size:21.4434px;font-family:Montserrat,'Helvetica Neue','Arial Black',Arial,sans-serif;letter-spacing:-0.415035px;fill:#ffffff">Booster</text>
-            <text x="142.72086" y="194.63264" style="font-weight:900;font-size:23.5703px;font-family:Montserrat,'Helvetica Neue','Arial Black',Arial,sans-serif;letter-spacing:-0.456201px;fill:#ff6600">VO</text>
-            <ellipse style="fill:#ff6600" cx="45.054859" cy="180.64177" rx="2.5887949" ry="2.5224156"/>
-          </g>
-        </g>
-      </svg>
-    </a>
-    <nav>
-      <a href="#">Pourquoi BoosterVO ?</a>
-      <a href="#">Fonctionnalités</a>
-      <a href="#">Résultats</a>
-      <a href="#">Programme fondateur</a>
-    </nav>
-    <a class="top-btn" href="#">Réserver une place <span class="material-symbols-outlined">arrow_forward</span></a>
-  </header>
+        </svg>
+      </a>
+      <nav>
+        <a href="#">Pourquoi BoosterVO ?</a>
+        <a href="#">Fonctionnalités</a>
+        <a href="#">Résultats</a>
+        <a href="/programme-fondateur.html">Programme fondateur</a>
+      </nav>
+      <a class="top-btn" href="#">Réserver une place <span class="material-symbols-outlined">arrow_forward</span></a>
+    </header>
+  </div>
+
+  <div class="page">
 
   <!-- HERO -->
   <section class="hero">
@@ -1845,25 +1892,22 @@
   <section class="bvo-why-missed">
     <div class="hero-problem">
       <div class="hero-text">
-        <p class="eyebrow">Le problème</p>
-
         <h2>
-          Pourquoi la majorité<br>
-          des négociants VO<br>
-          ont des appels manqués
+          Pourquoi les <span class="accent">appels<br>
+          manqués</span> sont inévitables<br>
+          dans le VO
         </h2>
 
         <div class="orange-line"></div>
 
         <p class="lead">
-          Ce n'est pas un manque de sérieux.<br>
-          C'est la réalité du terrain.
+          Ce n'est pas un manque de sérieux, c'est une réalité structurelle liée à l'activité VO
         </p>
 
         <p class="body-text">
-          Entre les clients, les essais, l'administratif et
-          les déplacements,
-          <span>décrocher 100&nbsp;% des appels est presque impossible.</span>
+          Entre les clients, les essais,<br>
+          l'administratif et les déplacements,<br>
+          <span>décrocher 100&nbsp;% des appels est<br>presque impossible.</span>
         </p>
       </div>
 
@@ -1881,8 +1925,6 @@
     </div>
 
     <div class="reasons-block">
-      <h3>Des appels qui arrivent&hellip; au pire moment</h3>
-
       <div class="reasons-grid">
         <div class="reason">
           <div class="icon"><span class="material-symbols-outlined">groups</span></div>
@@ -1926,7 +1968,7 @@
   <section class="problem">
     <div class="problem-inner">
       <h2 class="problem-title">
-        Le problème, c'est <em>le temps</em> que vous mettez à rappeler des <span class="accent">appels manqués</span>.
+        Les appels manqués ne font pas perdre des ventes, le <span class="accent">délai de rappel</span>, oui.
       </h2>
 
       <article class="problem-bloc">
@@ -1968,115 +2010,23 @@
     </div>
   </section>
 
-  <!-- ===================== SECTION 3 — COMPARAISON LEBONCOIN ===================== -->
-  <section class="compare">
-    <div class="compare-inner">
-      <h2 class="compare-title">
-        Aujourd'hui, vous pilotez votre activité<br>
-        au volume d'appels, <span class="accent">pas au résultat</span>.
-      </h2>
-
-      <p class="compare-intro">
-        Leboncoin vous donne de la visibilité sur l'activité de vos annonces,<br>
-        mais <strong>pas sur ce qu'elles vous rapportent vraiment</strong>.
-      </p>
-
-      <div class="compare-grid">
-        <div class="compare-card positive">
-          <div class="compare-card-head">
-            <div class="compare-card-icon"><span class="material-symbols-outlined">check_circle</span></div>
-            <h3>Ce que Leboncoin vous montre</h3>
-          </div>
-          <div class="compare-line">
-            <div class="compare-line-icon"><span class="material-symbols-outlined">analytics</span></div>
-            <p>Le volume d'activité de vos annonces</p>
-          </div>
-          <div class="compare-line">
-            <div class="compare-line-icon"><span class="material-symbols-outlined">call</span></div>
-            <p>Le nombre d'appels reçus</p>
-          </div>
-          <div class="compare-line">
-            <div class="compare-line-icon"><span class="material-symbols-outlined">phone_missed</span></div>
-            <p>Le nombre d'appels manqués</p>
-          </div>
-        </div>
-
-        <div class="compare-card negative">
-          <div class="compare-card-head">
-            <div class="compare-card-icon"><span class="material-symbols-outlined">cancel</span></div>
-            <h3>Ce que Leboncoin ne vous montre pas</h3>
-          </div>
-          <div class="compare-line">
-            <div class="compare-line-icon"><span class="material-symbols-outlined">event</span></div>
-            <p>Quels appels ont généré un rendez-vous</p>
-          </div>
-          <div class="compare-line">
-            <div class="compare-line-icon"><span class="material-symbols-outlined">directions_car</span></div>
-            <p>Quels appels ont abouti à une vente</p>
-          </div>
-          <div class="compare-line">
-            <div class="compare-line-icon"><span class="material-symbols-outlined">payments</span></div>
-            <p>Combien chaque appel vous a réellement rapporté</p>
-          </div>
-          <div class="compare-line">
-            <div class="compare-line-icon"><span class="material-symbols-outlined">hourglass_top</span></div>
-            <p>Combien votre délai de rappel vous coûte en ventes perdues</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="compare-result">
-        <div class="compare-result-icon"><span class="material-symbols-outlined">trending_up</span></div>
-        <div class="compare-result-content">
-          <h3>Résultat&nbsp;: vous investissez sans mesurer <span class="accent">votre rentabilité réelle</span></h3>
-          <p>Vous voyez l'activité. Mais pas la performance commerciale derrière chaque appel.</p>
-        </div>
-        <div class="compare-result-illu" aria-hidden="true">
-          <svg viewBox="0 0 175 95" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <!-- Browser + barres -->
-            <g transform="translate(2,6)">
-              <rect x="2" y="2" width="86" height="78" rx="6"/>
-              <line x1="2" y1="20" x2="88" y2="20"/>
-              <circle cx="10" cy="11" r="1.6" fill="currentColor"/>
-              <circle cx="17" cy="11" r="1.6" fill="currentColor"/>
-              <circle cx="24" cy="11" r="1.6" fill="currentColor"/>
-              <rect x="14" y="60" width="10" height="14" rx="1.5" fill="currentColor" stroke="none"/>
-              <rect x="29" y="50" width="10" height="24" rx="1.5" fill="currentColor" stroke="none"/>
-              <rect x="44" y="40" width="10" height="34" rx="1.5" fill="currentColor" stroke="none"/>
-              <rect x="59" y="30" width="10" height="44" rx="1.5" fill="#FF6600" stroke="none"/>
-              <line x1="10" y1="74" x2="80" y2="74"/>
-            </g>
-            <!-- Camembert + € -->
-            <g transform="translate(108,10)">
-              <circle cx="35" cy="35" r="30" stroke-dasharray="4 3"/>
-              <path d="M35,35 L35,5 A30,30 0 0,1 65,35 Z" fill="#FF6600" stroke="none"/>
-              <text x="35" y="44" text-anchor="middle" font-family="Nunito,Arial,sans-serif" font-weight="900" font-size="22" fill="#fff" stroke="none">€</text>
-            </g>
-          </svg>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
   <!-- ===================== SECTION 4 — POURQUOI BOOSTERVO ===================== -->
   <section class="solution-intro">
     <div class="solution-intro-inner">
 
       <h2 class="si-title">
-        Le seul moyen de résoudre vos problèmes,<br>
-        c'est de traiter <span class="accent">100 % de vos appels</span>.
+        Le seul moyen de ne plus perdre de ventes,<br>
+        c'est de <span class="accent">décrocher immédiatement vos appels.</span>
       </h2>
 
       <p class="si-sub">
         Chaque appel entrant est une opportunité déjà payée par votre budget Leboncoin.<br>
-        Ne pas le traiter au bon moment, c'est prendre le risque de perdre une vente.
+        Ne répondre immédiatement, c'est prendre le risque de perdre une vente.
       </p>
 
       <!-- Bridge vers BoosterVO -->
       <h2 class="si-bridge-title">
-        Parce qu'un appel<br>
-        <span class="accent">décroché immédiatement</span>&nbsp;:
+        <span class="accent">La prise en charge immédiate</span> d'un appel&nbsp;:
       </h2>
 
       <!-- 4 bénéfices verts (grandes cartes) -->
@@ -2353,11 +2303,10 @@
         type:'choice', step:'Étape 1',
         label:"Avez-vous les statistiques du nombre d'appels reçus et manqués Leboncoin ?",
         sub:"Disponibles dans votre espace pro Leboncoin (rapport mensuel).",
-        cols:3,
+        cols:2,
         options:[
           {v:'oui', l:'Oui', next:'A2'},
-          {v:'non', l:'Non', next:'B2'},
-          {v:'nsp', l:'Je ne sais pas', next:'B2'}
+          {v:'non', l:'Non', next:'B2'}
         ]
       },
       A2: {
@@ -2378,10 +2327,10 @@
         sub:"Temps moyen écoulé entre l'appel manqué et votre rappel.",
         cols:4,
         options:[
-          {v:'fast', l:'≤ 5 min',           next:'A5'},
-          {v:'mid',  l:'≤ 20 min',          next:'A5'},
-          {v:'slow', l:'≥ 30 min',          next:'A5'},
-          {v:'nsp',  l:'Je ne sais pas',    next:'A5'}
+          {v:'fast', l:'10 min',          next:'A5'},
+          {v:'mid',  l:'20 min',          next:'A5'},
+          {v:'slow', l:'30 min',          next:'A5'},
+          {v:'nsp',  l:'Je ne sais pas',  next:'A5'}
         ]
       },
       A5: {
@@ -2402,35 +2351,25 @@
         placeholder:'ex : 1500', suffix:'€', next:'email'
       },
       B2: {
-        type:'number', step:'Étape 2 / 5',
+        type:'number', step:'Étape 2 / 4',
         label:"Combien d'appels traitez-vous par mois en moyenne ?",
         sub:"Estimation du nombre d'appels entrants liés à vos annonces Leboncoin.",
         placeholder:'ex : 100', suffix:'appels', next:'B3'
       },
       B3: {
-        type:'choice', step:'Étape 3 / 5',
+        type:'choice', step:'Étape 3 / 4',
         label:"Quel pourcentage de vos appels décrochez-vous immédiatement ?",
         sub:"Soyez honnête, c'est essentiel pour la fiabilité du calcul.",
         cols:4,
         options:[
-          {v:100, l:'100 % (toujours)', next:'B4'},
-          {v:80,  l:'~ 80 %', next:'B4'},
-          {v:60,  l:'~ 60 %', next:'B4'},
-          {v:40,  l:'< 50 %', next:'B4'}
-        ]
-      },
-      B4: {
-        type:'choice', step:'Étape 4 / 5',
-        label:"Cette estimation, c'est un ressenti ou une donnée mesurée ?",
-        sub:"Un ressenti étant souvent optimiste, nous corrigeons légèrement le calcul.",
-        cols:2,
-        options:[
-          {v:'mesure',   l:'Donnée mesurée', next:'B5'},
-          {v:'ressenti', l:'Ressenti',       next:'B5'}
+          {v:90, l:'~ 90 %', next:'B5'},
+          {v:80, l:'~ 80 %', next:'B5'},
+          {v:60, l:'~ 60 %', next:'B5'},
+          {v:50, l:'~ 50 %', next:'B5'}
         ]
       },
       B5: {
-        type:'number', step:'Étape 5 / 5',
+        type:'number', step:'Étape 4 / 4',
         label:"Quelle est votre marge moyenne par véhicule vendu ?",
         sub:"Marge nette moyenne réalisée sur un VO.",
         placeholder:'ex : 1500', suffix:'€', next:'email'
@@ -2455,14 +2394,15 @@
 
     function progressPct(){
       // Branche A : q1 + 5 questions + email = 7 écrans
-      // Branche B : q1 + 4 questions + email = 6 écrans
-      var total = quiz.branch === 'A' ? 7 : 6;
+      // Branche B : q1 + 3 questions + email = 5 écrans
+      var total = quiz.branch === 'A' ? 7 : 5;
       if(!quiz.branch) total = 7;
       return Math.min(100, (quiz.history.length / total) * 100);
     }
 
     function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || ''); }
     function fmtEUR(n){ return Number(n).toLocaleString('fr-FR',{maximumFractionDigits:0}); }
+    function fmtVentes(n){ return Number(n).toLocaleString('fr-FR',{maximumFractionDigits:1}); }
 
     function render(){
       var q = QUESTIONS[quiz.step];
@@ -2567,10 +2507,10 @@
       //   ≥ 30 min → 35 % retention →  7 % conv rappel
       //   nsp      → 30 % retention →  6 % conv rappel (prudent)
       var DELAYS = {
-        fast: { retention: 0.90, label: '≤ 5 min',    displayMin: '5 minutes' },
-        mid:  { retention: 0.60, label: '≤ 20 min',   displayMin: '10 minutes' },
-        slow: { retention: 0.35, label: '≥ 30 min',   displayMin: '30 minutes' },
-        nsp:  { retention: 0.30, label: 'non mesuré', displayMin: '20 minutes' }
+        fast: { retention: 0.80, label: '10 min',     displayMin: '10 minutes', phrase: 'est de <strong>10 minutes</strong>',                    estimated: false },
+        mid:  { retention: 0.60, label: '20 min',     displayMin: '20 minutes', phrase: 'est de <strong>20 minutes</strong>',                    estimated: false },
+        slow: { retention: 0.35, label: '30 min',     displayMin: '30 minutes', phrase: 'est de <strong>30 minutes</strong>',                    estimated: false },
+        nsp:  { retention: 0.30, label: 'non mesuré', displayMin: '20 minutes', phrase: 'est estimé à environ <strong>20 minutes</strong>',      estimated: true  }
       };
 
       var delay = DELAYS.mid; // par défaut
@@ -2584,10 +2524,9 @@
         appels = parseInt(quiz.answers.B2) || 0;
         var pct = parseInt(quiz.answers.B3);
         if(isNaN(pct)) pct = 80;
-        if(quiz.answers.B4 === 'ressenti'){ pct = Math.max(20, pct - 15); }
         manques = Math.round(appels * (100 - pct) / 100);
         marge = parseInt(quiz.answers.B5) || 0;
-        delay = { retention: DELAYS.mid.retention, label: '≤ 20 min (estimé)', displayMin: '10 minutes' };
+        delay = { retention: DELAYS.mid.retention, label: '20 min (estimé)', displayMin: '20 minutes', phrase: 'est estimé à environ <strong>20 minutes</strong>', estimated: true };
       }
 
       var convRappels = convImmediate * delay.retention;
@@ -2611,11 +2550,13 @@
         convRappels: convRappels,
         delayLabel: delay.label,
         delayDisplayMin: delay.displayMin,
+        delayPhrase: delay.phrase,
+        delayEstimated: !!delay.estimated,
         ventesIfImmediat: Math.round(ventesIfImmediat),
         margeIfImmediat:  Math.round(margeIfImmediat),
         ventesAvecDelai:  Math.round(ventesAvecDelai),
         margeAvecDelai:   Math.round(margeAvecDelai),
-        ventes:    Math.max(0, Math.round(ventesPerdues)),
+        ventes:    Math.max(0, ventesPerdues),
         margeMois: Math.round(margeMois),
         margeAn:   Math.round(margeMois * 12)
       };
@@ -2647,7 +2588,7 @@
           '</div>' +
           '<div class="results-stat">' +
             '<div class="results-stat-label">Ventes potentiellement perdues</div>' +
-            '<div class="results-stat-value">'+ r.ventes +'</div>' +
+            '<div class="results-stat-value">'+ fmtVentes(r.ventes) +'</div>' +
             '<div class="results-stat-value-sub">vente(s) / mois</div>' +
             '<div class="results-stat-sub">sur la base de vos réponses</div>' +
           '</div>' +
@@ -2675,16 +2616,22 @@
           '</table>' +
         '</div>' +
 
-        '<div class="results-section">' +
-          '<h3>Méthode de calcul</h3>' +
-          '<div class="method-line">' +
-            '<span class="h-line">Si vos '+ r.manques +' appels manqués avaient été décrochés immédiatement</span>' +
-            'Vous auriez eu <strong>'+ r.ventesIfImmediat +' ventes</strong> ('+ r.manques +' × '+ Math.round(r.convImmediate * 100) +' %) pour une marge égale à <strong>'+ fmtEUR(r.margeIfImmediat) +' €</strong> ('+ r.ventesIfImmediat +' × '+ fmtEUR(r.marge) +' €)' +
-          '</div>' +
-          '<div class="method-line">' +
-            '<span class="h-line">Avec un délai de rappel moyen à '+ r.delayDisplayMin +'</span>' +
-            'Vous auriez eu <strong>'+ r.ventesAvecDelai +' ventes</strong> ('+ r.manques +' × '+ Math.round(r.convRappels * 100) +' %) pour une marge égale à <strong>'+ fmtEUR(r.margeAvecDelai) +' €</strong> ('+ r.ventesAvecDelai +' × '+ fmtEUR(r.marge) +' €)' +
-          '</div>' +
+        '<div class="results-section method-section">' +
+          '<h3>Méthode de calcul selon vos données :</h3>' +
+          '<ul class="method-bullets">' +
+            '<li>Vous traitez <strong>'+ r.appels +' appels/mois</strong></li>' +
+            '<li><strong>'+ r.manques +' appels</strong> ne sont pas décrochés immédiatement,</li>' +
+            '<li>Sur les <strong>appels manqués</strong>, votre délai moyen de rappel '+ r.delayPhrase +'.' +
+              (r.delayEstimated ? '<br><em class="method-note">En l\'absence de mesure précise, nous avons retenu un délai moyen observé dans le secteur du véhicule d\'occasion.</em>' : '') +
+            '</li>' +
+          '</ul>' +
+          '<p class="method-narrative">' +
+            'Aujourd\'hui, ces <strong>rappels</strong> convertissent environ à <strong>'+ Math.round(r.convRappels * 100) +' %</strong>.<br>' +
+            'Alors que les <strong>appels décrochés immédiatement</strong> convertissent à <strong>'+ Math.round(r.convImmediate * 100) +' %</strong> et plus.' +
+          '</p>' +
+          '<p class="method-narrative">' +
+            'Avec une marge à <strong>'+ fmtEUR(r.marge) +' €/VO</strong>, la différence entre ces 2 performances représente environ <span class="method-money">'+ fmtEUR(r.margeMois) +' €</span> de marge qui partent en fumée chaque mois.' +
+          '</p>' +
         '</div>' +
 
         '<div class="results-section">' +
