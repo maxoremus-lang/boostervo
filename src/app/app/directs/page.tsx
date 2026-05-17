@@ -155,7 +155,7 @@ function CallEventCard({ event }: { event: CallEventItem }) {
           )}
 
           <p className="text-[11px] text-emerald-700 font-semibold mt-0.5">
-            Décroché direct{duration ? ` · ${duration}` : ""}
+            Direct{duration ? ` · ${duration}` : ""}
           </p>
         </div>
       </div>
@@ -209,9 +209,9 @@ export default function DirectsPage() {
     <div className="pb-24">
       {/* Header */}
       <div className="bg-bleu px-5 pt-6 pb-5 text-white">
-        <h1 className="text-xl font-nunito font-extrabold">Appels décrochés direct</h1>
+        <h1 className="text-xl font-nunito font-extrabold">Appels directs</h1>
         <p className="text-xs opacity-80">
-          {data?.count ?? 0} appel{(data?.count ?? 0) > 1 ? "s" : ""} reçu{(data?.count ?? 0) > 1 ? "s" : ""} et décroché{(data?.count ?? 0) > 1 ? "s" : ""} immédiatement
+          {data?.count ?? 0} direct{(data?.count ?? 0) > 1 ? "s" : ""}
           {" · "}{PERIOD_LABELS[period]}
         </p>
       </div>
@@ -245,7 +245,7 @@ export default function DirectsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 010 1.414L9 9a16 16 0 006 6l1.879-1.707a1 1 0 011.414 0l2.414 2.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
             </div>
-            <p className="text-sm font-semibold text-gray-700">Aucun appel décroché direct</p>
+            <p className="text-sm font-semibold text-gray-700">Aucun appel direct</p>
             <p className="text-xs text-gray-400 mt-1">Sur la période sélectionnée</p>
           </div>
         ) : (

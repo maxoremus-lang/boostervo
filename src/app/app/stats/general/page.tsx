@@ -264,13 +264,13 @@ export default function StatsGeneralPage() {
                 meta={`Nombre de prospects uniques ayant tenté de vous joindre sur cette période`}
               />
 
-              {/* Étape 2 : Décrochés directs */}
+              {/* Étape 2 : Directs */}
               <FunnelStep
                 iconBg="bg-green-600"
                 iconText="direct"
                 number={stats.directPickupsCount}
                 outOf={stats.incomingCalls}
-                label="Décrochés directs"
+                label="Directs"
                 pctBadge={{ pct: stats.incomingCalls > 0 ? Math.round((stats.directPickupsCount / stats.incomingCalls) * 100) : 0, color: "green" }}
                 barColor="bg-green-500"
                 barPct={stats.incomingCalls > 0 ? (stats.directPickupsCount / stats.incomingCalls) * 100 : 0}
@@ -367,10 +367,10 @@ export default function StatsGeneralPage() {
                 subtitle={`${stats.salesFromRappel} vente${stats.salesFromRappel > 1 ? "s" : ""} / ${stats.callbacksDone} rappel${stats.callbacksDone > 1 ? "s" : ""}`}
               />
               <KPI
-                label="Tx décrochés / ventes"
+                label="Tx directs / ventes"
                 value={`${stats.salesRateDirect}%`}
                 color="text-green-700"
-                subtitle={`${stats.salesFromDirect} vente${stats.salesFromDirect > 1 ? "s" : ""} / ${stats.directPickupsCount} décroché${stats.directPickupsCount > 1 ? "s" : ""}`}
+                subtitle={`${stats.salesFromDirect} vente${stats.salesFromDirect > 1 ? "s" : ""} / ${stats.directPickupsCount} direct${stats.directPickupsCount > 1 ? "s" : ""}`}
               />
             </div>
           </div>

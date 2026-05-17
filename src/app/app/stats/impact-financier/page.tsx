@@ -229,7 +229,7 @@ export default function StatsImpactFinancierPage() {
               </div>
               <p className="text-xs opacity-90 leading-relaxed">
                 Si tous vos <strong>{i.rappelCallbacks} rappels</strong> avaient été faits
-                <strong> en moins de 5 min</strong> (les {i.directPickups} décrochés directs étant déjà au maximum),
+                <strong> en moins de 5 min</strong> (les {i.directPickups} directs étant déjà au maximum),
                 vous auriez plus de résultats :
               </p>
               <div className="mt-3 space-y-2">
@@ -291,7 +291,7 @@ export default function StatsImpactFinancierPage() {
                 <p className="text-[10px] text-gray-400 mb-2">Taux calculés sur les {i.totalCallbacks} conversations abouties</p>
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold w-16">Décrochés</span>
+                    <span className="text-xs font-semibold w-16">Directs</span>
                     <div
                       className="h-5 bg-bleu/70 rounded text-white text-[11px] font-bold flex items-center justify-end pr-2"
                       style={{ width: `${Math.max((directs / maxLabel) * 100, 10)}%` }}
