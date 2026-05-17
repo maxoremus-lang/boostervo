@@ -252,7 +252,7 @@ export default function DirectsPage() {
           groups.map((group) => (
             <div key={group.label}>
               <h2 className="text-[11px] uppercase font-bold text-gray-500 mb-2 px-1">
-                {group.label} · {group.items.length}
+                {group.label} · {group.items.length} appel{group.items.length > 1 ? "s" : ""}
               </h2>
               <div className="space-y-2.5">
                 {group.items.map((e) => (
