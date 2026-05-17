@@ -13,6 +13,7 @@ type StatsResponse = {
   period: Period;
   byStatus: Record<CallbackStatus, number> & { urgent?: number };
   byStatusTotal: number;
+  directPickupsCount: number;
 };
 
 const periodLabels: Record<Exclude<Period, "custom">, string> = {
@@ -248,13 +249,15 @@ export default function StatsParStatutPage() {
             </div>
           )}
 
-          {/* Vue haute : résumé par groupe.
-              Le total "hors urgents" est cohérent avec la somme des 3 tuiles — les urgents sont comptés dans leur bandeau rouge. */}
+          {/* Vue haute : résumé par groupe + canal Directs (orthogonal aux statuts métier).
+              Les Directs sont des prospects pending sans aucun missed (canal d'entrée), affichés
+              hors des 3 groupes status car ils ne nécessitent pas de rappel. La somme des 4 tuiles
+              ≈ portefeuille total (modulo urgents qui sont un sous-ensemble de pending strict). */}
           <div className="px-5 pt-5">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <p className="text-xs uppercase font-semibold text-gray-500">Vue d&apos;ensemble</p>
               <p className="text-[11px] text-gray-400 mb-3">% calculés sur l&apos;ensemble du portefeuille de {stats.byStatusTotal} prospect{stats.byStatusTotal > 1 ? "s" : ""}</p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-4 gap-2">
                 {groupSummary.map((g) => {
                   const total = g.statuses.reduce((sum, s) => sum + (stats.byStatus[s as CallbackStatus] ?? 0), 0);
                   const pct = stats.byStatusTotal > 0 ? Math.round((total / stats.byStatusTotal) * 100) : 0;
@@ -279,6 +282,21 @@ export default function StatsParStatutPage() {
                     </Link>
                   );
                 })}
+                {/* 4e tuile : Directs (canal — pas un statut). Link vers /app/directs. */}
+                {(() => {
+                  const directs = stats.directPickupsCount ?? 0;
+                  const pct = stats.byStatusTotal > 0 ? Math.round((directs / stats.byStatusTotal) * 100) : 0;
+                  return (
+                    <Link
+                      href="/app/directs"
+                      className="bg-emerald-50 rounded-xl p-3 flex flex-col items-center gap-0.5 active:opacity-70 transition"
+                    >
+                      <span className="text-3xl font-nunito font-extrabold text-emerald-700">{directs}</span>
+                      <span className="text-[11px] font-bold text-emerald-700">Directs</span>
+                      <span className="text-[10px] text-emerald-700 opacity-70">{pct}%</span>
+                    </Link>
+                  );
+                })()}
               </div>
               <p className="text-[11px] text-gray-400 text-center mt-3">
                 {stats.byStatusTotal} prospect{stats.byStatusTotal > 1 ? "s" : ""} au total

@@ -298,6 +298,16 @@ export async function GET(req: NextRequest) {
   byStatus.urgent = urgentCount;
   // Total = somme des statuts réels uniquement (urgent est un sous-ensemble, ne pas double-compter).
   const byStatusTotal = ALL_STATUSES.reduce((sum, s) => sum + (byStatus[s] ?? 0), 0);
+  // "À recontacter" exclut les directs (status=pending sans aucun missed) — cohérent avec
+  // /api/prospects et la liste rappels. directPickupsCount expose les directs séparément.
+  byStatus.pending = await prisma.prospect.count({
+    where: {
+      userId,
+      ...statusWhereTime,
+      status: "pending",
+      callEvents: { some: { type: "missed" } },
+    },
+  });
 
   // --- Note de réactivité (basée sur le % de rappels < 5 min) ---
   function computeNote(rate: number): { letter: string; label: string; color: string } {
