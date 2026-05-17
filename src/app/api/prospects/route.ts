@@ -47,17 +47,33 @@ export async function GET(req: NextRequest) {
     ],
   };
 
+  // "À recontacter" = status pending ET au moins un missed call.
+  // Exclut les "décrochés direct" (prospect qui n'a QUE des inbound-answered, jamais
+  // missed) qui ont aussi status=pending par défaut mais qui n'ont pas besoin d'être
+  // rappelés — ils sont listés dans l'onglet /app/directs.
+  const pendingNeedsCallback = {
+    status: "pending",
+    callEvents: { some: { type: "missed" } },
+  };
+
   // Construire le filtre principal
   // "urgent" est un sous-ensemble de "pending" (flag de priorité, pas un statut).
   // "todo" et statusExact=pending incluent donc les urgents : le filtre "urgent"
   // reste disponible comme raccourci focus, mais sans exclusivité.
   let baseFilter: any = undefined;
-  if (statusExact && VALID_STATUSES.includes(statusExact)) {
+  if (statusExact === "pending") {
+    baseFilter = pendingNeedsCallback;
+  } else if (statusExact && VALID_STATUSES.includes(statusExact)) {
     baseFilter = { status: statusExact };
   } else if (filter === "urgent") {
     baseFilter = urgentCondition;
   } else if (filter === "todo") {
-    baseFilter = { status: { in: ["pending", "postponed", "unreachable"] } };
+    baseFilter = {
+      OR: [
+        pendingNeedsCallback,
+        { status: { in: ["postponed", "unreachable"] } },
+      ],
+    };
   } else if (filter === "in_progress") {
     baseFilter = { status: { in: ["appointment", "test_drive", "quote_sent"] } };
   } else if (filter === "done") {
@@ -142,7 +158,10 @@ export async function GET(req: NextRequest) {
       where: {
         userId,
         ...periodFilter,
-        status: { in: ["pending", "postponed", "unreachable"] },
+        OR: [
+          pendingNeedsCallback,
+          { status: { in: ["postponed", "unreachable"] } },
+        ],
       },
     }),
     in_progress: await prisma.prospect.count({ where: { userId, ...periodFilter, status: { in: ["appointment", "test_drive", "quote_sent"] } } }),
@@ -164,6 +183,11 @@ export async function GET(req: NextRequest) {
   for (const row of statusRows) {
     byStatus[row.status] = row._count._all;
   }
+  // "À recontacter" exclut les décrochés direct (status=pending sans aucun missed) :
+  // on remplace le compteur pending brut par le compteur strict pour cohérence avec la liste.
+  byStatus.pending = await prisma.prospect.count({
+    where: { userId, ...periodFilter, ...pendingNeedsCallback },
+  });
 
   return NextResponse.json({ prospects: result, counts, byStatus });
 }

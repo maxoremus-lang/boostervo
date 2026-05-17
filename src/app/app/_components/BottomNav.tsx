@@ -23,6 +23,15 @@ const items = [
     ),
   },
   {
+    href: "/app/directs",
+    label: "Directs",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4-4m0 0h-4m4 0v4M3 5a2 2 0 012-2h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 010 1.414L9 9a16 16 0 006 6l1.879-1.707a1 1 0 011.414 0l2.414 2.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+      </svg>
+    ),
+  },
+  {
     href: "/app/stats",
     label: "Statistiques",
     icon: (
@@ -47,7 +56,7 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
-      <div className="max-w-md mx-auto grid grid-cols-4 pb-[env(safe-area-inset-bottom)]">
+      <div className="max-w-md mx-auto grid grid-cols-5 pb-[env(safe-area-inset-bottom)]">
         {items.map((item) => {
           const active = pathname.startsWith(item.href);
           return (
