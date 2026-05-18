@@ -749,6 +749,235 @@
   }
   .results-cta:hover{background:var(--bvo-orange-dark);transform:translateY(-2px)}
 
+  /* === BILAN V2 (refonte 2026-05-18) — 3 cartes + bandeau gain === */
+  .r2-head{text-align:center;margin-bottom:26px}
+  .r2-title{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:26px;line-height:1.22;color:var(--navy);
+    margin-bottom:6px;
+  }
+  .r2-title .accent{
+    display:block;color:var(--bvo-orange);
+    font-weight:900;font-size:24px;margin-top:2px;
+  }
+  .r2-subtitle{font-size:14px;color:var(--muted);font-weight:600}
+
+  .r2-compare-wrap{position:relative;margin-bottom:24px}
+  .r2-compare{
+    display:grid;grid-template-columns:1fr 1fr 1.05fr;gap:12px;
+    align-items:stretch;
+  }
+  .r2-card{
+    border-radius:14px;padding:18px 16px;
+    display:flex;flex-direction:column;
+    position:relative;
+  }
+  .r2-card-current{background:#f5f7fb;border:1px solid #e6e9f0}
+  .r2-card-potential{background:#ecfdf5;border:1px solid #bbf7d0}
+  .r2-card-gain{
+    background:linear-gradient(180deg, var(--bvo-orange) 0%, #e85800 100%);
+    color:#fff;padding-top:28px;overflow:visible;
+  }
+  .r2-card-gain-decor{
+    position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+    width:38px;height:38px;border-radius:50%;
+    background:#fff;color:var(--bvo-orange);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.20);
+  }
+  .r2-card-gain-decor .material-symbols-outlined{
+    font-size:20px;font-variation-settings:'FILL' 1;
+  }
+  .r2-card h3{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:14px;text-align:center;letter-spacing:0.3px;
+    line-height:1.2;margin-bottom:4px;text-transform:uppercase;
+  }
+  .r2-card-current h3{color:#475569}
+  .r2-card-potential h3{color:#047857}
+  .r2-card-gain h3{color:#fff}
+  .r2-card-sub{
+    text-align:center;font-size:11.5px;color:var(--muted);
+    font-style:italic;margin-bottom:14px;font-weight:600;
+  }
+  .r2-card-potential .r2-card-sub{color:#065f46}
+  .r2-card-gain .r2-card-sub{color:rgba(255,255,255,.92);font-style:normal}
+
+  .r2-row{
+    display:grid;grid-template-columns:36px 1fr;gap:10px;
+    align-items:center;padding:11px 0;
+    border-top:1px solid rgba(0,0,0,.05);
+  }
+  .r2-row:first-of-type{border-top:none}
+  .r2-card-gain .r2-row{border-top:1px solid rgba(255,255,255,.18)}
+  .r2-card-gain .r2-row:first-of-type{border-top:none}
+  .r2-row-icon{
+    width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .r2-card-current .r2-row-icon{background:#e0e7ef;color:#475569}
+  .r2-card-potential .r2-row-icon{background:#d1fae5;color:#047857}
+  .r2-card-gain .r2-row-icon{background:#fff;color:var(--bvo-orange)}
+  .r2-row-icon .material-symbols-outlined{font-size:18px}
+  .r2-row-content{display:flex;flex-direction:column;gap:1px}
+  .r2-row-label{
+    font-size:12px;color:var(--muted);font-weight:600;line-height:1.2;
+  }
+  .r2-card-gain .r2-row-label{color:rgba(255,255,255,.88)}
+  .r2-row-value{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:18px;color:var(--navy);line-height:1.2;
+  }
+  .r2-card-current .r2-row-value{color:#1B4F9B}
+  .r2-card-potential .r2-row-value{color:#047857}
+  .r2-card-gain .r2-row-value{color:#fff;font-size:21px}
+  .r2-row-value-small{
+    display:block;font-size:11.5px;font-weight:700;
+    margin-top:1px;color:rgba(255,255,255,.95);
+  }
+
+  .r2-card-benchmark{
+    background:#f0fdf4;border:1px dashed #86efac;
+    border-radius:8px;padding:8px 10px;margin-top:auto;
+    font-size:11px;color:#065f46;font-weight:700;text-align:center;
+  }
+  .r2-card-footer{
+    margin-top:auto;padding-top:12px;
+    font-size:12.5px;line-height:1.35;text-align:center;
+    color:rgba(255,255,255,.95);font-weight:600;
+  }
+  .r2-card-footer u{
+    text-decoration:underline;
+    text-decoration-color:rgba(255,255,255,.6);
+    text-underline-offset:3px;
+  }
+
+  /* Bulle VS centrale */
+  .r2-vs{
+    position:absolute;top:50%;left:33.5%;
+    transform:translate(-50%, -50%);
+    width:38px;height:38px;border-radius:50%;
+    background:#0f172a;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Nunito',sans-serif;font-weight:900;font-size:12px;
+    box-shadow:0 6px 18px rgba(0,0,0,.25);
+    z-index:2;
+  }
+
+  /* Bloc bas : Vos donnees + Methode */
+  .r2-bottom-grid{
+    display:grid;grid-template-columns:1.4fr 1fr;gap:14px;
+    margin-bottom:18px;
+  }
+  .r2-bottom-block{
+    background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:16px 18px;
+  }
+  .r2-bottom-h{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:11px;color:var(--navy);letter-spacing:0.6px;
+    text-transform:uppercase;margin-bottom:12px;
+  }
+  .r2-data-tiles{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
+  }
+  .r2-data-tile{
+    text-align:center;display:flex;flex-direction:column;
+    align-items:center;gap:4px;
+  }
+  .r2-data-tile-icon{
+    width:32px;height:32px;border-radius:50%;
+    background:#e8efff;color:var(--bvo-bleu);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .r2-data-tile-icon .material-symbols-outlined{font-size:17px}
+  .r2-data-tile-value{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:17px;color:var(--navy);line-height:1.1;
+  }
+  .r2-data-tile-label{
+    font-size:10.5px;color:var(--muted);
+    line-height:1.2;font-weight:600;
+  }
+  .r2-method-text{font-size:12.5px;color:var(--navy);line-height:1.55}
+  .r2-method-text p{margin-bottom:10px}
+  .r2-method-text p:last-child{margin-bottom:0}
+  .r2-method-text strong{font-weight:800;color:var(--bvo-orange)}
+
+  /* Bandeau gain final */
+  .r2-gain-banner{
+    background:#fff5eb;border:1px solid #fed7aa;
+    border-radius:14px;padding:18px 22px;
+    margin-bottom:18px;
+    display:grid;grid-template-columns:auto 1fr auto 1fr;gap:18px;
+    align-items:center;
+  }
+  .r2-gain-icon{
+    width:54px;height:54px;border-radius:50%;
+    background:var(--bvo-orange);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .r2-gain-icon .material-symbols-outlined{
+    font-size:28px;font-variation-settings:'FILL' 1;
+  }
+  .r2-gain-block-label{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:11.5px;color:var(--navy);letter-spacing:0.4px;
+    text-transform:uppercase;margin-bottom:4px;line-height:1.2;
+  }
+  .r2-gain-block-value{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:24px;color:var(--bvo-orange);line-height:1;
+  }
+  .r2-gain-eq{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:32px;color:var(--bvo-orange);
+  }
+  .r2-gain-num{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:34px;color:var(--navy);line-height:1;
+  }
+  .r2-gain-block-suffix{
+    font-size:12.5px;color:var(--navy);
+    font-weight:600;line-height:1.3;margin-top:3px;
+  }
+
+  /* Benchmark conserve */
+  .r2-benchmark{
+    background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:14px 18px;margin-bottom:18px;
+  }
+  .r2-benchmark-h{
+    font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:11px;color:var(--navy);letter-spacing:0.6px;
+    text-transform:uppercase;margin-bottom:8px;
+  }
+  .r2-benchmark-list{font-size:12.5px;color:var(--navy);line-height:1.7}
+  .r2-benchmark-list b{font-weight:800}
+  .r2-benchmark-source{
+    font-size:10px;color:var(--muted);
+    margin-top:6px;font-style:italic;
+  }
+
+  /* Responsive Bilan v2 */
+  @media(max-width:760px){
+    .r2-title{font-size:21px}
+    .r2-title .accent{font-size:19px}
+    .r2-compare{grid-template-columns:1fr;gap:10px}
+    .r2-vs{
+      position:static;transform:none;margin:8px auto;
+    }
+    .r2-bottom-grid{grid-template-columns:1fr}
+    .r2-data-tiles{grid-template-columns:repeat(3,1fr);gap:12px}
+    .r2-gain-banner{
+      grid-template-columns:1fr;text-align:center;gap:10px;padding:16px;
+    }
+    .r2-gain-icon{margin:0 auto}
+    .r2-gain-eq{display:none}
+  }
+
   @media(max-width:720px){
     .modal-body{padding:28px 22px}
     .step-q{font-size:22px}
@@ -2542,6 +2771,10 @@
       var ventesPerdues = ventesIfImmediat - ventesAvecDelai;
       var margeMois     = margeIfImmediat - margeAvecDelai;
 
+      var margeAn = Math.round(margeMois * 12);
+      // Equivalent en mois d'abonnement BoosterVO finances par le gain annuel
+      // (prix de reference 497 EUR/mois, coherent avec page Programme Gold).
+      var abonnementsFinances = Math.floor(margeAn / 497);
       return {
         appels: appels,
         manques: manques,
@@ -2559,7 +2792,8 @@
         margeAvecDelai:   Math.round(margeAvecDelai),
         ventes:    Math.max(0, ventesPerdues),
         margeMois: Math.round(margeMois),
-        margeAn:   Math.round(margeMois * 12)
+        margeAn:   margeAn,
+        abonnementsFinances: abonnementsFinances
       };
     }
 
@@ -2571,77 +2805,171 @@
       quiz.step = 'results';
 
       $body.innerHTML =
-        '<div class="results-head">' +
-          '<h2 class="results-h">Voici ce que vous perdez chaque mois <em>(sans le savoir)</em></h2>' +
+        '<div class="r2-head">' +
+          '<h2 class="r2-title">' +
+            'Ce que vos appels vous rapportent aujourd\'hui…' +
+            '<span class="accent">vs ce qu\'ils pourraient réellement vous rapporter</span>' +
+          '</h2>' +
+          '<p class="r2-subtitle">Simulation basée sur vos données</p>' +
         '</div>' +
 
-        '<div class="results-stats-3">' +
-          '<div class="results-stat">' +
-            '<div class="results-stat-label">Votre marge par VO vendu</div>' +
-            '<div class="results-stat-value">'+ fmtEUR(r.marge) +' €</div>' +
-            '<div class="results-stat-sub">sur la base de vos réponses</div>' +
+        '<div class="r2-compare-wrap">' +
+          '<div class="r2-compare">' +
+            // Carte 1 : Situation actuelle
+            '<div class="r2-card r2-card-current">' +
+              '<h3>Appels rappelés<br>après ' + r.delayLabel + '</h3>' +
+              '<div class="r2-card-sub">Votre situation actuelle</div>' +
+              '<div class="r2-row">' +
+                '<div class="r2-row-icon"><span class="material-symbols-outlined">call_made</span></div>' +
+                '<div class="r2-row-content">' +
+                  '<div class="r2-row-label">Taux de conversion</div>' +
+                  '<div class="r2-row-value">' + Math.round(r.convRappels * 100) + ' %</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="r2-row">' +
+                '<div class="r2-row-icon"><span class="material-symbols-outlined">shopping_cart</span></div>' +
+                '<div class="r2-row-content">' +
+                  '<div class="r2-row-label">Ventes générées</div>' +
+                  '<div class="r2-row-value">' + fmtVentes(r.ventesAvecDelai) + ' ventes / mois</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="r2-row">' +
+                '<div class="r2-row-icon"><span class="material-symbols-outlined">euro</span></div>' +
+                '<div class="r2-row-content">' +
+                  '<div class="r2-row-label">Marge générée</div>' +
+                  '<div class="r2-row-value">' + fmtEUR(r.margeAvecDelai) + ' € / mois</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            // Carte 2 : Potentiel
+            '<div class="r2-card r2-card-potential">' +
+              '<h3>Appels décrochés<br>immédiatement</h3>' +
+              '<div class="r2-card-sub">Votre potentiel avec BoosterVO</div>' +
+              '<div class="r2-row">' +
+                '<div class="r2-row-icon"><span class="material-symbols-outlined">call</span></div>' +
+                '<div class="r2-row-content">' +
+                  '<div class="r2-row-label">Taux de conversion</div>' +
+                  '<div class="r2-row-value">' + Math.round(r.convImmediate * 100) + ' %</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="r2-row">' +
+                '<div class="r2-row-icon"><span class="material-symbols-outlined">shopping_cart</span></div>' +
+                '<div class="r2-row-content">' +
+                  '<div class="r2-row-label">Ventes générées</div>' +
+                  '<div class="r2-row-value">' + fmtVentes(r.ventesIfImmediat) + ' ventes / mois</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="r2-row">' +
+                '<div class="r2-row-icon"><span class="material-symbols-outlined">euro</span></div>' +
+                '<div class="r2-row-content">' +
+                  '<div class="r2-row-label">Marge générée</div>' +
+                  '<div class="r2-row-value">' + fmtEUR(r.margeIfImmediat) + ' € / mois</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="r2-card-benchmark">Benchmark marché : 15 à 30 % de conversion</div>' +
+            '</div>' +
+
+            // Carte 3 : Gain (orange)
+            '<div class="r2-card r2-card-gain">' +
+              '<div class="r2-card-gain-decor"><span class="material-symbols-outlined">trending_up</span></div>' +
+              '<h3>Gain estimé<br>avec traitement<br>immédiat</h3>' +
+              '<div class="r2-row">' +
+                '<div class="r2-row-icon"><span class="material-symbols-outlined">shopping_cart</span></div>' +
+                '<div class="r2-row-content">' +
+                  '<div class="r2-row-value">+ ' + fmtVentes(r.ventes) +
+                    '<span class="r2-row-value-small">vente / mois</span>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="r2-row">' +
+                '<div class="r2-row-icon"><span class="material-symbols-outlined">euro</span></div>' +
+                '<div class="r2-row-content">' +
+                  '<div class="r2-row-value">+ ' + fmtEUR(r.margeMois) + ' €' +
+                    '<span class="r2-row-value-small">de marge / mois</span>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="r2-row">' +
+                '<div class="r2-row-icon"><span class="material-symbols-outlined">calendar_today</span></div>' +
+                '<div class="r2-row-content">' +
+                  '<div class="r2-row-value">+ ' + fmtEUR(r.margeAn) + ' €' +
+                    '<span class="r2-row-value-small">de marge / an</span>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="r2-card-footer">Simplement en traitant immédiatement les appels que vous recevez <u>déjà</u>.</div>' +
+            '</div>' +
           '</div>' +
-          '<div class="results-stat">' +
-            '<div class="results-stat-label">Marge potentiellement perdue</div>' +
-            '<div class="results-stat-value">'+ fmtEUR(r.margeMois) +' €</div>' +
-            '<div class="results-stat-value-sub">/ mois</div>' +
-            '<div class="results-stat-sub">Soit '+ fmtEUR(r.margeAn) +' € / an</div>' +
+          '<div class="r2-vs">VS</div>' +
+        '</div>' +
+
+        '<div class="r2-bottom-grid">' +
+          '<div class="r2-bottom-block">' +
+            '<div class="r2-bottom-h">Vos données clés</div>' +
+            '<div class="r2-data-tiles">' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call</span></div>' +
+                '<div class="r2-data-tile-value">' + r.appels + '</div>' +
+                '<div class="r2-data-tile-label">appels traités / mois</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call</span></div>' +
+                '<div class="r2-data-tile-value">' + r.decrochesImmediats + '</div>' +
+                '<div class="r2-data-tile-label">décrochés immédiatement</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">percent</span></div>' +
+                '<div class="r2-data-tile-value">' + Math.round(r.convImmediate * 100) + ' %</div>' +
+                '<div class="r2-data-tile-label">de conversion décrochés</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call_missed</span></div>' +
+                '<div class="r2-data-tile-value">' + r.manques + '</div>' +
+                '<div class="r2-data-tile-label">appels manqués / mois</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">schedule</span></div>' +
+                '<div class="r2-data-tile-value">' + r.delayLabel + '</div>' +
+                '<div class="r2-data-tile-label">délai moyen de rappel</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">percent</span></div>' +
+                '<div class="r2-data-tile-value">' + Math.round(r.convRappels * 100) + ' %</div>' +
+                '<div class="r2-data-tile-label">de conversion rappels</div>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
-          '<div class="results-stat">' +
-            '<div class="results-stat-label">Ventes potentiellement perdues</div>' +
-            '<div class="results-stat-value">'+ fmtVentes(r.ventes) +'</div>' +
-            '<div class="results-stat-value-sub">vente(s) / mois</div>' +
-            '<div class="results-stat-sub">sur la base de vos réponses</div>' +
+          '<div class="r2-bottom-block">' +
+            '<div class="r2-bottom-h">Notre méthode de calcul</div>' +
+            '<div class="r2-method-text">' +
+              '<p>Nous comparons la performance réelle des appels décrochés immédiatement (' + Math.round(r.convImmediate * 100) + ' % de conversion) à celle des appels rappelés après un délai moyen de ' + r.delayLabel + ' (' + Math.round(r.convRappels * 100) + ' % de conversion).</p>' +
+              '<p>Chaque mois, vous laissez passer environ <strong>' + fmtVentes(r.ventes) + ' vente</strong> et <strong>' + fmtEUR(r.margeMois) + ' €</strong> de marge.</p>' +
+            '</div>' +
           '</div>' +
         '</div>' +
 
-        '<div class="results-section">' +
-          '<h3>Vos données</h3>' +
-          '<table class="data-table">' +
-            '<thead><tr>' +
-              '<th>Nb appels traités<br>/ mois</th>' +
-              '<th>Nb décrochés<br>immédiats</th>' +
-              '<th>% conversion<br>décrochés</th>' +
-              '<th>Nb appels manqués<br>/ mois</th>' +
-              '<th>Délai moyen<br>de rappel</th>' +
-              '<th>% conversion<br>rappels</th>' +
-            '</tr></thead>' +
-            '<tbody><tr>' +
-              '<td>'+ r.appels +'</td>' +
-              '<td>'+ r.decrochesImmediats +'</td>' +
-              '<td>'+ Math.round(r.convImmediate * 100) +' %</td>' +
-              '<td>'+ r.manques +'</td>' +
-              '<td>'+ r.delayLabel +'</td>' +
-              '<td>'+ Math.round(r.convRappels * 100) +' %</td>' +
-            '</tr></tbody>' +
-          '</table>' +
+        '<div class="r2-gain-banner">' +
+          '<div class="r2-gain-icon"><span class="material-symbols-outlined">savings</span></div>' +
+          '<div>' +
+            '<div class="r2-gain-block-label">Gain de marge récupérable<br>avec décroché immédiat</div>' +
+            '<div class="r2-gain-block-value">+ ' + fmtEUR(r.margeAn) + ' € / an</div>' +
+          '</div>' +
+          '<div class="r2-gain-eq">=</div>' +
+          '<div>' +
+            '<div class="r2-gain-block-label">Soit l\'équivalent de</div>' +
+            '<div class="r2-gain-num">' + r.abonnementsFinances + '</div>' +
+            '<div class="r2-gain-block-suffix">abonnements BoosterVO<br>financés chaque année !</div>' +
+          '</div>' +
         '</div>' +
 
-        '<div class="results-section method-section">' +
-          '<h3>Méthode de calcul selon vos données :</h3>' +
-          '<ul class="method-bullets">' +
-            '<li>Vous traitez <strong>'+ r.appels +' appels/mois</strong></li>' +
-            '<li><strong>'+ r.manques +' appels</strong> ne sont pas décrochés immédiatement,</li>' +
-            '<li>Sur les <strong>appels manqués</strong>, votre délai moyen de rappel '+ r.delayPhrase +'.' +
-              (r.delayEstimated ? '<br><em class="method-note">En l\'absence de mesure précise, nous avons retenu un délai moyen observé dans le secteur du véhicule d\'occasion.</em>' : '') +
-            '</li>' +
-          '</ul>' +
-          '<p class="method-narrative">' +
-            'Aujourd\'hui, ces <strong>rappels</strong> convertissent environ à <strong>'+ Math.round(r.convRappels * 100) +' %</strong>.<br>' +
-            'Alors que les <strong>appels décrochés immédiatement</strong> convertissent à <strong>'+ Math.round(r.convImmediate * 100) +' %</strong> et plus.' +
-          '</p>' +
-          '<p class="method-narrative">' +
-            'Avec une marge à <strong>'+ fmtEUR(r.marge) +' €/VO</strong>, la différence entre ces 2 performances représente environ <span class="method-money">'+ fmtEUR(r.margeMois) +' €</span> de marge qui partent en fumée chaque mois.' +
-          '</p>' +
-        '</div>' +
-
-        '<div class="results-section">' +
-          '<h3>Benchmark taux de conversion appels VO</h3>' +
-          '<div class="benchmark-list">' +
+        '<div class="r2-benchmark">' +
+          '<div class="r2-benchmark-h">Benchmark taux de conversion appels VO</div>' +
+          '<div class="r2-benchmark-list">' +
             'Décrochés immédiats <b>20 à 40 %</b> — Rappels ≤ 5 min <b>15 à 30 %</b><br>' +
             'Rappels ≤ 10 min <b>12 à 20 %</b> — Rappels ≤ 30 min <b>5 à 10 %</b>' +
           '</div>' +
-          '<div class="benchmark-source">(source : Carvivo 2022-2025 — Audits BoosterVO)</div>' +
+          '<div class="r2-benchmark-source">(source : Carvivo 2022-2025 — Audits BoosterVO)</div>' +
         '</div>' +
 
         '<button class="results-cta" id="results-cta"><span class="material-symbols-outlined">mail</span> Recevoir mon rapport détaillé</button>';
