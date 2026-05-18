@@ -2771,6 +2771,16 @@
       var ventesPerdues = ventesIfImmediat - ventesAvecDelai;
       var margeMois     = margeIfImmediat - margeAvecDelai;
 
+      // Totaux pour le bilan v2 (lecture "situation actuelle vs potentiel total") :
+      // - Situation actuelle = 80 directs (a convImmediate) + 20 rappeles (a convRappels)
+      // - Potentiel total    = 100 appels (tous a convImmediate)
+      // Le gain (ventesPerdues) reste identique : manques * (convImmediate - convRappels).
+      var ventesTotalActuel = (decrochesImmediats * convImmediate) + (manques * convRappels);
+      var margeTotalActuel  = ventesTotalActuel * marge;
+      var ventesTotalPotentiel = appels * convImmediate;
+      var margeTotalPotentiel  = ventesTotalPotentiel * marge;
+      var convMoyenne = appels > 0 ? ventesTotalActuel / appels : 0;
+
       var margeAn = Math.round(margeMois * 12);
       // Equivalent en mois d'abonnement BoosterVO finances par le gain annuel
       // (prix de reference 497 EUR/mois, coherent avec page Programme Gold).
@@ -2782,6 +2792,7 @@
         decrochesImmediats: decrochesImmediats,
         convImmediate: convImmediate,
         convRappels: convRappels,
+        convMoyenne: convMoyenne,
         delayLabel: delay.label,
         delayDisplayMin: delay.displayMin,
         delayPhrase: delay.phrase,
@@ -2790,6 +2801,10 @@
         margeIfImmediat:  Math.round(margeIfImmediat),
         ventesAvecDelai:  Math.round(ventesAvecDelai),
         margeAvecDelai:   Math.round(margeAvecDelai),
+        ventesTotalActuel:    Math.round(ventesTotalActuel * 10) / 10,
+        margeTotalActuel:     Math.round(margeTotalActuel),
+        ventesTotalPotentiel: Math.round(ventesTotalPotentiel * 10) / 10,
+        margeTotalPotentiel:  Math.round(margeTotalPotentiel),
         ventes:    Math.max(0, ventesPerdues),
         margeMois: Math.round(margeMois),
         margeAn:   margeAn,
@@ -2815,36 +2830,36 @@
 
         '<div class="r2-compare-wrap">' +
           '<div class="r2-compare">' +
-            // Carte 1 : Situation actuelle
+            // Carte 1 : Situation actuelle (80 directs + 20 rappels)
             '<div class="r2-card r2-card-current">' +
-              '<h3>Appels rappelés<br>après ' + r.delayLabel + '</h3>' +
-              '<div class="r2-card-sub">Votre situation actuelle</div>' +
+              '<h3>Votre situation<br>actuelle</h3>' +
+              '<div class="r2-card-sub">' + r.decrochesImmediats + ' directs + ' + r.manques + ' rappelés après ' + r.delayLabel + '</div>' +
               '<div class="r2-row">' +
                 '<div class="r2-row-icon"><span class="material-symbols-outlined">call_made</span></div>' +
                 '<div class="r2-row-content">' +
-                  '<div class="r2-row-label">Taux de conversion</div>' +
-                  '<div class="r2-row-value">' + Math.round(r.convRappels * 100) + ' %</div>' +
+                  '<div class="r2-row-label">Taux de conversion moyen</div>' +
+                  '<div class="r2-row-value">' + Math.round(r.convMoyenne * 100) + ' %</div>' +
                 '</div>' +
               '</div>' +
               '<div class="r2-row">' +
                 '<div class="r2-row-icon"><span class="material-symbols-outlined">shopping_cart</span></div>' +
                 '<div class="r2-row-content">' +
                   '<div class="r2-row-label">Ventes générées</div>' +
-                  '<div class="r2-row-value">' + fmtVentes(r.ventesAvecDelai) + ' ventes / mois</div>' +
+                  '<div class="r2-row-value">' + fmtVentes(r.ventesTotalActuel) + ' ventes / mois</div>' +
                 '</div>' +
               '</div>' +
               '<div class="r2-row">' +
                 '<div class="r2-row-icon"><span class="material-symbols-outlined">euro</span></div>' +
                 '<div class="r2-row-content">' +
                   '<div class="r2-row-label">Marge générée</div>' +
-                  '<div class="r2-row-value">' + fmtEUR(r.margeAvecDelai) + ' € / mois</div>' +
+                  '<div class="r2-row-value">' + fmtEUR(r.margeTotalActuel) + ' € / mois</div>' +
                 '</div>' +
               '</div>' +
             '</div>' +
 
-            // Carte 2 : Potentiel
+            // Carte 2 : Potentiel total (100 % decroche direct)
             '<div class="r2-card r2-card-potential">' +
-              '<h3>Appels décrochés<br>immédiatement</h3>' +
+              '<h3>100 % de décroché<br>immédiat</h3>' +
               '<div class="r2-card-sub">Votre potentiel avec BoosterVO</div>' +
               '<div class="r2-row">' +
                 '<div class="r2-row-icon"><span class="material-symbols-outlined">call</span></div>' +
@@ -2857,14 +2872,14 @@
                 '<div class="r2-row-icon"><span class="material-symbols-outlined">shopping_cart</span></div>' +
                 '<div class="r2-row-content">' +
                   '<div class="r2-row-label">Ventes générées</div>' +
-                  '<div class="r2-row-value">' + fmtVentes(r.ventesIfImmediat) + ' ventes / mois</div>' +
+                  '<div class="r2-row-value">' + fmtVentes(r.ventesTotalPotentiel) + ' ventes / mois</div>' +
                 '</div>' +
               '</div>' +
               '<div class="r2-row">' +
                 '<div class="r2-row-icon"><span class="material-symbols-outlined">euro</span></div>' +
                 '<div class="r2-row-content">' +
                   '<div class="r2-row-label">Marge générée</div>' +
-                  '<div class="r2-row-value">' + fmtEUR(r.margeIfImmediat) + ' € / mois</div>' +
+                  '<div class="r2-row-value">' + fmtEUR(r.margeTotalPotentiel) + ' € / mois</div>' +
                 '</div>' +
               '</div>' +
               '<div class="r2-card-benchmark">Benchmark marché : 15 à 30 % de conversion</div>' +
@@ -2943,8 +2958,8 @@
           '<div class="r2-bottom-block">' +
             '<div class="r2-bottom-h">Notre méthode de calcul</div>' +
             '<div class="r2-method-text">' +
-              '<p>Nous comparons la performance réelle des appels décrochés immédiatement (' + Math.round(r.convImmediate * 100) + ' % de conversion) à celle des appels rappelés après un délai moyen de ' + r.delayLabel + ' (' + Math.round(r.convRappels * 100) + ' % de conversion).</p>' +
-              '<p>Chaque mois, vous laissez passer environ <strong>' + fmtVentes(r.ventes) + ' vente</strong> et <strong>' + fmtEUR(r.margeMois) + ' €</strong> de marge.</p>' +
+              '<p>Aujourd\'hui, vos <strong>' + r.decrochesImmediats + ' appels décrochés direct</strong> convertissent à ' + Math.round(r.convImmediate * 100) + ' % et vos <strong>' + r.manques + ' appels rappelés après ' + r.delayLabel + '</strong> chutent à ' + Math.round(r.convRappels * 100) + ' %, soit ' + fmtVentes(r.ventesTotalActuel) + ' ventes au total.</p>' +
+              '<p>Si tous vos ' + r.appels + ' appels étaient décrochés immédiatement, vous feriez ' + fmtVentes(r.ventesTotalPotentiel) + ' ventes — soit <strong>' + fmtVentes(r.ventes) + ' vente</strong> et <strong>' + fmtEUR(r.margeMois) + ' €</strong> de marge en plus chaque mois.</p>' +
             '</div>' +
           '</div>' +
         '</div>' +
