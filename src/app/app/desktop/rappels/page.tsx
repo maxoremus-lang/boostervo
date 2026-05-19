@@ -1,66 +1,215 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import ProspectCard from "../../_components/ProspectCard";
-import SearchBar from "../../_components/SearchBar";
-import SearchButton from "../../_components/SearchButton";
-import ProspectFiche from "../_components/ProspectFiche";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { useCall } from "../../_components/Providers";
 import type { Prospect, CallbackStatus } from "../../_lib/types";
 
-type Filter = "urgent" | "todo" | "in_progress" | "done" | "all";
 type Period = "day" | "week" | "month" | "all";
-
-const FILTERS: { key: Filter; label: string }[] = [
-  { key: "urgent", label: "Urgents" },
-  { key: "todo", label: "À faire" },
-  { key: "in_progress", label: "En cours" },
-  { key: "done", label: "Traités" },
-  { key: "all", label: "Tous" },
-];
-
-const PERIOD_SHORT: Record<Period, string> = {
-  day: "Aujourd'hui",
-  week: "7 j",
-  month: "30 j",
-  all: "Tout",
-};
-
-const STATUS_LABELS: Record<CallbackStatus, string> = {
-  pending: "À recontacter",
-  postponed: "Reporté",
-  unreachable: "Injoignable",
-  appointment: "RDV pris",
-  test_drive: "Essai",
-  quote_sent: "Devis envoyé",
-  not_interested: "Pas intéressé",
-  sold: "Vente conclue",
-};
-
-const STATUS_TO_GROUP: Record<CallbackStatus, Filter> = {
-  pending: "todo",
-  postponed: "todo",
-  unreachable: "todo",
-  appointment: "in_progress",
-  test_drive: "in_progress",
-  quote_sent: "in_progress",
-  sold: "done",
-  not_interested: "done",
-};
 
 type ApiResponse = {
   prospects: Prospect[];
-  counts: Record<Filter, number>;
+  counts: { urgent: number; todo: number; in_progress: number; done: number; all: number };
   byStatus: Record<CallbackStatus, number>;
 };
 
-export default function DesktopRappelsPage() {
-  const [activeFilter, setActiveFilter] = useState<Filter>("urgent");
-  const [statusExact, setStatusExact] = useState<CallbackStatus | null>(null);
+type ColumnKey = "todo" | "appointment" | "test_drive" | "quote_sent" | "sold";
+
+const COLUMNS: { key: ColumnKey; label: string; dot: string; bg: string; statuses: CallbackStatus[] }[] = [
+  {
+    key: "todo",
+    label: "À faire",
+    dot: "bg-red-500",
+    bg: "bg-gradient-to-b from-red-50 to-orange-50",
+    statuses: ["pending", "postponed", "unreachable"],
+  },
+  {
+    key: "appointment",
+    label: "RDV pris",
+    dot: "bg-violet-500",
+    bg: "bg-gradient-to-b from-violet-50 to-purple-50",
+    statuses: ["appointment"],
+  },
+  {
+    key: "test_drive",
+    label: "Essai",
+    dot: "bg-purple-500",
+    bg: "bg-gradient-to-b from-purple-50 to-fuchsia-50",
+    statuses: ["test_drive"],
+  },
+  {
+    key: "quote_sent",
+    label: "Devis envoyé",
+    dot: "bg-blue-500",
+    bg: "bg-gradient-to-b from-blue-50 to-sky-50",
+    statuses: ["quote_sent"],
+  },
+  {
+    key: "sold",
+    label: "Vendus",
+    dot: "bg-emerald-500",
+    bg: "bg-gradient-to-b from-emerald-50 to-green-50",
+    statuses: ["sold"],
+  },
+];
+
+function PhoneIcon({ className = "w-3 h-3" }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+    </svg>
+  );
+}
+
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.startsWith("33") && digits.length === 11) {
+    const local = "0" + digits.slice(2);
+    return local.match(/.{1,2}/g)?.join(" ") ?? raw;
+  }
+  if (digits.length === 10 && digits.startsWith("0")) {
+    return digits.match(/.{1,2}/g)?.join(" ") ?? raw;
+  }
+  return raw;
+}
+
+function parisDayKey(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(d);
+}
+
+function formatShort(iso: string): string {
+  const d = new Date(iso);
+  const now = new Date();
+  const time = d
+    .toLocaleTimeString("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit", hour12: false })
+    .replace(":", "h");
+  const dKey = parisDayKey(d);
+  const todayKey = parisDayKey(now);
+  if (dKey === todayKey) return `Auj. ${time}`;
+  const yesterdayKey = parisDayKey(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+  if (dKey === yesterdayKey) return `Hier ${time}`;
+  const dayMonth = d
+    .toLocaleDateString("fr-FR", { timeZone: "Europe/Paris", day: "numeric", month: "short" })
+    .replace(".", "");
+  return `${dayMonth} ${time}`;
+}
+
+function formatAppointment(iso: string): string {
+  const d = new Date(iso);
+  const parts = new Intl.DateTimeFormat("fr-FR", {
+    timeZone: "Europe/Paris",
+    weekday: "short", day: "numeric", month: "short",
+    hour: "2-digit", minute: "2-digit", hour12: false,
+  }).formatToParts(d);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  const weekday = get("weekday").replace(".", "");
+  const weekdayCap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  return `${weekdayCap}. ${get("day")} ${get("month").replace(".", "")} · ${get("hour")}h${get("minute")}`;
+}
+
+function missedCount(p: Prospect): number {
+  return p.callEvents.filter((e) => e.type === "missed" && e.direction !== "outbound").length;
+}
+
+function ProspectCardKanban({ prospect }: { prospect: Prospect }) {
+  const { startCall } = useCall();
+  const isUnknown = !prospect.isKnown;
+  const missed = missedCount(prospect);
+  const displayName = prospect.name ?? formatPhone(prospect.phone);
+
+  const triggerCall = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    startCall({
+      prospectId: prospect.id,
+      prospectPhone: prospect.phone,
+      prospectName: prospect.name ?? null,
+      prospectVehicle: prospect.vehicleInterest ?? null,
+      prospectPrice: prospect.vehiclePrice ?? null,
+      prospectNotes: prospect.notes ?? null,
+    });
+  };
+
+  return (
+    <Link
+      href={`/app/rappels/${prospect.id}`}
+      className={`block bg-white rounded-lg p-2.5 shadow-sm border border-gray-200 hover:shadow-md hover:-translate-y-px transition ${
+        prospect.isUrgent ? "border-l-4 border-l-red-500" : ""
+      }`}
+    >
+      <div className="flex items-start justify-between gap-2 mb-1">
+        <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
+          {prospect.isUrgent && (
+            <span className="text-[9px] font-bold uppercase px-1 py-0.5 rounded bg-red-100 text-red-700 flex-shrink-0">
+              Urgent
+            </span>
+          )}
+          {isUnknown && (
+            <span className="text-[9px] font-bold uppercase px-1 py-0.5 rounded bg-violet-100 text-violet-700 flex-shrink-0">
+              NQ
+            </span>
+          )}
+        </div>
+        {missed > 0 && (
+          <span
+            className={`text-[10px] font-bold flex-shrink-0 ${
+              missed > 1 ? "text-red-600" : "text-gray-500"
+            }`}
+            title={`${missed} appel${missed > 1 ? "s" : ""} manqué${missed > 1 ? "s" : ""}`}
+          >
+            {missed}×
+          </span>
+        )}
+      </div>
+
+      <p
+        className={`font-semibold text-[13px] truncate ${
+          isUnknown ? "font-mono tabular-nums text-gray-700" : "text-gray-900"
+        }`}
+      >
+        {displayName}
+      </p>
+      {!isUnknown && (
+        <p className="text-[11px] text-gray-500 font-mono tabular-nums truncate">
+          {formatPhone(prospect.phone)}
+        </p>
+      )}
+      {prospect.vehicleInterest && (
+        <p className="text-[11px] text-gray-700 mt-1 truncate">{prospect.vehicleInterest}</p>
+      )}
+      {prospect.vehiclePrice && (
+        <p className="text-[11px] font-semibold text-gray-900 tabular-nums">
+          {prospect.vehiclePrice.toLocaleString("fr-FR")} €
+        </p>
+      )}
+      {prospect.appointmentAt && (
+        <p className="text-[10px] text-violet-700 bg-violet-50 px-1.5 py-0.5 rounded mt-1.5 inline-block">
+          📅 {formatAppointment(prospect.appointmentAt)}
+        </p>
+      )}
+
+      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+        <span className="text-[10px] text-gray-400">{formatShort(prospect.lastActivityAt)}</span>
+        <button
+          type="button"
+          onClick={triggerCall}
+          className="text-[10px] font-bold bg-orange hover:bg-orange-dark text-white px-2 py-0.5 rounded flex items-center gap-1 transition"
+        >
+          <PhoneIcon /> Rappeler
+        </button>
+      </div>
+    </Link>
+  );
+}
+
+export default function DesktopRappelsKanbanPage() {
   const [period, setPeriod] = useState<Period>("all");
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -68,8 +217,7 @@ export default function DesktopRappelsPage() {
     (async () => {
       try {
         const params = new URLSearchParams();
-        if (statusExact) params.set("status", statusExact);
-        else params.set("filter", activeFilter);
+        params.set("filter", "all");
         if (period !== "all") params.set("period", period);
         const res = await fetch(`/api/prospects?${params.toString()}`);
         if (!res.ok) {
@@ -84,11 +232,6 @@ export default function DesktopRappelsPage() {
         setData(json);
         setError(null);
         setLoading(false);
-        // Sélection automatique du premier prospect si rien de sélectionné ou si l'actuel n'est plus dans la liste
-        const ids = json.prospects.map((p) => p.id);
-        if (!selectedId || !ids.includes(selectedId)) {
-          setSelectedId(ids[0] ?? null);
-        }
       } catch {
         if (!cancelled) {
           setError("Erreur réseau");
@@ -99,142 +242,154 @@ export default function DesktopRappelsPage() {
     return () => {
       cancelled = true;
     };
-    // selectedId volontairement exclu : on ne veut pas re-fetch quand on change la sélection
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeFilter, statusExact, period]);
+  }, [period]);
 
-  const prospects = data?.prospects ?? [];
-  const counts = data?.counts ?? { urgent: 0, todo: 0, in_progress: 0, done: 0, all: 0 };
+  const grouped = useMemo(() => {
+    const out: Record<ColumnKey, Prospect[]> = {
+      todo: [],
+      appointment: [],
+      test_drive: [],
+      quote_sent: [],
+      sold: [],
+    };
+    if (!data) return out;
+    for (const p of data.prospects) {
+      // "À faire" : urgent OU pending/postponed/unreachable
+      if (p.isUrgent || ["pending", "postponed", "unreachable"].includes(p.status)) {
+        out.todo.push(p);
+        continue;
+      }
+      if (p.status === "appointment") out.appointment.push(p);
+      else if (p.status === "test_drive") out.test_drive.push(p);
+      else if (p.status === "quote_sent") out.quote_sent.push(p);
+      else if (p.status === "sold") out.sold.push(p);
+      // not_interested : non affiché dans le pipeline V1
+    }
+    // Tri : urgents en premier dans "todo", puis par date desc
+    out.todo.sort((a, b) => {
+      if (a.isUrgent !== b.isUrgent) return a.isUrgent ? -1 : 1;
+      return new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime();
+    });
+    return out;
+  }, [data]);
+
+  // Total devis envoyés (somme des prix)
+  const devisTotal = useMemo(
+    () => grouped.quote_sent.reduce((sum, p) => sum + (p.vehiclePrice ?? 0), 0),
+    [grouped.quote_sent]
+  );
 
   return (
     <div className="flex flex-col h-screen">
-      {/* En-tête de page */}
-      <div className="bg-bleu px-6 pt-5 pb-4 text-white">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-nunito font-extrabold">
-              Vos rappels
-              {statusExact && <span className="font-semibold opacity-90"> — {STATUS_LABELS[statusExact]}</span>}
-            </h1>
-            <p className="text-xs opacity-80">
-              {counts.all} rappels · {counts.todo} à faire · {counts.urgent} urgents
-            </p>
-          </div>
-          <SearchButton />
+      {/* Topbar */}
+      <div className="h-14 px-6 flex items-center gap-4 bg-white border-b border-gray-200 flex-shrink-0">
+        <div>
+          <h1 className="font-nunito font-extrabold text-lg leading-none">Pipeline des rappels</h1>
+          <p className="text-[11px] text-gray-500 mt-1 leading-none">
+            {data
+              ? `${data.counts.urgent} urgents · ${data.counts.todo} à faire · ${data.counts.in_progress} en cours · ${data.counts.done} traités`
+              : "Chargement…"}
+          </p>
+        </div>
+        <div className="flex-1 max-w-md relative ml-6">
+          <svg
+            className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+          </svg>
+          <input
+            className="w-full bg-gray-100 border-0 rounded-md pl-9 pr-3 py-2 text-sm placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-bleu/30 outline-none"
+            placeholder="Rechercher un prospect…"
+          />
         </div>
       </div>
 
-      <SearchBar />
-
-      {/* Filtres groupes + période — barre horizontale unique */}
-      <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-2 flex-wrap">
-        {FILTERS.map((f) => {
-          const isActive = !statusExact && activeFilter === f.key;
-          const isUrgent = f.key === "urgent";
-          const count = counts[f.key];
-          const classes = isUrgent
-            ? isActive
-              ? "bg-red-600 text-white"
-              : count > 0
-                ? "bg-red-50 text-red-700 border border-red-200"
-                : "bg-gray-100 text-gray-400"
-            : isActive
-              ? "bg-orange text-white"
-              : "bg-gray-100 text-gray-600";
-          return (
-            <button
-              key={f.key}
-              onClick={() => {
-                setStatusExact(null);
-                setActiveFilter(f.key);
-              }}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${classes}`}
-            >
-              {isUrgent && count > 0 && (
-                <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-white" : "bg-red-600"} animate-pulse`} />
-              )}
-              {f.label} · {count}
-            </button>
-          );
-        })}
-
-        <span className="mx-2 h-5 w-px bg-gray-200" />
-        <span className="text-[10px] uppercase font-bold text-gray-500">Période</span>
+      {/* Filtres */}
+      <div className="h-11 px-6 flex items-center gap-2 bg-white border-b border-gray-200 flex-shrink-0">
         {(["day", "week", "month", "all"] as Period[]).map((p) => (
           <button
             key={p}
             onClick={() => setPeriod(p)}
-            className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition ${
-              period === p ? "bg-bleu text-white" : "bg-gray-100 text-gray-600"
+            className={`px-2.5 py-1.5 rounded-md text-xs font-semibold transition ${
+              period === p ? "bg-bleu text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            {PERIOD_SHORT[p]}
+            {p === "day" ? "Aujourd'hui" : p === "week" ? "7 jours" : p === "month" ? "30 jours" : "Tout"}
           </button>
         ))}
+        <div className="flex-1" />
+        {data && (
+          <div className="flex items-center gap-3 text-[11px] text-gray-500">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+              Pipeline en cours
+            </span>
+            <span className="font-bold text-base text-emerald-700 tabular-nums">
+              {(devisTotal + grouped.appointment.reduce((s, p) => s + (p.vehiclePrice ?? 0), 0)).toLocaleString("fr-FR")} €
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Bandeau statut actif (vient de stats) */}
-      {statusExact && (
-        <div className="flex items-center justify-between px-6 py-2 bg-violet-50 border-b border-violet-100">
-          <button
-            onClick={() => setStatusExact(null)}
-            className="flex items-center gap-1 text-[11px] font-bold text-violet-700 active:opacity-60"
-          >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            Effacer
-          </button>
-          <span className="text-xs font-semibold text-violet-900">
-            <span className="font-extrabold">{STATUS_LABELS[statusExact]}</span>
-          </span>
-        </div>
-      )}
-
-      {/* Split panel */}
-      <div className="flex flex-1 min-h-0">
-        {/* Liste à gauche */}
-        <div className="w-[420px] border-r border-gray-200 bg-fond overflow-y-auto">
-          <div className="px-4 py-4 space-y-3">
-            {loading ? (
-              <p className="text-center text-gray-400 text-sm py-8">Chargement…</p>
-            ) : error ? (
-              <p className="text-center text-red-600 text-sm py-8">{error}</p>
-            ) : prospects.length === 0 ? (
-              <p className="text-center text-gray-400 text-sm py-8">Aucun rappel ne correspond</p>
-            ) : (
-              prospects.map((p, i) => (
-                <div key={p.id} className="flex items-start gap-2">
-                  <span className="flex-shrink-0 w-6 pt-3 text-right text-xs font-bold text-gray-400 tabular-nums">
-                    {i + 1}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <ProspectCard
-                      prospect={p}
-                      onSelect={() => setSelectedId(p.id)}
-                      selected={selectedId === p.id}
-                    />
+      {/* Kanban */}
+      <div className="flex-1 overflow-x-auto overflow-y-hidden px-6 py-5 bg-gray-100">
+        <div className="flex gap-4 h-full min-w-max">
+          {COLUMNS.map((col) => {
+            const items = grouped[col.key];
+            return (
+              <div
+                key={col.key}
+                className={`${col.bg} w-72 flex-shrink-0 rounded-xl p-3 flex flex-col min-h-0`}
+              >
+                <div className="flex items-center justify-between mb-3 px-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${col.dot}`} />
+                    <h3 className="font-bold text-sm text-gray-900">{col.label}</h3>
+                    <span className="text-[11px] font-bold text-gray-500 bg-white px-1.5 py-0.5 rounded tabular-nums">
+                      {items.length}
+                    </span>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        </div>
 
-        {/* Panneau droit : fiche */}
-        <div className="flex-1 min-w-0 bg-fond">
-          {selectedId ? (
-            <ProspectFiche key={selectedId} prospectId={selectedId} />
-          ) : (
-            <div className="h-full flex flex-col items-center justify-center text-gray-400 p-8 text-center">
-              <svg className="w-16 h-16 mb-4 opacity-40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-              <p className="text-sm font-semibold">Sélectionnez un prospect</p>
-              <p className="text-xs mt-1">Cliquez sur une carte à gauche pour ouvrir la fiche.</p>
-            </div>
-          )}
+                <div className="space-y-2 overflow-y-auto flex-1 pr-1">
+                  {loading ? (
+                    <p className="text-center text-gray-400 text-xs py-4">Chargement…</p>
+                  ) : error ? (
+                    <p className="text-center text-red-600 text-xs py-4">{error}</p>
+                  ) : items.length === 0 ? (
+                    <p className="text-center text-gray-400 text-xs py-6 italic">Vide</p>
+                  ) : (
+                    items.map((p) => <ProspectCardKanban key={p.id} prospect={p} />)
+                  )}
+                </div>
+
+                {/* Footer colonne : total devis */}
+                {col.key === "quote_sent" && items.length > 0 && (
+                  <div className="mt-2 px-2 py-1.5 bg-white/80 rounded text-[10px] text-blue-700 font-semibold flex items-center justify-between">
+                    <span>Total devis</span>
+                    <span className="tabular-nums">{devisTotal.toLocaleString("fr-FR")} €</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Footer raccourcis */}
+      <div className="h-8 border-t border-gray-200 px-6 flex items-center gap-4 text-[11px] text-gray-500 bg-white flex-shrink-0">
+        <span>{data?.counts.all ?? "—"} prospects · 5 colonnes</span>
+        <span className="text-gray-300">·</span>
+        <span>Cliquez une carte pour ouvrir la fiche</span>
+        <div className="flex-1" />
+        <span className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+          Sonnerie active
+        </span>
       </div>
     </div>
   );

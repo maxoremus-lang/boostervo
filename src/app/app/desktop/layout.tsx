@@ -8,7 +8,7 @@ export default function DesktopLayout({ children }: { children: React.ReactNode 
   return (
     <div className="min-h-screen bg-fond">
       <Sidebar />
-      <main className="ml-60 min-h-screen">{children}</main>
+      <main className="ml-52 min-h-screen">{children}</main>
     </div>
   );
 }
