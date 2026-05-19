@@ -62,10 +62,14 @@ export default function ProspectCard({
   prospect,
   variant = "default",
   contextParams,
+  onSelect,
+  selected,
 }: {
   prospect: Prospect;
   variant?: "default" | "urgent";
   contextParams?: string; // ex: "filter=todo" ou "status=appointment&period=week"
+  onSelect?: () => void;   // Si fournie, la carte devient un bouton de sélection (split desktop) au lieu d'un Link
+  selected?: boolean;       // Mode split desktop : highlight de la carte courante
 }) {
   const missed = missedCallsCount(prospect);
   const isUrgentCard = variant === "urgent" || prospect.isUrgent;
@@ -79,13 +83,34 @@ export default function ProspectCard({
     ? `/app/rappels/${prospect.id}?${contextParams}`
     : `/app/rappels/${prospect.id}`;
 
+  const cardClasses = `block w-full text-left bg-white rounded-2xl shadow-sm transition active:scale-[0.99] ${
+    isUrgentCard ? "border-l-4 border-red-500 p-4" : "p-3.5"
+  } ${selected ? "ring-2 ring-orange ring-offset-1" : ""}`;
+
+  const Wrapper = ({ children }: { children: React.ReactNode }) =>
+    onSelect ? (
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onSelect}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onSelect();
+          }
+        }}
+        className={`cursor-pointer ${cardClasses}`}
+      >
+        {children}
+      </div>
+    ) : (
+      <Link href={detailHref} className={cardClasses}>
+        {children}
+      </Link>
+    );
+
   return (
-    <Link
-      href={detailHref}
-      className={`block bg-white rounded-2xl shadow-sm transition active:scale-[0.99] ${
-        isUrgentCard ? "border-l-4 border-red-500 p-4" : "p-3.5"
-      }`}
-    >
+    <Wrapper>
       <div className="flex justify-between items-start mb-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -160,6 +185,6 @@ export default function ProspectCard({
           <button className="px-3 bg-gray-100 text-gray-700 text-sm font-bold py-2 rounded-lg">⋯</button>
         </div>
       )}
-    </Link>
+    </Wrapper>
   );
 }

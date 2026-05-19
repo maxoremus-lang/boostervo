@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import ServiceWorkerRegistrar from "./_components/ServiceWorkerRegistrar";
 import Providers from "./_components/Providers";
+import AppShell from "./_components/AppShell";
 
 export const metadata: Metadata = {
   title: "BoosterVO Rappels",
@@ -32,10 +33,8 @@ export const viewport: Viewport = {
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <Providers>
-      <div className="min-h-screen bg-fond">
-        <div className="max-w-md mx-auto bg-fond min-h-screen relative">{children}</div>
-        <ServiceWorkerRegistrar />
-      </div>
+      <AppShell>{children}</AppShell>
+      <ServiceWorkerRegistrar />
     </Providers>
   );
 }
