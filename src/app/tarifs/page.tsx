@@ -60,7 +60,7 @@ const plans: Plan[] = [
       {
         heading: "Bilan & recommandations",
         features: [
-          { label: "Taux de conversion rappels vs décrochés immédiats" },
+          { label: "Comparatif des taux de conversion rappels vs décrochés immédiats" },
           { label: "Estimation de la marge récupérable / mois" },
           { label: "Recommandation offre zéro appel manqué" },
           { label: "Rapport PDF personnalisé + échange de 30 min" },
