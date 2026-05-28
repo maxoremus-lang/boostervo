@@ -116,24 +116,38 @@ export default function VslGate() {
                 Votre navigateur ne supporte pas la lecture vidéo.
               </video>
             ) : (
-              <button
-                type="button"
-                onClick={focusForm}
-                aria-label="Débloquer la vidéo"
-                className="group absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-bleu-dark to-black cursor-pointer"
-              >
-                <span className="flex items-center justify-center w-20 h-20 rounded-full bg-orange shadow-lg group-hover:scale-105 transition-transform">
-                  <svg viewBox="0 0 24 24" className="w-8 h-8 ml-1 fill-white" aria-hidden="true">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </span>
-                <span className="font-nunito font-bold text-base sm:text-lg">
-                  Vidéo verrouillée
-                </span>
-                <span className="text-white/70 text-sm max-w-xs px-4">
-                  Indiquez votre prénom et votre email ci-dessous pour la débloquer.
-                </span>
-              </button>
+              <>
+                {/* Aperçu : 1re image de la vidéo (muet, non lisible) — visible
+                    à travers le voile semi-transparent. #t=1 affiche la frame
+                    à 1 s. pointer-events-none → les clics vont au bouton. */}
+                <video
+                  src="/videos/vsl-page.mp4#t=1"
+                  muted
+                  playsInline
+                  preload="metadata"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                />
+                <button
+                  type="button"
+                  onClick={focusForm}
+                  aria-label="Débloquer la vidéo"
+                  className="group absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-4 bg-black/40 hover:bg-black/30 transition-colors cursor-pointer"
+                >
+                  <span className="flex items-center justify-center w-20 h-20 rounded-full bg-orange shadow-lg group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 24 24" className="w-8 h-8 ml-1 fill-white" aria-hidden="true">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                  <span className="font-nunito font-bold text-base sm:text-lg drop-shadow-lg">
+                    Vidéo verrouillée
+                  </span>
+                  <span className="text-white/85 text-sm max-w-xs px-4 drop-shadow-lg">
+                    Indiquez votre prénom et votre email ci-dessous pour la débloquer.
+                  </span>
+                </button>
+              </>
             )}
           </div>
 
