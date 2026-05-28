@@ -146,3 +146,19 @@ model CallEvent {
   prospect    Prospect @relation(fields: [prospectId], references: [id])
   createdAt   DateTime @default(now())
 }
+
+// Lead capté sur la VSL "gate email" (page /vsl-prive, atteinte via le lien
+// court go9). Le visiteur donne prénom + email pour débloquer la vidéo.
+// cookieId = valeur du cookie bvo_clk → relie au LinkClick d'origine pour
+// l'attribution. slug = lien court source (ex: "go9").
+model VslLead {
+  id        String   @id @default(cuid())
+  firstName String
+  email     String
+  slug      String?
+  cookieId  String?
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([createdAt])
+}
