@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import DiagnosticCta from "../../components/DiagnosticCta";
 
 const STORAGE_KEY = "bvo_vsl_unlocked";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -200,12 +201,7 @@ export default function VslGate() {
             </div>
           )}
 
-          <a
-            href="/#audit"
-            className="mt-10 inline-block w-full sm:w-auto bg-orange hover:bg-orange-dark text-white font-bold text-base sm:text-lg px-8 py-4 rounded-lg transition-colors shadow-lg min-h-[48px]"
-          >
-            Recevoir mon audit offert
-          </a>
+          <DiagnosticCta source="vsl-prive" className="mt-10" />
         </div>
       </main>
     </div>

@@ -162,3 +162,18 @@ model VslLead {
   @@index([email])
   @@index([createdAt])
 }
+
+// Demande de diagnostic (CTA "Découvrir le diagnostic" sur les pages VSL) :
+// le prospect laisse prénom + email pour une présentation de 20 min. slug =
+// lien court source (ex: "go9") résolu via le cookie bvo_clk. Notifié par mail.
+model DiagnosticRequest {
+  id        String   @id @default(cuid())
+  firstName String
+  email     String
+  slug      String?
+  cookieId  String?
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([createdAt])
+}

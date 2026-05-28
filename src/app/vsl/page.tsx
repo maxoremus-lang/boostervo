@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import DiagnosticCta from "../../components/DiagnosticCta";
 
 export const metadata: Metadata = {
   title: "BoosterVO — Le profit caché derrière vos appels",
@@ -51,13 +52,8 @@ export default function VslPage() {
             </video>
           </div>
 
-          {/* CTA */}
-          <a
-            href="/#audit"
-            className="mt-10 inline-block w-full sm:w-auto bg-orange hover:bg-orange-dark text-white font-bold text-base sm:text-lg px-8 py-4 rounded-lg transition-colors shadow-lg min-h-[48px]"
-          >
-            Recevoir mon audit offert
-          </a>
+          {/* CTA — ouvre la modale de demande de diagnostic */}
+          <DiagnosticCta source="vsl" className="mt-10" />
         </div>
       </main>
     </div>

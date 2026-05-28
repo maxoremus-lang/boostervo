@@ -207,6 +207,13 @@ export default function ProfilPage() {
                 Leads VSL
                 <span className="float-right text-gray-300">›</span>
               </Link>
+              <Link
+                href="/app/admin/diagnostics"
+                className="block w-full text-left px-4 py-3.5 text-sm font-semibold text-bleu"
+              >
+                Demandes de diagnostic
+                <span className="float-right text-gray-300">›</span>
+              </Link>
             </>
           )}
           <button className="w-full text-left px-4 py-3.5 text-sm font-semibold text-gray-400 cursor-not-allowed">
