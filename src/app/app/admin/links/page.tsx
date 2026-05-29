@@ -17,10 +17,23 @@ type LinkStat = {
   conversionRate: number;
   downloadedManuel: number;
   downloadedManuelRate: number;
+  // Tunnel VSL (cf. /go9 → /vsl-prive → diagnostic).
+  vslLeadsCount: number;
+  diagnosticsCount: number;
+  vslLeadRate: number;
+  diagnosticFromVslRate: number;
+  diagnosticRate: number;
   lastClickAt: string | null;
 };
 
 const MANUEL_SLUG = "manuel-app";
+
+// Un lien est considéré "VSL" si sa destination contient "vsl" — typiquement
+// /vsl-prive. Pour ces liens on affiche les colonnes Leads VSL + Diagnostics
+// (et on masque Manuel ↓ qui ne fait pas partie du même funnel).
+function isVslLink(link: { destination: string }) {
+  return link.destination.toLowerCase().includes("vsl");
+}
 
 type RecentClick = {
   id: string;
@@ -32,6 +45,22 @@ type RecentClick = {
   ip: string | null;
   convertedAt: string | null;
   user: { email: string; dealership: string | null } | null;
+};
+
+type RecentVslLead = {
+  id: string;
+  createdAt: string;
+  firstName: string;
+  email: string;
+  cookieId: string | null;
+};
+
+type RecentDiagnostic = {
+  id: string;
+  createdAt: string;
+  firstName: string;
+  email: string;
+  cookieId: string | null;
 };
 
 const ORIGIN_FALLBACK = "https://boostervo.fr";
@@ -68,9 +97,13 @@ export default function AdminLinksPage() {
   });
   const [savingId, setSavingId] = useState<string | null>(null);
 
-  // Détail (clics récents) ouvert
+  // Détail (clics récents + leads VSL + diagnostics) ouvert
   const [detailId, setDetailId] = useState<string | null>(null);
-  const [detail, setDetail] = useState<RecentClick[] | null>(null);
+  const [detail, setDetail] = useState<{
+    recentClicks: RecentClick[];
+    recentVslLeads: RecentVslLead[];
+    recentDiagnostics: RecentDiagnostic[];
+  } | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
   // Origine pour afficher l'URL complète
@@ -166,9 +199,13 @@ export default function AdminLinksPage() {
     try {
       const res = await fetch(`/api/admin/links/${id}`);
       const data = await res.json();
-      setDetail(data.recentClicks || []);
+      setDetail({
+        recentClicks: data.recentClicks || [],
+        recentVslLeads: data.recentVslLeads || [],
+        recentDiagnostics: data.recentDiagnostics || [],
+      });
     } catch {
-      setDetail([]);
+      setDetail({ recentClicks: [], recentVslLeads: [], recentDiagnostics: [] });
     } finally {
       setDetailLoading(false);
     }
@@ -258,6 +295,8 @@ export default function AdminLinksPage() {
               const shortUrl = fullUrl.replace(/^https?:\/\//, "");
               const isEditing = editingId === link.id;
               const isDetail = detailId === link.id;
+              const isVsl = isVslLink(link);
+              const isManuel = link.slug === MANUEL_SLUG;
 
               return (
                 <div key={link.id} className="p-4">
@@ -295,16 +334,18 @@ export default function AdminLinksPage() {
                     </div>
                   </div>
 
-                  {/* Stats détaillées : 5 colonnes pour les campagnes SMS (avec
-                      "SMS envoyés" + "taux de clics" + "manuel téléchargé"),
-                      3 colonnes pour /manuel-app lui-même (où le cross-tab et
-                      la notion de campagne SMS n'ont pas de sens). */}
+                  {/* Stats détaillées :
+                      - 3 colonnes pour /manuel-app (pas de campagne SMS ni cross-tab)
+                      - 6 colonnes pour les liens VSL : SMS / Taux clics / Inscriptions
+                        / Leads VSL / Diagnostics / Dernier clic (Manuel ↓ masqué — pas
+                        dans le même funnel)
+                      - 5 colonnes pour les campagnes SMS classiques */}
                   <div
                     className={`mt-3 grid gap-2 bg-gray-50 rounded-lg px-3 py-2 text-center ${
-                      link.slug === MANUEL_SLUG ? "grid-cols-3" : "grid-cols-5"
+                      isManuel ? "grid-cols-3" : isVsl ? "grid-cols-6" : "grid-cols-5"
                     }`}
                   >
-                    {link.slug !== MANUEL_SLUG && (
+                    {!isManuel && (
                       <div title="Nombre de SMS réellement envoyés pour cette campagne (saisi à la main).">
                         <p className="text-[9px] text-gray-400 uppercase font-bold">SMS envoyés</p>
                         <p className="text-sm font-bold text-bleu">
@@ -312,7 +353,7 @@ export default function AdminLinksPage() {
                         </p>
                       </div>
                     )}
-                    {link.slug !== MANUEL_SLUG && (
+                    {!isManuel && (
                       <div title="Visiteurs uniques ayant cliqué ÷ SMS envoyés × 100">
                         <p className="text-[9px] text-gray-400 uppercase font-bold">Taux clics</p>
                         <p className="text-sm font-bold text-bleu">
@@ -324,11 +365,37 @@ export default function AdminLinksPage() {
                         </p>
                       </div>
                     )}
-                    <div>
+                    <div title="Comptes négociants créés via ce lien (table User)">
                       <p className="text-[9px] text-gray-400 uppercase font-bold">Inscriptions</p>
                       <p className="text-sm font-bold text-orange">{link.totalConversions}</p>
                     </div>
-                    {link.slug !== MANUEL_SLUG && (
+                    {isVsl && (
+                      <div title={`Leads VSL captés via ce lien (email donné pour voir la vidéo). Taux clic→lead : ${formatPercent(link.vslLeadRate)}`}>
+                        <p className="text-[9px] text-gray-400 uppercase font-bold">Leads VSL</p>
+                        <p className="text-sm font-bold text-bleu">
+                          {link.vslLeadsCount}
+                          {link.uniqueVisitors > 0 && (
+                            <span className="text-[10px] text-gray-400 font-semibold ml-1">
+                              ({formatPercent(link.vslLeadRate)})
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
+                    {isVsl && (
+                      <div title={`Demandes de diagnostic captées via ce lien. Taux lead→diag : ${formatPercent(link.diagnosticFromVslRate)} · Taux global clic→diag : ${formatPercent(link.diagnosticRate)}`}>
+                        <p className="text-[9px] text-gray-400 uppercase font-bold">Diagnostics</p>
+                        <p className="text-sm font-bold text-bleu">
+                          {link.diagnosticsCount}
+                          {link.vslLeadsCount > 0 && (
+                            <span className="text-[10px] text-gray-400 font-semibold ml-1">
+                              ({formatPercent(link.diagnosticFromVslRate)})
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
+                    {!isManuel && !isVsl && (
                       <div title="Visiteurs de ce lien qui ont aussi cliqué sur le bouton 'Télécharger le manuel'">
                         <p className="text-[9px] text-gray-400 uppercase font-bold">Manuel ↓</p>
                         <p className="text-sm font-bold text-bleu">
@@ -339,7 +406,7 @@ export default function AdminLinksPage() {
                         </p>
                       </div>
                     )}
-                    {link.slug === MANUEL_SLUG && (
+                    {isManuel && (
                       <div>
                         <p className="text-[9px] text-gray-400 uppercase font-bold">Taux conv.</p>
                         <p className="text-sm font-bold text-bleu">
@@ -462,47 +529,103 @@ export default function AdminLinksPage() {
                     </div>
                   )}
 
-                  {/* Détail clics récents */}
+                  {/* Détail : clics, leads VSL, demandes de diagnostic */}
                   {isDetail && (
-                    <div className="mt-3 bg-gray-50 rounded-lg p-3">
-                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-2">
-                        50 derniers clics
-                      </p>
-                      {detailLoading ? (
-                        <p className="text-xs text-gray-400 text-center py-3">Chargement…</p>
-                      ) : detail && detail.length > 0 ? (
-                        <ul className="divide-y divide-gray-200">
-                          {detail.map((c) => (
-                            <li key={c.id} className="py-2">
-                              <div className="flex items-center justify-between gap-2">
-                                <div className="text-[11px] text-gray-700 truncate">
-                                  {formatDate(c.createdAt)} · {c.device || "?"} ·{" "}
-                                  {c.browser || "?"} ({c.os || "?"})
-                                </div>
-                                {c.convertedAt && (
-                                  <span className="text-[10px] font-bold text-white bg-orange px-2 py-0.5 rounded-full shrink-0">
-                                    INSCRIT
-                                  </span>
-                                )}
-                              </div>
-                              {c.user && (
-                                <p className="text-[10px] text-orange truncate mt-0.5">
-                                  → {c.user.email}
-                                  {c.user.dealership ? ` · ${c.user.dealership}` : ""}
-                                </p>
-                              )}
-                              {c.referer && (
-                                <p className="text-[10px] text-gray-400 truncate">
-                                  via {c.referer}
-                                </p>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-xs text-gray-400 text-center py-3">
-                          Aucun clic pour le moment.
+                    <div className="mt-3 space-y-3">
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-2">
+                          50 derniers clics
                         </p>
+                        {detailLoading ? (
+                          <p className="text-xs text-gray-400 text-center py-3">Chargement…</p>
+                        ) : detail && detail.recentClicks.length > 0 ? (
+                          <ul className="divide-y divide-gray-200">
+                            {detail.recentClicks.map((c) => (
+                              <li key={c.id} className="py-2">
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="text-[11px] text-gray-700 truncate">
+                                    {formatDate(c.createdAt)} · {c.device || "?"} ·{" "}
+                                    {c.browser || "?"} ({c.os || "?"})
+                                  </div>
+                                  {c.convertedAt && (
+                                    <span className="text-[10px] font-bold text-white bg-orange px-2 py-0.5 rounded-full shrink-0">
+                                      INSCRIT
+                                    </span>
+                                  )}
+                                </div>
+                                {c.user && (
+                                  <p className="text-[10px] text-orange truncate mt-0.5">
+                                    → {c.user.email}
+                                    {c.user.dealership ? ` · ${c.user.dealership}` : ""}
+                                  </p>
+                                )}
+                                {c.referer && (
+                                  <p className="text-[10px] text-gray-400 truncate">
+                                    via {c.referer}
+                                  </p>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-xs text-gray-400 text-center py-3">
+                            Aucun clic pour le moment.
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Leads VSL (email gate) — affichés uniquement s'il y en a */}
+                      {!detailLoading && detail && detail.recentVslLeads.length > 0 && (
+                        <div className="bg-blue-50 rounded-lg p-3">
+                          <p className="text-[10px] font-bold text-bleu uppercase tracking-wide mb-2">
+                            📧 Leads VSL captés ({detail.recentVslLeads.length})
+                          </p>
+                          <ul className="divide-y divide-blue-100">
+                            {detail.recentVslLeads.map((lead) => {
+                              const isHot = detail.recentDiagnostics.some(
+                                (d) => d.email.toLowerCase() === lead.email.toLowerCase()
+                              );
+                              return (
+                                <li key={lead.id} className="py-2">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="text-[11px] text-gray-700 truncate">
+                                      <span className="text-gray-400">
+                                        {formatDate(lead.createdAt)}
+                                      </span>{" "}
+                                      <span className="font-semibold">{lead.firstName}</span> ·{" "}
+                                      <span className="text-bleu">{lead.email}</span>
+                                    </div>
+                                    {isHot && (
+                                      <span className="text-[10px] font-bold text-white bg-orange px-2 py-0.5 rounded-full shrink-0">
+                                        DIAG
+                                      </span>
+                                    )}
+                                  </div>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Demandes de diagnostic — affichées uniquement s'il y en a */}
+                      {!detailLoading && detail && detail.recentDiagnostics.length > 0 && (
+                        <div className="bg-orange/5 rounded-lg p-3 border border-orange/20">
+                          <p className="text-[10px] font-bold text-orange uppercase tracking-wide mb-2">
+                            🔍 Demandes de diagnostic ({detail.recentDiagnostics.length})
+                          </p>
+                          <ul className="divide-y divide-orange/10">
+                            {detail.recentDiagnostics.map((d) => (
+                              <li key={d.id} className="py-2">
+                                <div className="text-[11px] text-gray-700 truncate">
+                                  <span className="text-gray-400">{formatDate(d.createdAt)}</span>{" "}
+                                  <span className="font-semibold">{d.firstName}</span> ·{" "}
+                                  <span className="text-orange font-semibold">{d.email}</span>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       )}
                     </div>
                   )}

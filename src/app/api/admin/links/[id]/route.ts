@@ -93,5 +93,45 @@ export async function GET(
     },
   });
 
-  return NextResponse.json({ link, recentClicks });
+  // Leads VSL et demandes de diagnostic rattachés à ce lien via cookieId
+  // (un visiteur qui a cliqué sur ce lien et a ensuite donné son email
+  // sur la VSL ou demandé un diagnostic est attribué à ce lien).
+  const linkCookies = await prisma.linkClick.findMany({
+    where: { linkConfigId: link.id },
+    distinct: ["cookieId"],
+    select: { cookieId: true },
+  });
+  const cookieIds = linkCookies.map((c) => c.cookieId);
+
+  const [recentVslLeads, recentDiagnostics] =
+    cookieIds.length > 0
+      ? await Promise.all([
+          prisma.vslLead.findMany({
+            where: { cookieId: { in: cookieIds } },
+            orderBy: { createdAt: "desc" },
+            take: 50,
+            select: {
+              id: true,
+              createdAt: true,
+              firstName: true,
+              email: true,
+              cookieId: true,
+            },
+          }),
+          prisma.diagnosticRequest.findMany({
+            where: { cookieId: { in: cookieIds } },
+            orderBy: { createdAt: "desc" },
+            take: 50,
+            select: {
+              id: true,
+              createdAt: true,
+              firstName: true,
+              email: true,
+              cookieId: true,
+            },
+          }),
+        ])
+      : [[], []];
+
+  return NextResponse.json({ link, recentClicks, recentVslLeads, recentDiagnostics });
 }

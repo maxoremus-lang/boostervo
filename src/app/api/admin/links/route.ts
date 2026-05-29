@@ -73,6 +73,20 @@ export async function GET() {
           ? distinctVisitors.length
           : distinctVisitors.filter((v) => manuelVisitors.has(v.cookieId)).length;
 
+      // Conversions VSL : on rattache un VslLead / DiagnosticRequest à un
+      // lien si son cookieId correspond à un visiteur unique de ce lien.
+      // cookieId est la source de vérité (un visiteur peut transiter par
+      // plusieurs liens — c'est le clic d'origine qui compte, pas le slug
+      // saisi dans la table VslLead).
+      const cookieIds = distinctVisitors.map((v) => v.cookieId);
+      const [vslLeadsCount, diagnosticsCount] =
+        cookieIds.length > 0
+          ? await Promise.all([
+              prisma.vslLead.count({ where: { cookieId: { in: cookieIds } } }),
+              prisma.diagnosticRequest.count({ where: { cookieId: { in: cookieIds } } }),
+            ])
+          : [0, 0];
+
       return {
         id: link.id,
         slug: link.slug,
@@ -90,6 +104,17 @@ export async function GET() {
         downloadedManuel,
         downloadedManuelRate:
           distinctVisitors.length > 0 ? downloadedManuel / distinctVisitors.length : 0,
+        // Conversions tunnel VSL (cf. /go9 → /vsl-prive → diagnostic).
+        // Affiché côté UI uniquement pour les liens dont destination contient
+        // "vsl" — pour les autres ces compteurs valent 0 et sont masqués.
+        vslLeadsCount,
+        diagnosticsCount,
+        vslLeadRate:
+          distinctVisitors.length > 0 ? vslLeadsCount / distinctVisitors.length : 0,
+        diagnosticFromVslRate:
+          vslLeadsCount > 0 ? diagnosticsCount / vslLeadsCount : 0,
+        diagnosticRate:
+          distinctVisitors.length > 0 ? diagnosticsCount / distinctVisitors.length : 0,
         lastClickAt: lastClick?.createdAt ?? null,
       };
     })
