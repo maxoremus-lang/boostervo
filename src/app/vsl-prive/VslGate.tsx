@@ -87,19 +87,11 @@ export default function VslGate() {
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-3xl text-center">
-          <p className="font-nunito text-sm font-bold uppercase tracking-widest text-orange mb-3">
-            À regarder avant votre audit
-          </p>
-          <h1 className="font-nunito text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-6">
-            Le profit caché derrière
-            <br />
-            <span className="text-orange">vos appels manqués</span>
+          <h1 className="font-nunito text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight mb-8 max-w-2xl mx-auto">
+            En moins de 5 minutes, découvrez comment faire{" "}
+            <span className="text-orange">plus de ventes</span> sans augmenter
+            votre budget Leboncoin&nbsp;-&nbsp;La&nbsp;Centrale
           </h1>
-          <p className="text-white/80 text-base sm:text-lg mb-8 max-w-2xl mx-auto">
-            En 3 minutes, découvrez ce que 90&nbsp;% des négociants VO ne voient
-            pas — et comment récupérer entre 1&nbsp;500&nbsp;€ et 3&nbsp;000&nbsp;€
-            de marge par mois.
-          </p>
 
           {/* Cadre vidéo — toujours visible. Verrouillé (overlay) tant que
               l'email n'est pas saisi, puis remplacé par le vrai lecteur. */}
