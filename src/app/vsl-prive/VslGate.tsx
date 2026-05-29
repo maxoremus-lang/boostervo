@@ -88,9 +88,8 @@ export default function VslGate() {
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-3xl text-center">
           <h1 className="font-nunito text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight mb-8 max-w-2xl mx-auto">
-            En moins de 5 minutes, découvrez comment faire{" "}
-            <span className="text-orange">plus de ventes</span> sans augmenter
-            votre budget Leboncoin&nbsp;-&nbsp;La&nbsp;Centrale
+            Découvrez comment faire{" "}
+            <span className="text-orange">plus de ventes</span> avec vos annonces VO
           </h1>
 
           {/* Cadre vidéo — toujours visible. Verrouillé (overlay) tant que
