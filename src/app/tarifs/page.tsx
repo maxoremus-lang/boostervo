@@ -6,7 +6,7 @@ import styles from "./styles.module.css";
 export const metadata: Metadata = {
   title: "BoosterVO — Nos tarifs",
   description:
-    "Trois offres BoosterVO pour récupérer la marge perdue sur vos ventes VO : Pack Diagnostic, Abonnement Croissance, Abonnement Performance.",
+    "Trois offres BoosterVO pour récupérer la marge perdue sur vos ventes VO : Pack Diagnostic, Call Agent Croissance, Abonnement Performance.",
 };
 
 type Feature = { label: string; bold?: boolean };
@@ -72,8 +72,8 @@ const plans: Plan[] = [
   },
   {
     id: "croissance",
-    name: "Abonnement Croissance",
-    tagline: "Agent IA + agent humain dédié",
+    name: "Call Agent Croissance",
+    tagline: "Agent humain dédié assisté par l'IA",
     price: "397 €",
     priceUnit: "HT / mois",
     priceNote: "Sans engagement",
