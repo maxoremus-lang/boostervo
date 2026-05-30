@@ -97,6 +97,7 @@
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin-bottom: 22px;
+  color: var(--bvo-blue);
 }
 
 .italic {
