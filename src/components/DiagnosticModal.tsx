@@ -199,7 +199,7 @@ export default function DiagnosticModal({
               disabled={status === "sending"}
               className="w-full bg-orange hover:bg-orange-dark disabled:opacity-50 text-white font-bold py-3.5 rounded-xl shadow-md transition"
             >
-              {status === "sending" ? "Envoi…" : "Recevoir ma présentation"}
+              {status === "sending" ? "Envoi…" : "Validez votre demande de contact"}
             </button>
 
             <p className="text-[13.2px] font-bold text-gray-400 text-center">
