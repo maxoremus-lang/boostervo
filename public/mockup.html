@@ -1846,6 +1846,53 @@
     .how-cta-btn{grid-column:auto}
   }
 
+  /* === SECTION 6 — TÉMOIGNAGES (vedette + secondaires) === */
+  .temo{background:#fff;padding:80px 42px}
+  .temo-inner{max-width:1100px;margin:0 auto}
+  .temo-eyebrow{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    color:var(--bvo-orange);font-family:'Nunito',sans-serif;
+    font-weight:800;letter-spacing:5px;font-size:13px;text-transform:uppercase;margin-bottom:16px;
+  }
+  .temo-eyebrow::before,.temo-eyebrow::after{content:'';display:block;width:36px;height:1px;background:var(--bvo-orange)}
+  .temo-title{
+    font-family:'Nunito',sans-serif;font-weight:900;font-size:34px;line-height:1.18;
+    letter-spacing:-1px;color:var(--navy);text-align:center;max-width:760px;margin:0 auto 10px;
+  }
+  .temo-title .accent{color:var(--bvo-orange)}
+  .temo-sub{
+    text-align:center;font-size:18px;color:var(--muted);font-weight:600;
+    max-width:680px;margin:0 auto 48px;line-height:1.55;
+  }
+  .temo-layout{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:stretch}
+  .temo-feature{
+    background:linear-gradient(135deg,var(--bvo-bleu),var(--bvo-bleu-deep));
+    color:#fff;border-radius:22px;padding:40px;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .temo-mark{font-family:Georgia,serif;font-size:64px;line-height:.6;color:var(--bvo-orange);margin-bottom:10px}
+  .temo-feature-quote{font-size:22px;line-height:1.5;font-weight:700;font-family:'Nunito',sans-serif;margin-bottom:28px}
+  .temo-feature-person{display:flex;align-items:center;gap:16px}
+  .temo-feature-avatar{
+    width:58px;height:58px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,#ff8c32,var(--bvo-orange));
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    font-weight:900;font-size:22px;font-family:'Nunito',sans-serif;
+  }
+  .temo-feature-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px}
+  .temo-feature-role{font-size:14px;color:rgba(255,255,255,.7)}
+  .temo-side{display:flex;flex-direction:column;gap:20px}
+  .temo-mini{
+    background:#fff;border:1px solid #e8e3d6;border-radius:16px;padding:22px;flex:1;
+    box-shadow:0 8px 22px rgba(10,22,40,.05);
+  }
+  .temo-stars{color:var(--bvo-orange);font-size:18px;letter-spacing:2px}
+  .temo-mini-quote{font-size:14.5px;line-height:1.55;color:#2a3548;font-style:italic;margin:8px 0 14px}
+  .temo-mini-person{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--navy)}
+  .temo-mini-role{font-size:12px;color:var(--muted);font-weight:400}
+  @media(max-width:980px){.temo-layout{grid-template-columns:1fr}}
+  @media(max-width:680px){.temo{padding:56px 24px}.temo-title{font-size:28px}.temo-feature{padding:30px}.temo-feature-quote{font-size:19px}}
+
   /* === RESPONSIVE === */
   @media(max-width:1100px){
     header nav{display:none}
@@ -2474,6 +2521,47 @@
         </a>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 6 — TÉMOIGNAGES ===================== -->
+  <section class="temo">
+    <div class="temo-inner">
+
+      <div class="temo-eyebrow">Témoignage</div>
+      <h2 class="temo-title">Ils ont <span class="accent">franchi le pas</span></h2>
+      <p class="temo-sub">Un retour d'expérience détaillé, et d'autres voix qui le confirment.</p>
+
+      <div class="temo-layout">
+
+        <!-- Témoignage vedette -->
+        <div class="temo-feature">
+          <div class="temo-mark">&ldquo;</div>
+          <p class="temo-feature-quote">[Citation principale — le témoignage le plus fort : 3 à 4 phrases, une vraie histoire et un résultat marquant.]</p>
+          <div class="temo-feature-person">
+            <div class="temo-feature-avatar">XX</div>
+            <div>
+              <div class="temo-feature-name">[Prénom Nom]</div>
+              <div class="temo-feature-role">[Fonction] · [Garage, Ville]</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Témoignages secondaires -->
+        <div class="temo-side">
+          <div class="temo-mini">
+            <div class="temo-stars">★★★★★</div>
+            <p class="temo-mini-quote">« [Citation courte.] »</p>
+            <div class="temo-mini-person">[Prénom Nom] <span class="temo-mini-role">— [Garage, Ville]</span></div>
+          </div>
+          <div class="temo-mini">
+            <div class="temo-stars">★★★★★</div>
+            <p class="temo-mini-quote">« [Citation courte.] »</p>
+            <div class="temo-mini-person">[Prénom Nom] <span class="temo-mini-role">— [Garage, Ville]</span></div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
