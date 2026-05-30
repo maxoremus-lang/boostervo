@@ -21,7 +21,9 @@ type Plan = {
   priceUnit: string;
   priceNote?: string;
   ctaLabel: string;
-  ctaHref: string;
+  ctaSource: string;
+  ctaModalTitle?: string;
+  ctaModalSubtitle?: string;
   includes?: string;
   sections: Section[];
   excluded?: string[];
@@ -38,7 +40,7 @@ const plans: Plan[] = [
     priceUnit: "HT, paiement unique",
     priceNote: "Étude sur 2 × 15 jours",
     ctaLabel: "Découvrir le pack diagnostic",
-    ctaHref: "https://wa.me/33612345678?text=Bonjour,%20je%20veux%20commander%20le%20Pack%20Diagnostic",
+    ctaSource: "tarifs-diagnostic",
     sections: [
       {
         heading: "Phase 1 — Fonctionnement normal",
@@ -79,7 +81,9 @@ const plans: Plan[] = [
     priceUnit: "HT / mois",
     priceNote: "Sans engagement",
     ctaLabel: "Démarrer Croissance",
-    ctaHref: "https://wa.me/33612345678?text=Bonjour,%20je%20veux%20démarrer%20l'abonnement%20Croissance",
+    ctaSource: "tarifs-croissance",
+    ctaModalTitle: "Démarrer Call Agent Croissance",
+    ctaModalSubtitle: "Échange gratuit et sans engagement en 20 minutes.",
     highlight: true,
     sections: [
       {
@@ -128,7 +132,9 @@ const plans: Plan[] = [
     priceUnit: "HT / mois",
     priceNote: "Sans engagement",
     ctaLabel: "Passer en Performance",
-    ctaHref: "https://wa.me/33612345678?text=Bonjour,%20je%20veux%20démarrer%20l'abonnement%20Performance",
+    ctaSource: "tarifs-performance",
+    ctaModalTitle: "Passer en Call Agent Performance",
+    ctaModalSubtitle: "Échange gratuit et sans engagement en 20 minutes.",
     includes: "Tout Croissance inclus",
     sections: [
       {
@@ -207,32 +213,12 @@ export default function TarifsPage() {
               {plan.priceNote && <div className={styles.priceNote}>{plan.priceNote}</div>}
             </div>
 
-            {plan.id === "diagnostic" ? (
-              <DiagnosticCardCta label={plan.ctaLabel} source="tarifs-diagnostic" />
-            ) : (
-              <a
-                className={styles.cta}
-                href={plan.ctaHref}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>{plan.ctaLabel}</span>
-                <span className={styles.ctaIcon}>
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#1B4F9B"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </span>
-              </a>
-            )}
+            <DiagnosticCardCta
+              label={plan.ctaLabel}
+              source={plan.ctaSource}
+              title={plan.ctaModalTitle}
+              subtitle={plan.ctaModalSubtitle}
+            />
 
             {plan.includes && (
               <div className={styles.includesBanner}>

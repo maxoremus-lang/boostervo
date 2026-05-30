@@ -6,11 +6,19 @@ type Props = {
   open: boolean;
   onClose: () => void;
   source: string;
+  title?: string;
+  subtitle?: string;
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function DiagnosticModal({ open, onClose, source }: Props) {
+export default function DiagnosticModal({
+  open,
+  onClose,
+  source,
+  title = "Découvrir le diagnostic",
+  subtitle = "Présentation gratuite et sans engagement en 20 minutes.",
+}: Props) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -87,10 +95,10 @@ export default function DiagnosticModal({ open, onClose, source }: Props) {
         <div className="flex items-start justify-between p-6 pb-2">
           <div>
             <h2 className="text-xl font-nunito font-extrabold text-bleu">
-              Découvrir le diagnostic
+              {title}
             </h2>
             <p className="text-sm text-gray-500 mt-1">
-              Présentation gratuite et sans engagement en 20 minutes.
+              {subtitle}
             </p>
           </div>
           <button

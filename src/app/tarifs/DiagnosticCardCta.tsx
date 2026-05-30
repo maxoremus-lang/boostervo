@@ -7,12 +7,14 @@ import styles from "./styles.module.css";
 type Props = {
   label: string;
   source: string;
+  title?: string;
+  subtitle?: string;
 };
 
-// CTA de la carte « Pack Diagnostic » : reprend le style des autres boutons
-// de la grille mais ouvre la modale de demande (prénom + email), comme le
-// bouton « Découvrir le diagnostic » des pages go/VSL.
-export default function DiagnosticCardCta({ label, source }: Props) {
+// CTA des cartes d'offres : reprend le style des boutons de la grille mais
+// ouvre la modale de demande (prénom + email), comme le bouton
+// « Découvrir le diagnostic » des pages go/VSL.
+export default function DiagnosticCardCta({ label, source, title, subtitle }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -39,7 +41,13 @@ export default function DiagnosticCardCta({ label, source }: Props) {
           </svg>
         </span>
       </button>
-      <DiagnosticModal open={open} onClose={() => setOpen(false)} source={source} />
+      <DiagnosticModal
+        open={open}
+        onClose={() => setOpen(false)}
+        source={source}
+        title={title}
+        subtitle={subtitle}
+      />
     </>
   );
 }
