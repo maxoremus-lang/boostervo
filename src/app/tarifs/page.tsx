@@ -84,11 +84,10 @@ const plans: Plan[] = [
       {
         heading: "Zéro appel manqué",
         features: [
-          { label: "Réception des appels 24h/24, 7j/7" },
+          { label: "Réception des appels 24h/24 – 7j/7" },
+          { label: "100 % d'appels décrochés immédiatement" },
+          { label: "Agent humain dédié" },
           { label: "Script personnalisé à votre enseigne" },
-          { label: "Agent humain dédié qui parle au nom de votre société" },
-          { label: "Jusqu'à 10 appels simultanés sur 1 numéro dédié" },
-          { label: "Bascule vers un agent humain si nécessaire" },
         ],
       },
       {
