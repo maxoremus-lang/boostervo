@@ -86,7 +86,7 @@ const plans: Plan[] = [
         features: [
           { label: "Réception des appels 24h/24, 7j/7" },
           { label: "Script personnalisé à votre enseigne" },
-          { label: "Agent IA qui parle au nom de votre concession" },
+          { label: "Agent humain dédié qui parle au nom de votre société" },
           { label: "Jusqu'à 10 appels simultanés sur 1 numéro dédié" },
           { label: "Bascule vers un agent humain si nécessaire" },
         ],
