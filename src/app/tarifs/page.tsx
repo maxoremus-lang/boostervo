@@ -6,7 +6,7 @@ import styles from "./styles.module.css";
 export const metadata: Metadata = {
   title: "BoosterVO — Nos tarifs",
   description:
-    "Trois offres BoosterVO pour récupérer la marge perdue sur vos ventes VO : Pack Diagnostic, Call Agent Croissance, Abonnement Performance.",
+    "Trois offres BoosterVO pour récupérer la marge perdue sur vos ventes VO : Pack Diagnostic, Call Agent Croissance, Call Agent Performance.",
 };
 
 type Feature = { label: string; bold?: boolean };
@@ -122,7 +122,7 @@ const plans: Plan[] = [
   },
   {
     id: "performance",
-    name: "Abonnement Performance",
+    name: "Call Agent Performance",
     tagline: "Solution complète avec CRM intégré",
     price: "497 €",
     priceUnit: "HT / mois",
