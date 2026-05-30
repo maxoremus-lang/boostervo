@@ -33,7 +33,7 @@ const plans: Plan[] = [
     id: "diagnostic",
     name: "Pack Diagnostic",
     tagline: "Mesurez la marge perdue sur vos appels manqués",
-    price: "297 €",
+    price: "197 €",
     priceUnit: "HT, paiement unique",
     priceNote: "Étude sur 2 × 15 jours",
     ctaLabel: "Commander mon diagnostic",
