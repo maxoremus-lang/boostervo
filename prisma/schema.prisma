@@ -170,6 +170,7 @@ model DiagnosticRequest {
   id        String   @id @default(cuid())
   firstName String
   email     String
+  mobile    String?
   slug      String?
   cookieId  String?
   createdAt DateTime @default(now())

@@ -21,6 +21,7 @@ export default function DiagnosticModal({
 }: Props) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
 
@@ -41,6 +42,7 @@ export default function DiagnosticModal({
     if (open) {
       setFirstName("");
       setEmail("");
+      setMobile("");
       setStatus("idle");
       setError("");
     }
@@ -53,6 +55,7 @@ export default function DiagnosticModal({
     setError("");
     const fn = firstName.trim();
     const em = email.trim();
+    const mo = mobile.trim();
     if (!fn) {
       setError("Merci d'indiquer votre prénom.");
       return;
@@ -61,12 +64,16 @@ export default function DiagnosticModal({
       setError("Merci d'indiquer un email valide.");
       return;
     }
+    if (mo.replace(/[^0-9]/g, "").length < 6) {
+      setError("Merci d'indiquer un numéro de mobile valide.");
+      return;
+    }
     setStatus("sending");
     try {
       const res = await fetch("/api/diagnostic-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName: fn, email: em, source }),
+        body: JSON.stringify({ firstName: fn, email: em, mobile: mo, source }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}) as { error?: string });
@@ -172,6 +179,21 @@ export default function DiagnosticModal({
               />
             </div>
 
+            <div>
+              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                Mobile
+              </label>
+              <input
+                type="tel"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+                placeholder="06 12 34 56 78"
+                className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange/40 focus:border-orange"
+                autoComplete="tel"
+                required
+              />
+            </div>
+
             <button
               type="submit"
               disabled={status === "sending"}
@@ -180,7 +202,7 @@ export default function DiagnosticModal({
               {status === "sending" ? "Envoi…" : "Recevoir ma présentation"}
             </button>
 
-            <p className="text-[11px] text-gray-400 text-center">
+            <p className="text-[13.2px] font-bold text-gray-400 text-center">
               En envoyant ce formulaire, vous acceptez d&apos;être recontacté par BoosterVO.
             </p>
           </form>

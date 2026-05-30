@@ -11,6 +11,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 async function sendNotification(payload: {
   firstName: string;
   email: string;
+  mobile: string;
   slug: string | null;
   source: string;
 }) {
@@ -44,6 +45,12 @@ async function sendNotification(payload: {
             <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-weight: 600; color: #555;">Email</td>
             <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #222; font-weight: 700;">
               <a href="mailto:${payload.email}" style="color: #FF6600; text-decoration: none;">${payload.email}</a>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-weight: 600; color: #555;">Mobile</td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #222; font-weight: 700;">
+              <a href="tel:${payload.mobile}" style="color: #FF6600; text-decoration: none;">${payload.mobile}</a>
             </td>
           </tr>
           <tr>
@@ -86,6 +93,7 @@ export async function POST(req: NextRequest) {
   const data = (body ?? {}) as Record<string, unknown>;
   const firstName = typeof data.firstName === "string" ? data.firstName.trim() : "";
   const email = typeof data.email === "string" ? data.email.trim().toLowerCase() : "";
+  const mobile = typeof data.mobile === "string" ? data.mobile.trim() : "";
   const source = typeof data.source === "string" ? data.source.trim() : "";
 
   if (!firstName) {
@@ -93,6 +101,9 @@ export async function POST(req: NextRequest) {
   }
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json({ error: "Email invalide" }, { status: 400 });
+  }
+  if (mobile.replace(/[^0-9]/g, "").length < 6) {
+    return NextResponse.json({ error: "Mobile invalide" }, { status: 400 });
   }
 
   const cookieId = req.cookies.get(CLICK_COOKIE_NAME)?.value || null;
@@ -113,7 +124,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await prisma.diagnosticRequest.create({
-      data: { firstName, email, slug, cookieId },
+      data: { firstName, email, mobile, slug, cookieId },
     });
   } catch (err) {
     console.error("[diagnostic-request] création échouée:", err);
@@ -121,7 +132,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    await sendNotification({ firstName, email, slug, source });
+    await sendNotification({ firstName, email, mobile, slug, source });
   } catch (err) {
     console.error("[diagnostic-request] envoi mail échoué:", err);
     // Non-bloquant : la demande est déjà enregistrée.

@@ -7,6 +7,7 @@ type DiagRequest = {
   id: string;
   firstName: string;
   email: string;
+  mobile: string | null;
   slug: string | null;
   createdAt: string;
 };
@@ -23,9 +24,9 @@ function formatDate(iso: string) {
 
 function toCsv(rows: DiagRequest[]): string {
   const escape = (v: string) => `"${v.replace(/"/g, '""')}"`;
-  const header = ["Prénom", "Email", "Lien source", "Date"];
+  const header = ["Prénom", "Email", "Mobile", "Lien source", "Date"];
   const lines = rows.map((r) =>
-    [r.firstName, r.email, r.slug ?? "", new Date(r.createdAt).toLocaleString("fr-FR")]
+    [r.firstName, r.email, r.mobile ?? "", r.slug ?? "", new Date(r.createdAt).toLocaleString("fr-FR")]
       .map((v) => escape(String(v)))
       .join(",")
   );
@@ -139,6 +140,14 @@ export default function AdminDiagnosticsPage() {
                         >
                           {r.email}
                         </a>
+                        {r.mobile && (
+                          <a
+                            href={`tel:${r.mobile}`}
+                            className="text-xs text-gray-600 truncate block hover:underline"
+                          >
+                            {r.mobile}
+                          </a>
+                        )}
                       </div>
                       <div className="text-right shrink-0 space-y-1">
                         <p className="text-[11px] font-semibold text-gray-600">
