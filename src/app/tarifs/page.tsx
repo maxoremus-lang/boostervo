@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./styles.module.css";
+import DiagnosticCardCta from "./DiagnosticCardCta";
 
 export const metadata: Metadata = {
   title: "BoosterVO — Nos tarifs",
@@ -36,7 +37,7 @@ const plans: Plan[] = [
     price: "197 €",
     priceUnit: "HT, paiement unique",
     priceNote: "Étude sur 2 × 15 jours",
-    ctaLabel: "Commander mon diagnostic",
+    ctaLabel: "Découvrir le pack diagnostic",
     ctaHref: "https://wa.me/33612345678?text=Bonjour,%20je%20veux%20commander%20le%20Pack%20Diagnostic",
     sections: [
       {
@@ -206,28 +207,32 @@ export default function TarifsPage() {
               {plan.priceNote && <div className={styles.priceNote}>{plan.priceNote}</div>}
             </div>
 
-            <a
-              className={styles.cta}
-              href={plan.ctaHref}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>{plan.ctaLabel}</span>
-              <span className={styles.ctaIcon}>
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#1B4F9B"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </span>
-            </a>
+            {plan.id === "diagnostic" ? (
+              <DiagnosticCardCta label={plan.ctaLabel} source="tarifs-diagnostic" />
+            ) : (
+              <a
+                className={styles.cta}
+                href={plan.ctaHref}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>{plan.ctaLabel}</span>
+                <span className={styles.ctaIcon}>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#1B4F9B"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
+              </a>
+            )}
 
             {plan.includes && (
               <div className={styles.includesBanner}>
