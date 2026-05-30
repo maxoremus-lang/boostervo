@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoosterVO — Propositions section Témoignages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,800;1,900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bvo-bleu:#1B4F9B;
+    --bvo-bleu-dark:#153d7a;
+    --bvo-bleu-deep:#0f2d5c;
+    --bvo-orange:#FF6600;
+    --bvo-orange-dark:#cc5200;
+    --navy:#0A1628;
+    --muted:#53637a;
+    --green:#15a65a;
+    --line:#e8e3d6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Open Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--navy);
+    background:#f4f1ea;
+  }
+  .material-symbols-outlined{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;line-height:1;vertical-align:middle}
+
+  /* Bandeau d'aide (non destiné au site) */
+  .doc-banner{
+    background:var(--navy);color:#fff;text-align:center;
+    padding:18px 20px;font-family:'Nunito',sans-serif;
+  }
+  .doc-banner h1{font-size:20px;font-weight:900;margin-bottom:4px}
+  .doc-banner p{font-size:14px;color:rgba(255,255,255,.75);font-weight:600}
+  .doc-tag{
+    display:inline-block;background:var(--bvo-orange);color:#fff;
+    font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;
+    letter-spacing:1px;text-transform:uppercase;
+    padding:8px 18px;border-radius:8px;margin:40px auto 0;
+  }
+  .doc-wrap{text-align:center}
+
+  .eyebrow{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    color:var(--bvo-orange);font-family:'Nunito',sans-serif;
+    font-weight:800;letter-spacing:5px;font-size:13px;text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .eyebrow::before,.eyebrow::after{content:'';display:block;width:36px;height:1px;background:var(--bvo-orange)}
+  .sec-title{
+    font-family:'Nunito',sans-serif;font-weight:900;font-size:34px;
+    line-height:1.18;letter-spacing:-1px;text-align:center;
+    max-width:760px;margin:0 auto 10px;
+  }
+  .sec-title .accent{color:var(--bvo-orange)}
+  .sec-sub{
+    text-align:center;font-size:18px;color:var(--muted);
+    max-width:680px;margin:0 auto 48px;line-height:1.55;font-weight:600;
+  }
+  .stars{color:var(--bvo-orange);font-size:18px;letter-spacing:2px}
+  .ph{color:var(--bvo-orange);font-weight:700} /* placeholder à remplir */
+
+  /* ============ DESIGN A — Grille de cartes classiques ============ */
+  .tA{background:#fff;padding:80px 42px;border-bottom:1px solid var(--line)}
+  .tA-inner{max-width:1100px;margin:0 auto}
+  .tA-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:8px}
+  .tA-card{
+    background:#fff;border:1px solid var(--line);border-radius:18px;
+    padding:28px;display:flex;flex-direction:column;
+    box-shadow:0 10px 30px rgba(10,22,40,.05);
+  }
+  .tA-quote{font-size:16px;line-height:1.6;color:#2a3548;margin:14px 0 22px;flex:1;font-style:italic}
+  .tA-person{display:flex;align-items:center;gap:14px;border-top:1px solid var(--line);padding-top:18px}
+  .tA-avatar{
+    width:48px;height:48px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,#ff8c32,var(--bvo-orange));
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;
+  }
+  .tA-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:15px}
+  .tA-role{font-size:13px;color:var(--muted)}
+
+  /* ============ DESIGN B — Résultats chiffrés (ROI) ============ */
+  .tB{
+    background:linear-gradient(180deg,var(--bvo-bleu) 0%,var(--bvo-bleu-dark) 100%);
+    color:#fff;padding:80px 42px;border-bottom:1px solid var(--line);
+  }
+  .tB .sec-title{color:#fff}
+  .tB .sec-sub{color:rgba(255,255,255,.78)}
+  .tB-inner{max-width:1100px;margin:0 auto}
+  .tB-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:8px}
+  .tB-card{
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+    border-radius:18px;padding:30px 28px;backdrop-filter:blur(4px);
+  }
+  .tB-num{
+    font-family:'Nunito',sans-serif;font-weight:900;font-size:46px;
+    line-height:1;color:var(--bvo-orange);margin-bottom:6px;
+  }
+  .tB-num-label{font-size:14px;color:rgba(255,255,255,.7);font-weight:600;margin-bottom:18px}
+  .tB-quote{font-size:15px;line-height:1.6;color:rgba(255,255,255,.92);margin-bottom:20px}
+  .tB-person{display:flex;align-items:center;gap:12px}
+  .tB-avatar{
+    width:42px;height:42px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,.15);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-family:'Nunito',sans-serif;
+  }
+  .tB-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px}
+  .tB-role{font-size:12px;color:rgba(255,255,255,.6)}
+
+  /* ============ DESIGN C — Témoignage vedette + secondaires ============ */
+  .tC{background:#fff;padding:80px 42px;border-bottom:1px solid var(--line)}
+  .tC-inner{max-width:1100px;margin:0 auto}
+  .tC-layout{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;margin-top:8px;align-items:stretch}
+  .tC-feature{
+    background:linear-gradient(135deg,var(--bvo-bleu),var(--bvo-bleu-deep));
+    color:#fff;border-radius:22px;padding:40px;display:flex;flex-direction:column;justify-content:center;
+  }
+  .tC-mark{font-family:Georgia,serif;font-size:64px;line-height:.6;color:var(--bvo-orange);margin-bottom:10px}
+  .tC-feature-quote{font-size:22px;line-height:1.5;font-weight:700;font-family:'Nunito',sans-serif;margin-bottom:28px}
+  .tC-feature-person{display:flex;align-items:center;gap:16px}
+  .tC-feature-avatar{
+    width:58px;height:58px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,#ff8c32,var(--bvo-orange));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:22px;font-family:'Nunito',sans-serif;
+  }
+  .tC-feature-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px}
+  .tC-feature-role{font-size:14px;color:rgba(255,255,255,.7)}
+  .tC-side{display:flex;flex-direction:column;gap:20px}
+  .tC-mini{
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;flex:1;
+    box-shadow:0 8px 22px rgba(10,22,40,.05);
+  }
+  .tC-mini-quote{font-size:14.5px;line-height:1.55;color:#2a3548;font-style:italic;margin:8px 0 14px}
+  .tC-mini-person{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px}
+  .tC-mini-role{font-size:12px;color:var(--muted);font-weight:400}
+
+  /* ============ DESIGN D — Mur de citations (compact) ============ */
+  .tD{
+    background:
+      radial-gradient(circle at 80% 10%,rgba(255,102,0,.10),transparent 40%),
+      var(--bvo-bleu-deep);
+    color:#fff;padding:80px 42px;
+  }
+  .tD .sec-title{color:#fff}
+  .tD .sec-sub{color:rgba(255,255,255,.78)}
+  .tD-inner{max-width:1100px;margin:0 auto}
+  .tD-masonry{columns:3;column-gap:20px;margin-top:8px}
+  .tD-card{
+    break-inside:avoid;margin-bottom:20px;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;padding:22px;
+  }
+  .tD-quote{font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.92);margin:8px 0 16px}
+  .tD-person{display:flex;align-items:center;gap:10px}
+  .tD-avatar{
+    width:36px;height:36px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,.15);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;font-family:'Nunito',sans-serif;
+  }
+  .tD-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px}
+  .tD-role{font-size:11.5px;color:rgba(255,255,255,.6)}
+
+  @media(max-width:980px){
+    .tA-grid,.tB-grid{grid-template-columns:1fr 1fr}
+    .tC-layout{grid-template-columns:1fr}
+    .tD-masonry{columns:2}
+  }
+  @media(max-width:680px){
+    .tA,.tB,.tC,.tD{padding:56px 20px}
+    .tA-grid,.tB-grid{grid-template-columns:1fr}
+    .tD-masonry{columns:1}
+    .sec-title{font-size:28px}
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-banner">
+  <h1>BoosterVO — 4 designs de section « Témoignages »</h1>
+  <p>Aperçu interne · les champs en <span style="color:var(--bvo-orange)">orange [entre crochets]</span> sont à remplir avec de vrais clients</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- DESIGN A -->
+<!-- ============================================================ -->
+<div class="doc-wrap"><span class="doc-tag">Design A — Cartes classiques (le standard rassurant)</span></div>
+<section class="tA">
+  <div class="tA-inner">
+    <div class="eyebrow">Ils nous font confiance</div>
+    <h2 class="sec-title">Des négociants qui ne <span class="accent">ratent plus un appel</span></h2>
+    <p class="sec-sub">Découvrez ce que change BoosterVO au quotidien pour des professionnels comme vous.</p>
+    <div class="tA-grid">
+
+      <div class="tA-card">
+        <div class="stars">★★★★★</div>
+        <p class="tA-quote">« <span class="ph">[Citation client — 2 à 3 phrases : le problème avant, le déclic, le résultat concret après BoosterVO.]</span> »</p>
+        <div class="tA-person">
+          <div class="tA-avatar"><span class="ph">XX</span></div>
+          <div>
+            <div class="tA-name"><span class="ph">[Prénom Nom]</span></div>
+            <div class="tA-role"><span class="ph">[Fonction] · [Garage, Ville]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tA-card">
+        <div class="stars">★★★★★</div>
+        <p class="tA-quote">« <span class="ph">[Citation client — insistez sur un bénéfice mesurable : RDV en plus, ventes récupérées, temps gagné.]</span> »</p>
+        <div class="tA-person">
+          <div class="tA-avatar"><span class="ph">XX</span></div>
+          <div>
+            <div class="tA-name"><span class="ph">[Prénom Nom]</span></div>
+            <div class="tA-role"><span class="ph">[Fonction] · [Garage, Ville]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tA-card">
+        <div class="stars">★★★★★</div>
+        <p class="tA-quote">« <span class="ph">[Citation client — une objection levée : « je pensais que… et finalement… ».]</span> »</p>
+        <div class="tA-person">
+          <div class="tA-avatar"><span class="ph">XX</span></div>
+          <div>
+            <div class="tA-name"><span class="ph">[Prénom Nom]</span></div>
+            <div class="tA-role"><span class="ph">[Fonction] · [Garage, Ville]</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- DESIGN B -->
+<!-- ============================================================ -->
+<div class="doc-wrap"><span class="doc-tag">Design B — Résultats chiffrés (orienté ROI)</span></div>
+<section class="tB">
+  <div class="tB-inner">
+    <div class="eyebrow">Résultats clients</div>
+    <h2 class="sec-title">Des chiffres, pas des promesses</h2>
+    <p class="sec-sub">Ce que BoosterVO a concrètement rapporté à nos clients.</p>
+    <div class="tB-grid">
+
+      <div class="tB-card">
+        <div class="tB-num"><span class="ph">[+12]</span></div>
+        <div class="tB-num-label"><span class="ph">[RDV supplémentaires / mois]</span></div>
+        <p class="tB-quote">« <span class="ph">[Citation courte qui appuie le chiffre.]</span> »</p>
+        <div class="tB-person">
+          <div class="tB-avatar"><span class="ph">XX</span></div>
+          <div>
+            <div class="tB-name"><span class="ph">[Prénom Nom]</span></div>
+            <div class="tB-role"><span class="ph">[Garage, Ville]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tB-card">
+        <div class="tB-num"><span class="ph">[3×]</span></div>
+        <div class="tB-num-label"><span class="ph">[de conversion sur appels décrochés]</span></div>
+        <p class="tB-quote">« <span class="ph">[Citation courte qui appuie le chiffre.]</span> »</p>
+        <div class="tB-person">
+          <div class="tB-avatar"><span class="ph">XX</span></div>
+          <div>
+            <div class="tB-name"><span class="ph">[Prénom Nom]</span></div>
+            <div class="tB-role"><span class="ph">[Garage, Ville]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tB-card">
+        <div class="tB-num"><span class="ph">[0]</span></div>
+        <div class="tB-num-label"><span class="ph">[appel manqué depuis 6 mois]</span></div>
+        <p class="tB-quote">« <span class="ph">[Citation courte qui appuie le chiffre.]</span> »</p>
+        <div class="tB-person">
+          <div class="tB-avatar"><span class="ph">XX</span></div>
+          <div>
+            <div class="tB-name"><span class="ph">[Prénom Nom]</span></div>
+            <div class="tB-role"><span class="ph">[Garage, Ville]</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- DESIGN C -->
+<!-- ============================================================ -->
+<div class="doc-wrap"><span class="doc-tag">Design C — Témoignage vedette + secondaires</span></div>
+<section class="tC">
+  <div class="tC-inner">
+    <div class="eyebrow">Témoignage</div>
+    <h2 class="sec-title">Ils ont <span class="accent">franchi le pas</span></h2>
+    <p class="sec-sub">Un retour d'expérience détaillé, et d'autres voix qui le confirment.</p>
+    <div class="tC-layout">
+
+      <div class="tC-feature">
+        <div class="tC-mark">&ldquo;</div>
+        <p class="tC-feature-quote"><span class="ph">[Citation principale — le témoignage le plus fort : 3 à 4 phrases, avec une vraie histoire et un résultat marquant.]</span></p>
+        <div class="tC-feature-person">
+          <div class="tC-feature-avatar"><span class="ph">XX</span></div>
+          <div>
+            <div class="tC-feature-name"><span class="ph">[Prénom Nom]</span></div>
+            <div class="tC-feature-role"><span class="ph">[Fonction] · [Garage, Ville]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tC-side">
+        <div class="tC-mini">
+          <div class="stars">★★★★★</div>
+          <p class="tC-mini-quote">« <span class="ph">[Citation courte.]</span> »</p>
+          <div class="tC-mini-person"><span class="ph">[Prénom Nom]</span> <span class="tC-mini-role">— <span class="ph">[Garage, Ville]</span></span></div>
+        </div>
+        <div class="tC-mini">
+          <div class="stars">★★★★★</div>
+          <p class="tC-mini-quote">« <span class="ph">[Citation courte.]</span> »</p>
+          <div class="tC-mini-person"><span class="ph">[Prénom Nom]</span> <span class="tC-mini-role">— <span class="ph">[Garage, Ville]</span></span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- DESIGN D -->
+<!-- ============================================================ -->
+<div class="doc-wrap"><span class="doc-tag">Design D — Mur de citations (compact, beaucoup d'avis)</span></div>
+<section class="tD">
+  <div class="tD-inner">
+    <div class="eyebrow">Ils en parlent</div>
+    <h2 class="sec-title">Le mur des négociants BoosterVO</h2>
+    <p class="sec-sub">Idéal quand vous avez beaucoup d'avis courts à afficher.</p>
+    <div class="tD-masonry">
+
+      <div class="tD-card">
+        <div class="stars">★★★★★</div>
+        <p class="tD-quote">« <span class="ph">[Citation courte 1.]</span> »</p>
+        <div class="tD-person"><div class="tD-avatar"><span class="ph">XX</span></div><div><div class="tD-name"><span class="ph">[Prénom]</span></div><div class="tD-role"><span class="ph">[Ville]</span></div></div></div>
+      </div>
+      <div class="tD-card">
+        <div class="stars">★★★★★</div>
+        <p class="tD-quote">« <span class="ph">[Citation courte 2 — un peu plus longue pour varier la hauteur des cartes et donner un effet naturel.]</span> »</p>
+        <div class="tD-person"><div class="tD-avatar"><span class="ph">XX</span></div><div><div class="tD-name"><span class="ph">[Prénom]</span></div><div class="tD-role"><span class="ph">[Ville]</span></div></div></div>
+      </div>
+      <div class="tD-card">
+        <div class="stars">★★★★★</div>
+        <p class="tD-quote">« <span class="ph">[Citation courte 3.]</span> »</p>
+        <div class="tD-person"><div class="tD-avatar"><span class="ph">XX</span></div><div><div class="tD-name"><span class="ph">[Prénom]</span></div><div class="tD-role"><span class="ph">[Ville]</span></div></div></div>
+      </div>
+      <div class="tD-card">
+        <div class="stars">★★★★★</div>
+        <p class="tD-quote">« <span class="ph">[Citation courte 4.]</span> »</p>
+        <div class="tD-person"><div class="tD-avatar"><span class="ph">XX</span></div><div><div class="tD-name"><span class="ph">[Prénom]</span></div><div class="tD-role"><span class="ph">[Ville]</span></div></div></div>
+      </div>
+      <div class="tD-card">
+        <div class="stars">★★★★★</div>
+        <p class="tD-quote">« <span class="ph">[Citation courte 5 — variez la longueur.]</span> »</p>
+        <div class="tD-person"><div class="tD-avatar"><span class="ph">XX</span></div><div><div class="tD-name"><span class="ph">[Prénom]</span></div><div class="tD-role"><span class="ph">[Ville]</span></div></div></div>
+      </div>
+      <div class="tD-card">
+        <div class="stars">★★★★★</div>
+        <p class="tD-quote">« <span class="ph">[Citation courte 6.]</span> »</p>
+        <div class="tD-person"><div class="tD-avatar"><span class="ph">XX</span></div><div><div class="tD-name"><span class="ph">[Prénom]</span></div><div class="tD-role"><span class="ph">[Ville]</span></div></div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
