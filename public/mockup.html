@@ -1883,13 +1883,26 @@
   .temo-feature-role{font-size:14px;color:rgba(255,255,255,.7)}
   .temo-side{display:flex;flex-direction:column;gap:20px}
   .temo-mini{
+    display:block;width:100%;text-align:left;font:inherit;cursor:pointer;
     background:#fff;border:1px solid #e8e3d6;border-radius:16px;padding:22px;flex:1;
     box-shadow:0 8px 22px rgba(10,22,40,.05);
+    transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;
+  }
+  .temo-mini:hover,.temo-mini:focus-visible{
+    transform:translateY(-3px);border-color:var(--bvo-orange);
+    box-shadow:0 14px 30px rgba(255,102,0,.16);outline:none;
   }
   .temo-stars{color:var(--bvo-orange);font-size:18px;letter-spacing:2px}
   .temo-mini-quote{font-size:14.5px;line-height:1.55;color:#2a3548;font-style:italic;margin:8px 0 14px}
+  .temo-mini-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .temo-mini-person{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--navy)}
   .temo-mini-role{font-size:12px;color:var(--muted);font-weight:400}
+  .temo-mini-cta{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;color:var(--bvo-orange);white-space:nowrap;flex-shrink:0}
+  .temo-feature-quote,.temo-feature-name,.temo-feature-role,.temo-feature-avatar{transition:opacity .2s ease}
+  .temo-feature.is-swapping .temo-feature-quote,
+  .temo-feature.is-swapping .temo-feature-name,
+  .temo-feature.is-swapping .temo-feature-role,
+  .temo-feature.is-swapping .temo-feature-avatar{opacity:0}
   @media(max-width:980px){.temo-layout{grid-template-columns:1fr}}
   @media(max-width:680px){.temo{padding:56px 24px}.temo-title{font-size:28px}.temo-feature{padding:30px}.temo-feature-quote{font-size:19px}}
 
@@ -2534,36 +2547,122 @@
 
       <div class="temo-layout">
 
-        <!-- Témoignage vedette -->
-        <div class="temo-feature">
+        <!-- Témoignage vedette (rempli par JS) -->
+        <div class="temo-feature" id="temo-feature">
           <div class="temo-mark">&ldquo;</div>
-          <p class="temo-feature-quote">Avant, je ratais des appels toute la journée pendant que j'étais avec un client ou sous une voiture. BoosterVO décroche à ma place, qualifie le prospect et me le passe quand c'est chaud. En trois mois, j'ai récupéré une dizaine de ventes que j'aurais laissées filer. Aujourd'hui, plus aucun appel ne tombe dans le vide.</p>
+          <p class="temo-feature-quote" id="temo-quote"></p>
           <div class="temo-feature-person">
-            <div class="temo-feature-avatar">KB</div>
+            <div class="temo-feature-avatar" id="temo-avatar"></div>
             <div>
-              <div class="temo-feature-name">Karim Belkacem</div>
-              <div class="temo-feature-role">Gérant · Auto KB, Vénissieux</div>
+              <div class="temo-feature-name" id="temo-name"></div>
+              <div class="temo-feature-role" id="temo-role"></div>
             </div>
           </div>
         </div>
 
-        <!-- Témoignages secondaires -->
-        <div class="temo-side">
-          <div class="temo-mini">
-            <div class="temo-stars">★★★★★</div>
-            <p class="temo-mini-quote">« Je craignais que ça fasse impersonnel. C'est l'inverse : mes clients sont rassurés qu'on décroche tout de suite. »</p>
-            <div class="temo-mini-person">Sébastien Roux <span class="temo-mini-role">— Garage Roux, Tours</span></div>
-          </div>
-          <div class="temo-mini">
-            <div class="temo-stars">★★★★★</div>
-            <p class="temo-mini-quote">« Le premier mois a remboursé l'abonnement largement. Rien que les rappels rapides m'ont apporté 4 RDV en plus. »</p>
-            <div class="temo-mini-person">Nadia Lemoine <span class="temo-mini-role">— VO Premium, Lille</span></div>
-          </div>
-        </div>
+        <!-- Témoignages secondaires cliquables (générés par JS) -->
+        <div class="temo-side" id="temo-side"></div>
 
       </div>
     </div>
   </section>
+
+  <script>
+  (function(){
+    var temoignages = [
+      {
+        initials: "KB",
+        name: "Karim Belkacem",
+        role: "Gérant · Auto KB, Vénissieux",
+        place: "Auto KB, Vénissieux",
+        short: "En trois mois, j'ai récupéré une dizaine de ventes que j'aurais laissées filer. Plus aucun appel ne tombe dans le vide.",
+        full: "Avant, je ratais des appels toute la journée pendant que j'étais avec un client ou sous une voiture. BoosterVO décroche à ma place, qualifie le prospect et me le passe quand c'est chaud. En trois mois, j'ai récupéré une dizaine de ventes que j'aurais laissées filer. Aujourd'hui, plus aucun appel ne tombe dans le vide."
+      },
+      {
+        initials: "SR",
+        name: "Sébastien Roux",
+        role: "Gérant · Garage Roux, Tours",
+        place: "Garage Roux, Tours",
+        short: "Je craignais que ça fasse impersonnel. C'est l'inverse : mes clients sont rassurés qu'on décroche tout de suite.",
+        full: "J'étais sceptique au départ : je pensais qu'un service qui décroche à ma place ferait fuir les clients. C'est exactement l'inverse. Les gens sont rassurés qu'on réponde immédiatement, on prend proprement leurs coordonnées, et je rappelle quand je suis disponible. Je n'ai plus cette boule au ventre en voyant des appels manqués le soir."
+      },
+      {
+        initials: "NL",
+        name: "Nadia Lemoine",
+        role: "Gérante · VO Premium, Lille",
+        place: "VO Premium, Lille",
+        short: "Le premier mois a remboursé l'abonnement largement. Rien que les rappels rapides m'ont apporté 4 RDV en plus.",
+        full: "Le premier mois a remboursé l'abonnement largement. Avant, mes annonces Leboncoin tournaient mais la moitié des appels partait sur répondeur quand j'étais en essai avec un client. Maintenant chaque appel est pris, qualifié, et je récupère les rappels rapides — rien que ça m'a apporté 4 RDV supplémentaires dès le départ."
+      }
+    ];
+
+    var active = 0;
+    var feature = document.getElementById('temo-feature');
+    var side = document.getElementById('temo-side');
+
+    function paintFeature(){
+      var f = temoignages[active];
+      document.getElementById('temo-quote').textContent = f.full;
+      document.getElementById('temo-avatar').textContent = f.initials;
+      document.getElementById('temo-name').textContent = f.name;
+      document.getElementById('temo-role').textContent = f.role;
+    }
+
+    function paintSide(){
+      side.innerHTML = '';
+      temoignages.forEach(function(t, i){
+        if(i === active) return;
+        var card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'temo-mini';
+        card.setAttribute('aria-label', 'Lire le témoignage complet de ' + t.name);
+
+        var stars = document.createElement('div');
+        stars.className = 'temo-stars';
+        stars.textContent = '★★★★★';
+
+        var quote = document.createElement('p');
+        quote.className = 'temo-mini-quote';
+        quote.textContent = '« ' + t.short + ' »';
+
+        var foot = document.createElement('div');
+        foot.className = 'temo-mini-foot';
+        var person = document.createElement('span');
+        person.className = 'temo-mini-person';
+        person.textContent = t.name + ' ';
+        var role = document.createElement('span');
+        role.className = 'temo-mini-role';
+        role.textContent = '— ' + t.place;
+        person.appendChild(role);
+        var cta = document.createElement('span');
+        cta.className = 'temo-mini-cta';
+        cta.textContent = 'Lire ›';
+        foot.appendChild(person);
+        foot.appendChild(cta);
+
+        card.appendChild(stars);
+        card.appendChild(quote);
+        card.appendChild(foot);
+        card.addEventListener('click', function(){ setActive(i); });
+        side.appendChild(card);
+      });
+    }
+
+    function setActive(i){
+      if(i === active) return;
+      feature.classList.add('is-swapping');
+      setTimeout(function(){
+        active = i;
+        paintFeature();
+        paintSide();
+        feature.classList.remove('is-swapping');
+      }, 200);
+    }
+
+    paintFeature();
+    paintSide();
+  })();
+  </script>
 
 </main>
 
