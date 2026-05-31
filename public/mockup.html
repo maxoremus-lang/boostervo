@@ -1953,6 +1953,43 @@
   .faq-a li::before{content:'';position:absolute;left:6px;top:9px;width:7px;height:7px;border-radius:50%;background:var(--bvo-orange)}
   @media(max-width:680px){.faq{padding:56px 22px}.faq-title{font-size:28px}.faq-q{font-size:16px;padding:20px}.faq-a{padding:0 20px 20px}}
 
+  /* === MODALE DIAGNOSTIC (demande de contact) === */
+  .diag-backdrop{
+    position:fixed;inset:0;z-index:1000;display:none;
+    align-items:center;justify-content:center;padding:16px;
+    background:rgba(10,22,40,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  }
+  .diag-backdrop.is-open{display:flex;animation:fadeIn .25s ease}
+  .diag-card{
+    background:#fff;border-radius:18px;width:100%;max-width:440px;overflow:hidden;
+    box-shadow:0 30px 80px rgba(10,22,40,.35);animation:modalIn .35s cubic-bezier(.18,.89,.32,1.28);
+  }
+  .diag-head{display:flex;align-items:flex-start;justify-content:space-between;padding:26px 26px 6px}
+  .diag-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:21px;color:var(--bvo-bleu);margin:0}
+  .diag-sub{font-size:14px;color:var(--muted);margin:6px 0 0}
+  .diag-close{background:none;border:0;cursor:pointer;color:#9aa6b6;padding:4px;line-height:0}
+  .diag-close:hover{color:#5b6878}
+  .diag-form{padding:18px 26px 26px;display:flex;flex-direction:column;gap:14px}
+  .diag-field label{display:block;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#5b6878;margin-bottom:5px}
+  .diag-field input{
+    width:100%;padding:13px 15px;border:1px solid #e2e7ee;border-radius:12px;font-size:15px;
+    font-family:inherit;color:var(--navy);background:#fff;outline:none;transition:border-color .15s,box-shadow .15s;
+  }
+  .diag-field input:focus{border-color:var(--bvo-orange);box-shadow:0 0 0 3px rgba(255,102,0,.18)}
+  .diag-submit{
+    width:100%;border:0;cursor:pointer;padding:15px;border-radius:13px;
+    background:var(--bvo-orange);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;
+    box-shadow:0 12px 26px rgba(255,102,0,.28);transition:background .15s,transform .15s;
+  }
+  .diag-submit:hover{background:var(--bvo-orange-dark);transform:translateY(-1px)}
+  .diag-submit:disabled{opacity:.55;cursor:default;transform:none}
+  .diag-note{font-size:12.5px;font-weight:700;color:#9aa6b6;text-align:center;margin:2px 0 0}
+  .diag-error{background:#fdecec;border:1px solid #f7c5c5;color:#c0392b;font-size:13.5px;border-radius:11px;padding:11px 14px}
+  .diag-success{padding:8px 26px 30px;text-align:center}
+  .diag-success-icon{margin:0 auto 16px;width:58px;height:58px;border-radius:50%;background:#e3f7ec;display:flex;align-items:center;justify-content:center;color:var(--green)}
+  .diag-success h3{font-family:'Nunito',sans-serif;font-weight:900;font-size:19px;color:var(--bvo-bleu);margin:0 0 8px}
+  .diag-success p{font-size:14.5px;color:var(--muted);margin:0 0 18px}
+
   /* === RESPONSIVE === */
   @media(max-width:1100px){
     header nav{display:none}
@@ -2576,7 +2613,7 @@
         <div class="how-cta-text">
           Combien de <span class="accent">ventes et de marge</span> pourriez-vous récupérer si tous vos appels étaient pris en charge immédiatement ?
         </div>
-        <a href="#" class="how-cta-btn" onclick="document.getElementById('open-quiz').click(); return false;">
+        <a href="#" class="how-cta-btn" onclick="window.openDiagModal(); return false;">
           Faites le Diagnostic BoosterVO pour le savoir.
         </a>
       </div>
@@ -2857,6 +2894,117 @@
     </footer>
   </div>
 </div>
+
+<!-- ===================== MODALE DIAGNOSTIC (demande de contact) ===================== -->
+<div class="diag-backdrop" id="diag-backdrop" role="dialog" aria-modal="true" aria-label="Découvrir le diagnostic">
+  <div class="diag-card" id="diag-card">
+    <div class="diag-head">
+      <div>
+        <h2 class="diag-title">Découvrir le diagnostic</h2>
+        <p class="diag-sub">Présentation gratuite et sans engagement en 20 minutes.</p>
+      </div>
+      <button type="button" class="diag-close" id="diag-close" aria-label="Fermer">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <form class="diag-form" id="diag-form" novalidate>
+      <div class="diag-error" id="diag-error" hidden></div>
+      <div class="diag-field">
+        <label for="diag-firstname">Prénom</label>
+        <input type="text" id="diag-firstname" placeholder="Jean" autocomplete="given-name" required>
+      </div>
+      <div class="diag-field">
+        <label for="diag-email">Email</label>
+        <input type="email" id="diag-email" placeholder="jean@exemple.fr" autocomplete="email" required>
+      </div>
+      <div class="diag-field">
+        <label for="diag-mobile">Mobile</label>
+        <input type="tel" id="diag-mobile" placeholder="06 12 34 56 78" autocomplete="tel" required>
+      </div>
+      <button type="submit" class="diag-submit" id="diag-submit">Validez votre demande de contact</button>
+      <p class="diag-note">En envoyant ce formulaire, vous acceptez d'être recontacté par BoosterVO.</p>
+    </form>
+
+    <div class="diag-success" id="diag-success" hidden>
+      <div class="diag-success-icon">
+        <svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h3>Demande envoyée !</h3>
+      <p id="diag-success-text">Merci, nous revenons vers vous très vite pour planifier votre présentation de 20 minutes.</p>
+      <button type="button" class="diag-submit" id="diag-success-close">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== MODALE DIAGNOSTIC (demande de contact) =====
+  (function(){
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var $bd      = document.getElementById('diag-backdrop');
+    var $card    = document.getElementById('diag-card');
+    var $form    = document.getElementById('diag-form');
+    var $success = document.getElementById('diag-success');
+    var $err     = document.getElementById('diag-error');
+    var $fn      = document.getElementById('diag-firstname');
+    var $email   = document.getElementById('diag-email');
+    var $mobile  = document.getElementById('diag-mobile');
+    var $submit  = document.getElementById('diag-submit');
+    var $close   = document.getElementById('diag-close');
+    var $okClose = document.getElementById('diag-success-close');
+    var $okText  = document.getElementById('diag-success-text');
+    if(!$bd) return;
+
+    function open(){
+      $form.hidden = false; $success.hidden = true;
+      $err.hidden = true; $err.textContent = '';
+      $fn.value = ''; $email.value = ''; $mobile.value = '';
+      $submit.disabled = false; $submit.textContent = 'Validez votre demande de contact';
+      $bd.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(function(){ $fn.focus(); }, 60);
+    }
+    function close(){
+      $bd.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+    function showError(msg){ $err.textContent = msg; $err.hidden = false; }
+
+    $close.addEventListener('click', close);
+    $okClose.addEventListener('click', close);
+    $bd.addEventListener('click', function(e){ if(e.target === $bd) close(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && $bd.classList.contains('is-open')) close(); });
+
+    $form.addEventListener('submit', function(e){
+      e.preventDefault();
+      $err.hidden = true;
+      var fn = $fn.value.trim(), em = $email.value.trim(), mo = $mobile.value.trim();
+      if(!fn){ showError("Merci d'indiquer votre prénom."); return; }
+      if(!EMAIL_RE.test(em)){ showError("Merci d'indiquer un email valide."); return; }
+      if(mo.replace(/[^0-9]/g, '').length < 6){ showError("Merci d'indiquer un numéro de mobile valide."); return; }
+
+      $submit.disabled = true; $submit.textContent = 'Envoi…';
+      fetch('/api/diagnostic-request', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ firstName:fn, email:em, mobile:mo, source:'Accueil boostervo.fr' })
+      }).then(function(res){
+        if(!res.ok){
+          return res.json().catch(function(){ return {}; }).then(function(j){
+            throw new Error(j && j.error ? j.error : "Erreur lors de l'envoi");
+          });
+        }
+        $okText.textContent = 'Merci ' + fn + ', nous revenons vers vous très vite pour planifier votre présentation de 20 minutes.';
+        $form.hidden = true; $success.hidden = false;
+      }).catch(function(err){
+        showError(err && err.message ? err.message : "Erreur réseau. Vérifiez votre connexion.");
+        $submit.disabled = false; $submit.textContent = 'Validez votre demande de contact';
+      });
+    });
+
+    window.openDiagModal = open;
+  })();
+</script>
 
 <script>
   // ===== POSTER VSL VIDÉO =====
