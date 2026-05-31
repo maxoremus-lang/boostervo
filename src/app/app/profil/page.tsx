@@ -208,6 +208,13 @@ export default function ProfilPage() {
                 <span className="float-right text-gray-300">›</span>
               </Link>
               <Link
+                href="/app/admin/vsl-stats"
+                className="block w-full text-left px-4 py-3.5 text-sm font-semibold text-bleu"
+              >
+                Taux de lecture VSL
+                <span className="float-right text-gray-300">›</span>
+              </Link>
+              <Link
                 href="/app/admin/diagnostics"
                 className="block w-full text-left px-4 py-3.5 text-sm font-semibold text-bleu"
               >

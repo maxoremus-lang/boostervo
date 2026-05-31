@@ -163,6 +163,28 @@ model VslLead {
   @@index([createdAt])
 }
 
+// Événement de lecture d'une VSL (pages /vsl et /vsl-prive). Permet de mesurer
+// le taux de lecture : combien démarrent la vidéo, où ils décrochent, qui va
+// jusqu'au bout. visitorId = id stable généré côté client (localStorage bvo_vid)
+// → sert à dédupliquer le funnel même pour les visiteurs sans cookie bvo_clk
+// (accès direct, hors lien court). cookieId/slug relient à la campagne d'origine.
+model VslEvent {
+  id          String   @id @default(cuid())
+  visitorId   String   // id stable client (localStorage) — dédup du funnel
+  cookieId    String?  // valeur du cookie bvo_clk → attribution campagne
+  slug        String?  // lien court source (ex: "go9")
+  page        String   // "vsl" | "vsl-prive"
+  type        String   // "play" | "p25" | "p50" | "p75" | "p100"
+  positionSec Float?   // position de lecture au moment de l'événement
+  durationSec Float?   // durée totale de la vidéo
+  createdAt   DateTime @default(now())
+
+  @@index([visitorId])
+  @@index([type])
+  @@index([slug])
+  @@index([createdAt])
+}
+
 // Demande de diagnostic (CTA "Découvrir le diagnostic" sur les pages VSL) :
 // le prospect laisse prénom + email pour une présentation de 20 min. slug =
 // lien court source (ex: "go9") résolu via le cookie bvo_clk. Notifié par mail.

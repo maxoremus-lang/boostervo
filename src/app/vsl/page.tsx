@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import DiagnosticCta from "../../components/DiagnosticCta";
+import VslPlayer from "../../components/VslPlayer";
 
 export const metadata: Metadata = {
   title: "BoosterVO — Le profit caché derrière vos appels",
@@ -32,15 +33,14 @@ export default function VslPage() {
 
           {/* Lecteur vidéo */}
           <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-black/40 border border-white/10">
-            <video
+            <VslPlayer
+              page="vsl"
               src="/videos/vsl-page.mp4"
               controls
               playsInline
               preload="metadata"
               className="absolute inset-0 w-full h-full object-cover"
-            >
-              Votre navigateur ne supporte pas la lecture vidéo.
-            </video>
+            />
           </div>
 
           {/* CTA — ouvre la modale de demande de diagnostic */}

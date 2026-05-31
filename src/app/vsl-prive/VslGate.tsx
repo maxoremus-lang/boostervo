@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import DiagnosticCta from "../../components/DiagnosticCta";
+import VslPlayer from "../../components/VslPlayer";
 
 const STORAGE_KEY = "bvo_vsl_unlocked";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -96,17 +97,16 @@ export default function VslGate() {
               l'email n'est pas saisi, puis remplacé par le vrai lecteur. */}
           <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-black border border-white/10">
             {unlocked ? (
-              <video
+              <VslPlayer
                 ref={videoRef}
+                page="vsl-prive"
                 src="/videos/vsl-page.mp4"
                 controls
                 autoPlay
                 playsInline
                 preload="metadata"
                 className="absolute inset-0 w-full h-full object-cover"
-              >
-                Votre navigateur ne supporte pas la lecture vidéo.
-              </video>
+              />
             ) : (
               <>
                 {/* Aperçu : 1re image de la vidéo (muet, non lisible) — visible
