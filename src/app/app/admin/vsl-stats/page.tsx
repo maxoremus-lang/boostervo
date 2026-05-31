@@ -123,7 +123,7 @@ export default function AdminVslStatsPage() {
                 <p className="text-2xl font-nunito font-extrabold text-orange">
                   {pct(stats.overall.p100, stats.overall.play)}
                 </p>
-                <p className="text-xs text-gray-500">vont jusqu'au bout</p>
+                <p className="text-xs text-gray-500">vont jusqu&apos;au bout</p>
               </div>
               <Funnel data={stats.overall} />
             </div>
