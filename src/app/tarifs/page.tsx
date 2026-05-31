@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import styles from "./styles.module.css";
 import DiagnosticCardCta from "./DiagnosticCardCta";
 
@@ -169,17 +169,9 @@ const plans: Plan[] = [
 
 export default function TarifsPage() {
   return (
-    <div className={styles.page}>
-      <header className={styles.topbar}>
-        <Link href="/" className={styles.logo}>
-          <Image src="/logo.svg" alt="BoosterVO" width={160} height={32} priority />
-        </Link>
-        <div className={styles.topbarMeta}>
-          <span>Tarifs</span>
-          <span>Sans engagement</span>
-        </div>
-      </header>
-
+    <>
+      <Navbar />
+      <div className={styles.page} style={{ paddingTop: 64 }}>
       <section className={styles.hero}>
         <div className={styles.eyebrow}>Nos offres</div>
         <h1 className={styles.h1}>
@@ -282,14 +274,9 @@ export default function TarifsPage() {
           Tarifs HT, hors taxes locales. Configuration en 48h, sans engagement, résiliation à tout
           moment.
         </p>
-        <p className={styles.footerLinks}>
-          <Link href="/cgv">CGV</Link>
-          <span>·</span>
-          <Link href="/mentions-legales">Mentions légales</Link>
-          <span>·</span>
-          <Link href="/confidentialite">Confidentialité</Link>
-        </p>
       </footer>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }
