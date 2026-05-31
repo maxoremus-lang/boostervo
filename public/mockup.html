@@ -1996,6 +1996,27 @@
     .final-cta-btn{width:100%;padding:18px 24px;font-size:16px}
   }
 
+  /* === FOOTER === */
+  .site-footer{
+    background:var(--bvo-bleu-dark);border-top:3px solid var(--bvo-orange);
+    padding:40px 24px;
+  }
+  .site-footer-inner{
+    max-width:900px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+  .site-footer-logo{height:22px;width:auto}
+  .site-footer-legal{
+    color:rgba(255,255,255,.5);font-size:12px;line-height:1.7;text-align:right;margin:0;
+  }
+  .site-footer-legal strong{color:rgba(255,255,255,.7);font-weight:700}
+  .site-footer-legal a{color:rgba(255,255,255,.5);text-decoration:underline;transition:color .15s}
+  .site-footer-legal a:hover{color:#fff}
+  @media(max-width:640px){
+    .site-footer-inner{flex-direction:column;text-align:center}
+    .site-footer-legal{text-align:center}
+  }
+
   /* === MODALE DIAGNOSTIC (demande de contact) === */
   .diag-backdrop{
     position:fixed;inset:0;z-index:1000;display:none;
@@ -2926,6 +2947,22 @@
   </section>
 
 </main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <img class="site-footer-logo" src="/logo-white.svg" alt="BoosterVO" width="91" height="24">
+    <p class="site-footer-legal">
+      &copy; <span id="footer-year">2026</span> BoosterVO. Tous droits r&eacute;serv&eacute;s.<br>
+      Marque exploit&eacute;e par <strong>MERCURE SAS</strong>,<br>
+      SAS au capital de 2&nbsp;000&nbsp;&euro; &ndash; Paris B&nbsp;941519613<br>
+      Si&egrave;ge social&nbsp;: 60 rue Fran&ccedil;ois 1<sup>er</sup>, 75008 Paris.<br>
+      <a href="/cgv">CGV</a> &middot; <a href="/mentions-legales">Mentions l&eacute;gales</a> &middot; <a href="/confidentialite">Politique de confidentialit&eacute;</a>
+    </p>
+  </div>
+</footer>
+
+<script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
 
 <!-- ===================== QUIZ MODAL ===================== -->
 <div class="modal-backdrop" id="quiz-backdrop" role="dialog" aria-modal="true" aria-label="Estimation BoosterVO">
