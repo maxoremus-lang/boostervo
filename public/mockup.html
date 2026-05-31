@@ -1937,6 +1937,11 @@
   .dsec-ph{font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;color:#fff;margin:0 0 2px}
   .dsec-days{color:var(--bvo-orange);font-weight:900;font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
   .dsec-txt{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.8);margin:0}
+  .dsec-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+    color:var(--bvo-orange);font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;
+    text-decoration:underline;text-underline-offset:3px;transition:color .15s}
+  .dsec-link:hover{color:#ff8533}
+  .dsec-link .material-symbols-outlined{font-size:18px}
   .dsec-btn{
     display:inline-flex;align-items:center;gap:10px;cursor:pointer;border:none;text-decoration:none;
     background:var(--bvo-orange);color:#fff;padding:19px 36px;border-radius:14px;
@@ -2883,6 +2888,7 @@
           <p class="dsec-ph">Votre rapport</p>
           <div class="dsec-days">Résultat chiffré</div>
           <p class="dsec-txt">Vous recevez une mesure précise : impact du délai, ROI estimé et marge récupérable sur vos annonces VO.</p>
+          <a href="/exemple-audit" class="dsec-link">Cliquez ici pour avoir un exemple de rapport <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
       </div>
       <a href="#" class="dsec-btn" onclick="window.openDiagModal(); return false;">
