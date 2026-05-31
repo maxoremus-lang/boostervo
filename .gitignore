@@ -41,3 +41,5 @@ next-env.d.ts
 *.db-wal
 *.db-shm
 .env
+
+/public/mockup-desktop-*.html
