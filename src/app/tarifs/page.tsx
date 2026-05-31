@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import styles from "./styles.module.css";
 import DiagnosticCardCta from "./DiagnosticCardCta";
@@ -170,8 +169,21 @@ const plans: Plan[] = [
 export default function TarifsPage() {
   return (
     <>
-      <Navbar />
-      <div className={styles.page} style={{ paddingTop: 64 }}>
+      <div className={styles.siteHeaderWrap}>
+        <header className={styles.siteHeader}>
+          <a href="/" aria-label="Accueil BoosterVO" className={styles.logoLink}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-white.svg" alt="BoosterVO" width={150} height={28} className={styles.logoMark} />
+          </a>
+          <nav className={styles.nav}>
+            <a href="/" className={styles.navLink}>Pourquoi BoosterVO&nbsp;?</a>
+            <a href="/" className={styles.navLink}>Fonctionnalités</a>
+            <a href="/tarifs" className={styles.navLink}>Tarifs</a>
+            <a href="/programme-gold.html" className={styles.navLink}>Programme Gold</a>
+          </nav>
+        </header>
+      </div>
+      <div className={styles.page}>
       <section className={styles.hero}>
         <div className={styles.eyebrow}>Nos offres</div>
         <h1 className={styles.h1}>
