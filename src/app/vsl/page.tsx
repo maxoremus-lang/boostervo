@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import DiagnosticCta from "../../components/DiagnosticCta";
 import VslPlayer from "../../components/VslPlayer";
+import SiteNav from "../../components/SiteNav";
+import Footer from "../../components/Footer";
 
 export const metadata: Metadata = {
   title: "BoosterVO — Le profit caché derrière vos appels",
@@ -12,16 +13,8 @@ export const metadata: Metadata = {
 export default function VslPage() {
   return (
     <div className="min-h-screen bg-bleu text-white flex flex-col">
-      {/* En-tête / logo */}
-      <header className="w-full px-6 py-6 flex justify-center">
-        <Image
-          src="/logo-white.svg"
-          alt="BoosterVO"
-          width={180}
-          height={36}
-          priority
-        />
-      </header>
+      {/* En-tête / navigation boostervo.fr */}
+      <SiteNav />
 
       {/* Contenu principal */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 pb-16">
@@ -47,6 +40,8 @@ export default function VslPage() {
           <DiagnosticCta source="vsl" className="mt-10" />
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

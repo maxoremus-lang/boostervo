@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import DiagnosticCta from "../../components/DiagnosticCta";
 import VslPlayer from "../../components/VslPlayer";
+import SiteNav from "../../components/SiteNav";
+import Footer from "../../components/Footer";
 
 const STORAGE_KEY = "bvo_vsl_unlocked";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -82,9 +83,7 @@ export default function VslGate() {
 
   return (
     <div className="min-h-screen bg-bleu text-white flex flex-col">
-      <header className="w-full px-6 py-6 flex justify-center">
-        <Image src="/logo-white.svg" alt="BoosterVO" width={180} height={36} priority />
-      </header>
+      <SiteNav />
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-3xl text-center">
@@ -195,6 +194,8 @@ export default function VslGate() {
           <DiagnosticCta source="vsl-prive" className="mt-10" />
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
