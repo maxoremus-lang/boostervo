@@ -37,6 +37,7 @@ export default function AdminDiagnosticsPage() {
   const [rows, setRows] = useState<DiagRequest[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [reportClicks, setReportClicks] = useState<{ total: number; uniqueVisitors: number } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -57,6 +58,17 @@ export default function AdminDiagnosticsPage() {
       } catch {
         setLoadError("Erreur réseau");
         setLoading(false);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/report-example-click");
+        if (res.ok) setReportClicks(await res.json());
+      } catch {
+        /* compteur best-effort : on ignore les erreurs */
       }
     })();
   }, []);
@@ -120,6 +132,23 @@ export default function AdminDiagnosticsPage() {
                 Exporter CSV
               </button>
             </div>
+
+            {reportClicks && (
+              <div className="bg-white rounded-2xl shadow-sm p-4">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
+                  Clics « exemple de rapport » (home)
+                </p>
+                <p className="text-2xl font-nunito font-extrabold text-bleu mt-1">
+                  {reportClicks.total}
+                  {reportClicks.uniqueVisitors > 0 && (
+                    <span className="text-sm font-semibold text-gray-400 ml-2">
+                      · {reportClicks.uniqueVisitors} visiteur
+                      {reportClicks.uniqueVisitors > 1 ? "s" : ""}
+                    </span>
+                  )}
+                </p>
+              </div>
+            )}
 
             <div className="bg-white rounded-2xl shadow-sm divide-y divide-gray-100">
               {rows.length === 0 ? (

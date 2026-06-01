@@ -185,6 +185,19 @@ model VslEvent {
   @@index([createdAt])
 }
 
+// Clic sur le lien "Cliquez ici pour avoir un exemple de rapport" (home). Le
+// document n'est pas encore disponible : on compte simplement l'intérêt. Une
+// ligne = un clic. cookieId (= bvo_clk) permet de dériver les visiteurs uniques.
+model ReportExampleClick {
+  id        String   @id @default(cuid())
+  cookieId  String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 // Demande de diagnostic (CTA "Découvrir le diagnostic" sur les pages VSL) :
 // le prospect laisse prénom + email pour une présentation de 20 min. slug =
 // lien court source (ex: "go9") résolu via le cookie bvo_clk. Notifié par mail.

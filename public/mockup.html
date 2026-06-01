@@ -2899,7 +2899,7 @@
           <p class="dsec-ph">Votre rapport</p>
           <div class="dsec-days">Résultat chiffré</div>
           <p class="dsec-txt">Vous recevez une mesure précise : impact du délai, ROI estimé et marge récupérable sur vos annonces VO.</p>
-          <a href="#" class="dsec-link" onclick="window.openInfoModal(); return false;">Cliquez ici pour avoir un exemple de rapport <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="#" class="dsec-link" onclick="window.trackReportExampleClick(); window.openInfoModal(); return false;">Cliquez ici pour avoir un exemple de rapport <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
       </div>
       <a href="#" class="dsec-btn" onclick="window.openDiagModal(); return false;">
@@ -3166,6 +3166,17 @@
     $bd.addEventListener('click', function(e){ if(e.target === $bd) close(); });
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && $bd.classList.contains('is-open')) close(); });
     window.openInfoModal = open;
+
+    // Compteur en base : enregistre le clic sur le lien "exemple de rapport".
+    window.trackReportExampleClick = function(){
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/report-example-click');
+        } else {
+          fetch('/api/report-example-click', { method: 'POST', keepalive: true }).catch(function(){});
+        }
+      } catch (e) {}
+    };
   })();
 </script>
 
