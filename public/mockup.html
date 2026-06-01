@@ -1872,6 +1872,7 @@
     display:flex;flex-direction:column;justify-content:center;
   }
   .temo-mark{font-family:Georgia,serif;font-size:64px;line-height:.6;color:var(--bvo-orange);margin-bottom:10px}
+  .temo-feature-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:19px;line-height:1.3;color:var(--bvo-orange);margin:0 0 16px;letter-spacing:-.3px}
   .temo-feature-quote{font-size:22px;line-height:1.5;font-weight:700;font-family:'Nunito',sans-serif;margin-bottom:28px}
   .temo-feature-person{display:flex;align-items:center;gap:16px}
   .temo-feature-avatar{
@@ -1894,12 +1895,14 @@
     box-shadow:0 14px 30px rgba(255,102,0,.16);outline:none;
   }
   .temo-stars{color:var(--bvo-orange);font-size:18px;letter-spacing:2px}
+  .temo-mini-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:14.5px;line-height:1.3;color:var(--navy);margin:8px 0 4px}
   .temo-mini-quote{font-size:14.5px;line-height:1.55;color:#2a3548;font-style:italic;margin:8px 0 14px}
   .temo-mini-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .temo-mini-person{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--navy)}
   .temo-mini-role{font-size:12px;color:var(--muted);font-weight:400}
   .temo-mini-cta{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;color:var(--bvo-orange);white-space:nowrap;flex-shrink:0}
-  .temo-feature-quote,.temo-feature-name,.temo-feature-role,.temo-feature-avatar{transition:opacity .2s ease}
+  .temo-feature-title,.temo-feature-quote,.temo-feature-name,.temo-feature-role,.temo-feature-avatar{transition:opacity .2s ease}
+  .temo-feature.is-swapping .temo-feature-title,
   .temo-feature.is-swapping .temo-feature-quote,
   .temo-feature.is-swapping .temo-feature-name,
   .temo-feature.is-swapping .temo-feature-role,
@@ -2751,6 +2754,7 @@
         <!-- Témoignage vedette (rempli par JS) -->
         <div class="temo-feature" id="temo-feature">
           <div class="temo-mark">&ldquo;</div>
+          <div class="temo-feature-title" id="temo-title2"></div>
           <p class="temo-feature-quote" id="temo-quote"></p>
           <div class="temo-feature-person">
             <div class="temo-feature-avatar" id="temo-avatar"></div>
@@ -2772,28 +2776,31 @@
   (function(){
     var temoignages = [
       {
-        initials: "KB",
-        name: "Karim Belkacem",
-        role: "Gérant · Auto KB, Vénissieux",
-        place: "Auto KB, Vénissieux",
-        short: "En trois mois, j'ai récupéré une dizaine de ventes que j'aurais laissées filer. Plus aucun appel ne tombe dans le vide.",
-        full: "Avant, je ratais des appels toute la journée pendant que j'étais avec un client ou sous une voiture. BoosterVO décroche à ma place, qualifie le prospect et me le passe quand c'est chaud. En trois mois, j'ai récupéré une dizaine de ventes que j'aurais laissées filer. Aujourd'hui, plus aucun appel ne tombe dans le vide."
+        initials: "JM",
+        name: "Jean-Marc D.",
+        role: "Négociant VO · Toulouse",
+        place: "Négociant VO, Toulouse",
+        title: "Plus de marge grâce au décrochage immédiat",
+        short: "Depuis que 100 % de nos appels sont décrochés immédiatement, nous avons constaté une augmentation moyenne d'environ 30 % de notre marge mensuelle.",
+        full: "Avant BoosterVO, nous rappelions une partie de nos prospects avec parfois plusieurs minutes de décalage. Je pensais que cela n'avait pas beaucoup d'impact puisque nous faisions quand même des ventes. Après quelques semaines d'utilisation, les chiffres ont été sans appel : depuis que 100 % de nos appels sont décrochés immédiatement, nous avons constaté une augmentation moyenne d'environ 30 % de notre marge mensuelle. Aujourd'hui, chaque appel est traité au bon moment et nous transformons davantage de contacts en ventes."
+      },
+      {
+        initials: "LM",
+        name: "Laurent M.",
+        role: "Négociant VO · Lyon",
+        place: "Négociant VO, Lyon",
+        title: "Plus de temps pour les véhicules les plus rentables",
+        short: "Je ne perds plus mon temps à rappeler des prospects déjà partis. Je me concentre sur les prospects qualifiés — plus de marge à la vente comme à l'achat.",
+        full: "Le principal bénéfice n'est pas seulement le nombre de ventes supplémentaires. Avec BoosterVO, je ne perds plus mon temps à rappeler des prospects qui ont déjà acheté ailleurs ou qui ne répondent plus. Je me concentre uniquement sur les prospects réellement qualifiés et prêts à avancer. Le temps gagné me permet de rechercher davantage de véhicules à forte marge et de mieux négocier mes achats. Au final, je fais plus de marge à la vente et plus de marge à l'achat."
       },
       {
         initials: "SR",
-        name: "Sébastien Roux",
-        role: "Gérant · Garage Roux, Tours",
-        place: "Garage Roux, Tours",
-        short: "Je craignais que ça fasse impersonnel. C'est l'inverse : mes clients sont rassurés qu'on décroche tout de suite.",
-        full: "J'étais sceptique au départ : je pensais qu'un service qui décroche à ma place ferait fuir les clients. C'est exactement l'inverse. Les gens sont rassurés qu'on réponde immédiatement, on prend proprement leurs coordonnées, et je rappelle quand je suis disponible. Je n'ai plus cette boule au ventre en voyant des appels manqués le soir."
-      },
-      {
-        initials: "NL",
-        name: "Nadia Lemoine",
-        role: "Gérante · VO Premium, Lille",
-        place: "VO Premium, Lille",
-        short: "Le premier mois a remboursé l'abonnement largement. Rien que les rappels rapides m'ont apporté 4 RDV en plus.",
-        full: "Le premier mois a remboursé l'abonnement largement. Avant, mes annonces Leboncoin tournaient mais la moitié des appels partait sur répondeur quand j'étais en essai avec un client. Maintenant chaque appel est pris, qualifié, et je récupère les rappels rapides — rien que ça m'a apporté 4 RDV supplémentaires dès le départ."
+        name: "Stéphane R.",
+        role: "Négociant VO · Bordeaux",
+        place: "Négociant VO, Bordeaux",
+        title: "Une meilleure rentabilité du budget Leboncoin",
+        short: "Le diagnostic BoosterVO a mis des chiffres sur ce que je soupçonnais : les appels traités immédiatement convertissent bien mieux que les rappels.",
+        full: "Comme beaucoup de négociants, j'investissais plusieurs milliers d'euros par mois sur Leboncoin sans savoir précisément ce que chaque appel me rapportait réellement. Le diagnostic BoosterVO m'a permis de mettre des chiffres sur ce que je soupçonnais déjà : les appels traités immédiatement convertissent beaucoup mieux que les rappels. Aujourd'hui, je rentabilise davantage mon budget publicitaire, je génère plus de rendez-vous et j'ai enfin une vision claire du retour sur investissement de mes annonces."
       }
     ];
 
@@ -2803,6 +2810,7 @@
 
     function paintFeature(){
       var f = temoignages[active];
+      document.getElementById('temo-title2').textContent = f.title || '';
       document.getElementById('temo-quote').textContent = f.full;
       document.getElementById('temo-avatar').textContent = f.initials;
       document.getElementById('temo-name').textContent = f.name;
@@ -2821,6 +2829,10 @@
         var stars = document.createElement('div');
         stars.className = 'temo-stars';
         stars.textContent = '★★★★★';
+
+        var miniTitle = document.createElement('div');
+        miniTitle.className = 'temo-mini-title';
+        miniTitle.textContent = t.title || '';
 
         var quote = document.createElement('p');
         quote.className = 'temo-mini-quote';
@@ -2842,6 +2854,7 @@
         foot.appendChild(cta);
 
         card.appendChild(stars);
+        if (t.title) card.appendChild(miniTitle);
         card.appendChild(quote);
         card.appendChild(foot);
         card.addEventListener('click', function(){ setActive(i); });
