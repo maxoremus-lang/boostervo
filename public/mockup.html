@@ -2899,7 +2899,7 @@
           <p class="dsec-ph">Votre rapport</p>
           <div class="dsec-days">Résultat chiffré</div>
           <p class="dsec-txt">Vous recevez une mesure précise : impact du délai, ROI estimé et marge récupérable sur vos annonces VO.</p>
-          <a href="/exemple-audit" class="dsec-link">Cliquez ici pour avoir un exemple de rapport <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="#" class="dsec-link" onclick="window.openInfoModal(); return false;">Cliquez ici pour avoir un exemple de rapport <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
       </div>
       <a href="#" class="dsec-btn" onclick="window.openDiagModal(); return false;">
@@ -3136,6 +3136,38 @@
     </div>
   </div>
 </div>
+
+<div class="diag-backdrop" id="info-backdrop" role="dialog" aria-modal="true" aria-label="Information">
+  <div class="diag-card" id="info-card">
+    <div class="diag-head">
+      <div>
+        <h2 class="diag-title">Bientôt disponible</h2>
+        <p class="diag-sub">Pour le moment, le document demandé n'est pas disponible.</p>
+      </div>
+      <button type="button" class="diag-close" id="info-close" aria-label="Fermer">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div style="padding:6px 26px 26px">
+      <button type="button" class="diag-submit" id="info-ok">J'ai compris</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== POPUP INFO (document indisponible) =====
+  (function(){
+    var $bd = document.getElementById('info-backdrop');
+    if(!$bd) return;
+    function open(){ $bd.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
+    function close(){ $bd.classList.remove('is-open'); document.body.style.overflow = ''; }
+    document.getElementById('info-close').addEventListener('click', close);
+    document.getElementById('info-ok').addEventListener('click', close);
+    $bd.addEventListener('click', function(e){ if(e.target === $bd) close(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && $bd.classList.contains('is-open')) close(); });
+    window.openInfoModal = open;
+  })();
+</script>
 
 <script>
   // ===== MODALE DIAGNOSTIC (demande de contact) =====
