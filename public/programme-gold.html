@@ -785,5 +785,132 @@
   </div>
 </div>
 
+<!-- ===================== POPUP DIAGNOSTIC GOLD ===================== -->
+<style>
+  .gold-modal-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  .gold-modal-overlay[hidden]{display:none}
+  .gold-modal-card{background:#fff;border-radius:18px;box-shadow:0 25px 50px -12px rgba(0,0,0,.35);width:100%;max-width:440px;padding:26px;position:relative;text-align:left}
+  .gold-modal-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:28px;line-height:1;color:#9aa3b2;cursor:pointer;padding:4px}
+  .gold-modal-close:hover{color:#555}
+  .gold-modal-head h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:21px;color:var(--bvo-bleu);margin:0;padding-right:24px}
+  .gold-modal-head p{font-size:14px;color:#6b7280;margin:6px 0 0}
+  .gold-modal-form{margin-top:18px;display:flex;flex-direction:column;gap:14px}
+  .gold-modal-form label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#5b6472;display:flex;flex-direction:column;gap:6px}
+  .gold-modal-form input{font-family:'Open Sans',sans-serif;font-size:14px;padding:12px 14px;border:1px solid #e2e6ee;border-radius:12px;outline:none;text-transform:none;letter-spacing:normal;font-weight:400;color:var(--navy)}
+  .gold-modal-form input:focus{border-color:var(--bvo-orange);box-shadow:0 0 0 3px rgba(255,102,0,.18)}
+  .gold-modal-submit{background:var(--bvo-orange);color:#fff;font-weight:800;font-family:'Nunito',sans-serif;font-size:15px;border:none;border-radius:12px;padding:14px;cursor:pointer;box-shadow:0 6px 16px rgba(255,102,0,.3);transition:background .15s}
+  .gold-modal-submit:hover{background:var(--bvo-orange-dark)}
+  .gold-modal-submit:disabled{opacity:.5;cursor:default}
+  .gold-modal-legal{font-size:12px;font-weight:700;color:#9aa3b2;text-align:center;margin:0}
+  .gold-modal-error{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;font-size:13px;border-radius:12px;padding:10px 14px}
+  .gold-modal-success{text-align:center;padding:8px 0}
+  .gold-modal-success-icon{width:56px;height:56px;border-radius:50%;background:#dcfce7;color:#16a34a;font-size:28px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+  .gold-modal-success h3{font-family:'Nunito',sans-serif;color:var(--bvo-bleu);font-size:18px;margin:0}
+  .gold-modal-success p{font-size:14px;color:#6b7280;margin:8px 0 18px}
+  .gold-modal-success .gold-modal-submit{width:100%}
+</style>
+
+<div id="gold-modal" class="gold-modal-overlay" hidden>
+  <div class="gold-modal-card" role="dialog" aria-modal="true" aria-labelledby="gold-modal-title">
+    <button type="button" class="gold-modal-close" aria-label="Fermer">&times;</button>
+    <div class="gold-modal-head">
+      <h2 id="gold-modal-title">Découvrez le programme Gold.</h2>
+      <p>Présentation gratuite et sans engagement. C'est clair pour vous ?</p>
+    </div>
+    <form id="gold-modal-form" class="gold-modal-form">
+      <div class="gold-modal-error" id="gold-modal-error" hidden></div>
+      <label>Prénom
+        <input type="text" name="firstName" placeholder="Jean" autocomplete="given-name" required>
+      </label>
+      <label>Email
+        <input type="email" name="email" placeholder="jean@exemple.fr" autocomplete="email" required>
+      </label>
+      <label>Mobile
+        <input type="tel" name="mobile" placeholder="06 12 34 56 78" autocomplete="tel" required>
+      </label>
+      <button type="submit" class="gold-modal-submit">Validez votre demande de contact</button>
+      <p class="gold-modal-legal">En envoyant ce formulaire, vous acceptez d'être recontacté par BoosterVO.</p>
+    </form>
+    <div class="gold-modal-success" id="gold-modal-success" hidden>
+      <div class="gold-modal-success-icon">&check;</div>
+      <h3>Demande envoyée !</h3>
+      <p>Merci, nous revenons vers vous très vite pour planifier votre présentation de 20 minutes.</p>
+      <button type="button" class="gold-modal-submit gold-modal-close-2">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var modal = document.getElementById('gold-modal');
+  var form = document.getElementById('gold-modal-form');
+  var errBox = document.getElementById('gold-modal-error');
+  var successBox = document.getElementById('gold-modal-success');
+  var submitBtn = form.querySelector('.gold-modal-submit');
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function openModal(){
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    form.hidden = false;
+    successBox.hidden = true;
+    errBox.hidden = true;
+    form.reset();
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Validez votre demande de contact';
+    var first = form.querySelector('input[name="firstName"]');
+    if (first) first.focus();
+  }
+  function closeModal(){
+    modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+  function showError(msg){
+    errBox.textContent = msg;
+    errBox.hidden = false;
+  }
+
+  document.querySelectorAll('.founder-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+  });
+  modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+  document.querySelectorAll('.gold-modal-close, .gold-modal-close-2').forEach(function(b){
+    b.addEventListener('click', closeModal);
+  });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    errBox.hidden = true;
+    var fn = form.firstName.value.trim();
+    var em = form.email.value.trim();
+    var mo = form.mobile.value.trim();
+    if (!fn){ showError("Merci d'indiquer votre prénom."); return; }
+    if (!EMAIL_RE.test(em)){ showError("Merci d'indiquer un email valide."); return; }
+    if (mo.replace(/[^0-9]/g, '').length < 6){ showError("Merci d'indiquer un numéro de mobile valide."); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi…';
+    fetch('/api/diagnostic-request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ firstName: fn, email: em, mobile: mo, source: 'programme-gold' })
+    }).then(function(res){
+      if (!res.ok){
+        return res.json().catch(function(){ return {}; }).then(function(j){
+          throw new Error(j.error || "Erreur lors de l'envoi");
+        });
+      }
+      form.hidden = true;
+      successBox.hidden = false;
+    }).catch(function(err){
+      showError(err.message || 'Erreur réseau. Vérifiez votre connexion.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Validez votre demande de contact';
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
