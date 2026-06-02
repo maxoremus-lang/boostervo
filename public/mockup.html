@@ -330,7 +330,6 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    margin-bottom:24px;
     box-shadow:0 16px 40px rgba(255,102,0,.50), 0 0 0 0 rgba(255,102,0,.35);
     animation:play-pulse 2.4s ease-in-out infinite;
     transition:transform .25s, box-shadow .25s;
@@ -349,9 +348,19 @@
     margin-left:5px;
     font-variation-settings:'FILL' 1,'wght' 700;
   }
+  .video-poster .poster-caption{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:46px;
+    padding:0 36px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
   .video-poster .title{
     font-family:'Nunito',sans-serif;
-    font-size:15.4px;
+    font-size:18.5px;
     font-weight:400;
     color:#fff;
     line-height:1.3;
@@ -359,7 +368,7 @@
     margin-bottom:3px;
   }
   .video-poster .quote{
-    font-size:15px;
+    font-size:18px;
     line-height:1.55;
     font-style:italic;
     font-weight:800;
@@ -2128,7 +2137,7 @@
     .ctas{flex-direction:column;align-items:stretch;gap:14px}
     .primary{min-width:0;width:100%}
     .secondary{text-align:center}
-    .video-poster .title{font-size:12.6px}
+    .video-poster .title{font-size:15.1px}
     .video-poster .play-btn{width:32px;height:32px}
     .video-poster .play-btn .material-symbols-outlined{font-size:16px}
     .proof-row{grid-template-columns:1fr}
@@ -2376,8 +2385,10 @@
       ></video>
       <div class="video-poster" id="vsl-poster">
         <div class="play-btn"><span class="material-symbols-outlined">play_arrow</span></div>
-        <div class="title">Ce que 90 % des négociants ne voient pas&nbsp;:</div>
-        <div class="quote">"Le profit caché derrière les délais de rappel"</div>
+        <div class="poster-caption">
+          <div class="title">Ce que 90 % des négociants ne voient pas&nbsp;:</div>
+          <div class="quote">"Le profit caché derrière les délais de rappel"</div>
+        </div>
       </div>
     </aside>
   </section>
