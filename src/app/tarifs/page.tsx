@@ -176,6 +176,7 @@ export default function TarifsPage() {
             <img src="/logo-white.svg" alt="BoosterVO" width={150} height={28} className={styles.logoMark} />
           </a>
           <nav className={styles.nav}>
+            <a href="/" className={styles.navLink}>Accueil</a>
             <a href="/#diagnostic" className={styles.navLink}>Le diagnostic BoosterVO</a>
             <a href="/#faq" className={styles.navLink}>FAQ</a>
             <a href="/tarifs" className={styles.navLink}>Tarifs</a>
