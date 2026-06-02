@@ -213,3 +213,43 @@ model DiagnosticRequest {
   @@index([email])
   @@index([createdAt])
 }
+
+// Lead capté par le simulateur "Combien mes appels me coûtent/rapportent"
+// (pop-up de la home). Le visiteur saisit son email à la dernière étape, puis
+// "Voir mon estimation" → on enregistre l'email + ses réponses + le résultat
+// du calcul (gains estimés) pour qualifier le lead. slug/cookieId = attribution
+// campagne via le cookie bvo_clk. Notifié par mail à l'équipe (best-effort).
+model SimulatorLead {
+  id        String   @id @default(cuid())
+  email     String
+  branch    String?  // "A" (a les stats Leboncoin) | "B" (estimation)
+
+  // Réponses saisies
+  appels             Int     // appels traités / mois
+  manques            Int     // appels manqués / mois
+  decrochesImmediats Int     // appels - manques
+  delayLabel         String  // délai de rappel, ex "10 min"
+  margeVo            Int     // marge moyenne par VO (€)
+
+  // Résultats calculés (situation actuelle)
+  convMoyenne        Float   // taux de conversion moyen pondéré
+  convImmediate      Float   // taux conv décroché direct (réf.)
+  convRappels        Float   // taux conv sur rappel
+  ventesTotalActuel  Float
+  margeTotalActuel   Int
+
+  // Potentiel + gain
+  ventesTotalPotentiel Float
+  margeTotalPotentiel  Int
+  gainVentesMois       Float
+  gainMargeMois        Int
+  gainMargeAn          Int
+
+  slug      String?
+  cookieId  String?
+  source    String?
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([createdAt])
+}

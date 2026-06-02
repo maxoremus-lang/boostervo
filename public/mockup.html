@@ -3569,6 +3569,41 @@
 
     function showResults(){
       var r = compute();
+
+      // Enregistre le lead (email + réponses + résultats) une seule fois par
+      // session de quiz. Best-effort : n'empêche jamais l'affichage des résultats.
+      if(!quiz._leadSent && quiz.answers.email){
+        quiz._leadSent = true;
+        try {
+          var leadPayload = {
+            email: quiz.answers.email,
+            branch: quiz.branch || null,
+            appels: r.appels,
+            manques: r.manques,
+            decrochesImmediats: r.decrochesImmediats,
+            delayLabel: r.delayLabel,
+            margeVo: r.marge,
+            convMoyenne: r.convMoyenne,
+            convImmediate: r.convImmediate,
+            convRappels: r.convRappels,
+            ventesTotalActuel: r.ventesTotalActuel,
+            margeTotalActuel: r.margeTotalActuel,
+            ventesTotalPotentiel: r.ventesTotalPotentiel,
+            margeTotalPotentiel: r.margeTotalPotentiel,
+            gainVentesMois: r.ventes,
+            gainMargeMois: r.margeMois,
+            gainMargeAn: r.margeAn,
+            source: 'simulateur home'
+          };
+          fetch('/api/simulator-lead', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(leadPayload),
+            keepalive: true
+          }).catch(function(){});
+        } catch(e){ /* non-bloquant */ }
+      }
+
       $modal.classList.add('is-results');
       $prog.style.width = '100%';
       $foot.style.display = 'none';
@@ -3743,6 +3778,7 @@
       quiz.history = ['q1'];
       quiz.answers = {};
       quiz.branch = null;
+      quiz._leadSent = false;
       $modal.classList.remove('is-results');
       $foot.style.display = 'flex';
       $next.style.display = 'inline-flex';
