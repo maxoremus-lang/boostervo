@@ -16,6 +16,9 @@ export default function SiteNav() {
           />
         </a>
         <nav className="hidden sm:flex items-center gap-8 lg:gap-11 font-semibold text-[15px]">
+          <a href="/" className="text-white/85 hover:text-orange transition-colors">
+            Accueil
+          </a>
           <a href="/#diagnostic" className="text-white/85 hover:text-orange transition-colors">
             Le diagnostic BoosterVO
           </a>
