@@ -3581,12 +3581,11 @@
             'Ce que vos appels vous rapportent aujourd\'hui…' +
             '<span class="accent">vs ce qu\'ils pourraient réellement vous rapporter</span>' +
           '</h2>' +
-          '<p class="r2-subtitle">Simulation basée sur vos données</p>' +
         '</div>' +
 
         '<div class="r2-bottom-grid">' +
           '<div class="r2-bottom-block">' +
-            '<div class="r2-bottom-h">Vos données clés</div>' +
+            '<div class="r2-bottom-h">Simulation basée sur vos données clés</div>' +
             '<div class="r2-data-tiles">' +
               '<div class="r2-data-tile">' +
                 '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call</span></div>' +
@@ -3624,7 +3623,7 @@
             '<div class="r2-bottom-h">Notre méthode de calcul</div>' +
             '<div class="r2-method-text">' +
               '<p>Aujourd\'hui, vos <strong>' + r.decrochesImmediats + ' appels décrochés direct</strong> convertissent à ' + Math.round(r.convImmediate * 100) + ' % et vos <strong>' + r.manques + ' appels rappelés après ' + r.delayLabel + '</strong> chutent à ' + Math.round(r.convRappels * 100) + ' %, soit ' + fmtVentes(r.ventesTotalActuel) + ' ventes au total.</p>' +
-              '<p>Si tous vos ' + r.appels + ' appels étaient décrochés immédiatement, vous feriez ' + fmtVentes(r.ventesTotalPotentiel) + ' ventes — soit <strong>' + fmtVentes(r.ventes) + ' vente</strong> et <strong>' + fmtEUR(r.margeMois) + ' €</strong> de marge en plus chaque mois.</p>' +
+              '<p>Si vos ' + r.appels + ' appels étaient décrochés immédiatement, vous feriez ' + fmtVentes(r.ventesTotalPotentiel) + ' ventes — soit <strong>' + fmtVentes(r.ventes) + ' vente</strong> et <strong>' + fmtEUR(r.margeMois) + ' €</strong> de marge en plus chaque mois.</p>' +
             '</div>' +
           '</div>' +
         '</div>' +
