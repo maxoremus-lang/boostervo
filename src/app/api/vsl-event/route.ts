@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const VALID_TYPES = new Set(["play", "p25", "p50", "p75", "p100"]);
-const VALID_PAGES = new Set(["vsl", "vsl-prive"]);
+const VALID_PAGES = new Set(["vsl", "vsl-prive", "home"]);
 
 // POST /api/vsl-event — enregistre un jalon de lecture d'une VSL (play, 25/50/
 // 75/100 %). Appelé en sendBeacon depuis <VslPlayer>. Relie au visiteur via le

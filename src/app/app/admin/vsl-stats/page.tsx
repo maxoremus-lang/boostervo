@@ -158,7 +158,11 @@ export default function AdminVslStatsPage() {
                   <div key={row.page}>
                     <div className="flex items-center justify-between mb-2">
                       <span className="inline-block text-[11px] font-bold text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">
-                        {row.page === "vsl-prive" ? "/vsl-prive (gate email)" : "/vsl (public)"}
+                        {row.page === "vsl-prive"
+                          ? "/vsl-prive (gate email)"
+                          : row.page === "home"
+                          ? "Accueil (home)"
+                          : "/vsl (public)"}
                       </span>
                       <span className="text-xs text-gray-500">
                         rétention {pct(row.p100, row.play)}

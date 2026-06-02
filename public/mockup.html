@@ -3263,16 +3263,76 @@
 </script>
 
 <script>
-  // ===== POSTER VSL VIDÉO =====
+  // ===== POSTER VSL VIDÉO + TRACKING LECTURE =====
   (function(){
     var wrap = document.getElementById('vsl');
     var video = document.getElementById('vsl-video');
     var poster = document.getElementById('vsl-poster');
     if(!wrap || !video || !poster) return;
+
+    // Tracking lecture (play / 25 / 50 / 75 / 100 %) -> /api/vsl-event, page "home".
+    // visitorId stable (localStorage bvo_vid, partagé avec les pages VSL) pour
+    // dédupliquer le funnel même entre rechargements / pages.
+    var VISITOR_KEY = 'bvo_vid';
+    function getVisitorId(){
+      try {
+        var id = localStorage.getItem(VISITOR_KEY);
+        if(!id){
+          id = (window.crypto && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : (Math.random().toString(36).slice(2) + Date.now().toString(36));
+          localStorage.setItem(VISITOR_KEY, id);
+        }
+        return id;
+      } catch(e){
+        return Math.random().toString(36).slice(2) + Date.now().toString(36);
+      }
+    }
+    var sent = {}; // jalons déjà envoyés (1 fois par chargement de page)
+    function track(type){
+      if(sent[type]) return;
+      sent[type] = true;
+      var payload = JSON.stringify({
+        visitorId: getVisitorId(),
+        page: 'home',
+        type: type,
+        positionSec: isFinite(video.currentTime) ? video.currentTime : null,
+        durationSec: isFinite(video.duration) ? video.duration : null
+      });
+      try {
+        if(navigator.sendBeacon){
+          var blob = new Blob([payload], { type: 'application/json' });
+          if(navigator.sendBeacon('/api/vsl-event', blob)) return;
+        }
+      } catch(e){ /* fallback fetch */ }
+      fetch('/api/vsl-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true
+      }).catch(function(){});
+    }
+    var MILESTONES = [
+      { f: 0.25, t: 'p25' },
+      { f: 0.50, t: 'p50' },
+      { f: 0.75, t: 'p75' },
+      { f: 0.95, t: 'p100' } // 95 % = "vu jusqu'au bout" (générique/fin ignorés)
+    ];
+
     poster.addEventListener('click', function(){
       wrap.classList.add('is-playing');
       video.play().catch(function(){});
     });
+    video.addEventListener('play', function(){ track('play'); });
+    video.addEventListener('timeupdate', function(){
+      var d = video.duration;
+      if(!isFinite(d) || d <= 0) return;
+      var frac = video.currentTime / d;
+      for(var i = 0; i < MILESTONES.length; i++){
+        if(frac >= MILESTONES[i].f) track(MILESTONES[i].t);
+      }
+    });
+    video.addEventListener('ended', function(){ track('p100'); });
     video.addEventListener('pause', function(){
       if(video.currentTime === 0) wrap.classList.remove('is-playing');
     });
