@@ -214,6 +214,30 @@ model DiagnosticRequest {
   @@index([createdAt])
 }
 
+// Visite d'une page publique de boostervo.fr (hors app). Enregistre chaque
+// arrivée pour mesurer la fréquentation : visites totales, visiteurs uniques
+// (dédup sur visitorId stable côté client = localStorage bvo_vid), et source
+// (referer + UTM). cookieId (bvo_clk) relie à une campagne /go… si présent.
+// Beacon client au chargement → /api/page-view.
+model PageView {
+  id          String   @id @default(cuid())
+  path        String   // ex "/" (home), "/tarifs"…
+  referer     String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  device      String?  // "mobile" | "desktop" | "tablet"
+  browser     String?
+  os          String?
+  visitorId   String?  // id stable client (bvo_vid) — dédup visiteurs uniques
+  cookieId    String?  // bvo_clk — attribution campagne si présent
+  createdAt   DateTime @default(now())
+
+  @@index([path])
+  @@index([visitorId])
+  @@index([createdAt])
+}
+
 // Lead capté par le simulateur "Combien mes appels me coûtent/rapportent"
 // (pop-up de la home). Le visiteur saisit son email à la dernière étape, puis
 // "Voir mon estimation" → on enregistre l'email + ses réponses + le résultat

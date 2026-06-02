@@ -3340,6 +3340,47 @@
 </script>
 
 <script>
+  // ===== TRACKING VISITE PAGE (fréquentation boostervo.fr) =====
+  // Beacon au chargement -> /api/page-view. visitorId stable (localStorage
+  // bvo_vid, partagé avec le tracking vidéo) pour compter les visiteurs uniques.
+  (function(){
+    try {
+      var VISITOR_KEY = 'bvo_vid';
+      var vid;
+      try {
+        vid = localStorage.getItem(VISITOR_KEY);
+        if(!vid){
+          vid = (window.crypto && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : (Math.random().toString(36).slice(2) + Date.now().toString(36));
+          localStorage.setItem(VISITOR_KEY, vid);
+        }
+      } catch(e){ vid = null; }
+
+      var qs = new URLSearchParams(location.search);
+      var payload = JSON.stringify({
+        path: location.pathname,
+        referer: document.referrer || null,
+        utmSource: qs.get('utm_source'),
+        utmMedium: qs.get('utm_medium'),
+        utmCampaign: qs.get('utm_campaign'),
+        visitorId: vid
+      });
+      if(navigator.sendBeacon){
+        var blob = new Blob([payload], { type: 'application/json' });
+        if(navigator.sendBeacon('/api/page-view', blob)) return;
+      }
+      fetch('/api/page-view', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true
+      }).catch(function(){});
+    } catch(e){ /* tracking best-effort, jamais bloquant */ }
+  })();
+</script>
+
+<script>
   // ===== QUIZ ESTIMATION =====
   (function(){
     var quiz = { step:'q1', history:['q1'], answers:{}, branch:null };
