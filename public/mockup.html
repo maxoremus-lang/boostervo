@@ -3584,6 +3584,51 @@
           '<p class="r2-subtitle">Simulation basée sur vos données</p>' +
         '</div>' +
 
+        '<div class="r2-bottom-grid">' +
+          '<div class="r2-bottom-block">' +
+            '<div class="r2-bottom-h">Vos données clés</div>' +
+            '<div class="r2-data-tiles">' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call</span></div>' +
+                '<div class="r2-data-tile-value">' + r.appels + '</div>' +
+                '<div class="r2-data-tile-label">appels traités / mois</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call</span></div>' +
+                '<div class="r2-data-tile-value">' + r.decrochesImmediats + '</div>' +
+                '<div class="r2-data-tile-label">décrochés immédiatement</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">percent</span></div>' +
+                '<div class="r2-data-tile-value">' + Math.round(r.convImmediate * 100) + ' %</div>' +
+                '<div class="r2-data-tile-label">de conversion décrochés</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call_missed</span></div>' +
+                '<div class="r2-data-tile-value">' + r.manques + '</div>' +
+                '<div class="r2-data-tile-label">appels manqués / mois</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">schedule</span></div>' +
+                '<div class="r2-data-tile-value">' + r.delayLabel + '</div>' +
+                '<div class="r2-data-tile-label">délai moyen de rappel</div>' +
+              '</div>' +
+              '<div class="r2-data-tile">' +
+                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">percent</span></div>' +
+                '<div class="r2-data-tile-value">' + Math.round(r.convRappels * 100) + ' %</div>' +
+                '<div class="r2-data-tile-label">de conversion rappels</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="r2-bottom-block">' +
+            '<div class="r2-bottom-h">Notre méthode de calcul</div>' +
+            '<div class="r2-method-text">' +
+              '<p>Aujourd\'hui, vos <strong>' + r.decrochesImmediats + ' appels décrochés direct</strong> convertissent à ' + Math.round(r.convImmediate * 100) + ' % et vos <strong>' + r.manques + ' appels rappelés après ' + r.delayLabel + '</strong> chutent à ' + Math.round(r.convRappels * 100) + ' %, soit ' + fmtVentes(r.ventesTotalActuel) + ' ventes au total.</p>' +
+              '<p>Si tous vos ' + r.appels + ' appels étaient décrochés immédiatement, vous feriez ' + fmtVentes(r.ventesTotalPotentiel) + ' ventes — soit <strong>' + fmtVentes(r.ventes) + ' vente</strong> et <strong>' + fmtEUR(r.margeMois) + ' €</strong> de marge en plus chaque mois.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
         '<div class="r2-compare-wrap">' +
           '<div class="r2-compare">' +
             // Carte 1 : Situation actuelle (80 directs + 20 rappels)
@@ -3673,51 +3718,6 @@
             '</div>' +
           '</div>' +
           '<div class="r2-vs">VS</div>' +
-        '</div>' +
-
-        '<div class="r2-bottom-grid">' +
-          '<div class="r2-bottom-block">' +
-            '<div class="r2-bottom-h">Vos données clés</div>' +
-            '<div class="r2-data-tiles">' +
-              '<div class="r2-data-tile">' +
-                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call</span></div>' +
-                '<div class="r2-data-tile-value">' + r.appels + '</div>' +
-                '<div class="r2-data-tile-label">appels traités / mois</div>' +
-              '</div>' +
-              '<div class="r2-data-tile">' +
-                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call</span></div>' +
-                '<div class="r2-data-tile-value">' + r.decrochesImmediats + '</div>' +
-                '<div class="r2-data-tile-label">décrochés immédiatement</div>' +
-              '</div>' +
-              '<div class="r2-data-tile">' +
-                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">percent</span></div>' +
-                '<div class="r2-data-tile-value">' + Math.round(r.convImmediate * 100) + ' %</div>' +
-                '<div class="r2-data-tile-label">de conversion décrochés</div>' +
-              '</div>' +
-              '<div class="r2-data-tile">' +
-                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">call_missed</span></div>' +
-                '<div class="r2-data-tile-value">' + r.manques + '</div>' +
-                '<div class="r2-data-tile-label">appels manqués / mois</div>' +
-              '</div>' +
-              '<div class="r2-data-tile">' +
-                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">schedule</span></div>' +
-                '<div class="r2-data-tile-value">' + r.delayLabel + '</div>' +
-                '<div class="r2-data-tile-label">délai moyen de rappel</div>' +
-              '</div>' +
-              '<div class="r2-data-tile">' +
-                '<div class="r2-data-tile-icon"><span class="material-symbols-outlined">percent</span></div>' +
-                '<div class="r2-data-tile-value">' + Math.round(r.convRappels * 100) + ' %</div>' +
-                '<div class="r2-data-tile-label">de conversion rappels</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="r2-bottom-block">' +
-            '<div class="r2-bottom-h">Notre méthode de calcul</div>' +
-            '<div class="r2-method-text">' +
-              '<p>Aujourd\'hui, vos <strong>' + r.decrochesImmediats + ' appels décrochés direct</strong> convertissent à ' + Math.round(r.convImmediate * 100) + ' % et vos <strong>' + r.manques + ' appels rappelés après ' + r.delayLabel + '</strong> chutent à ' + Math.round(r.convRappels * 100) + ' %, soit ' + fmtVentes(r.ventesTotalActuel) + ' ventes au total.</p>' +
-              '<p>Si tous vos ' + r.appels + ' appels étaient décrochés immédiatement, vous feriez ' + fmtVentes(r.ventesTotalPotentiel) + ' ventes — soit <strong>' + fmtVentes(r.ventes) + ' vente</strong> et <strong>' + fmtEUR(r.margeMois) + ' €</strong> de marge en plus chaque mois.</p>' +
-            '</div>' +
-          '</div>' +
         '</div>' +
 
         '<div class="r2-gain-banner">' +
