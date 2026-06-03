@@ -208,6 +208,13 @@ export default function ProfilPage() {
                 <span className="float-right text-gray-300">›</span>
               </Link>
               <Link
+                href="/app/admin/email-opens"
+                className="block w-full text-left px-4 py-3.5 text-sm font-semibold text-bleu"
+              >
+                Ouvertures d&apos;emails
+                <span className="float-right text-gray-300">›</span>
+              </Link>
+              <Link
                 href="/app/admin/leads"
                 className="block w-full text-left px-4 py-3.5 text-sm font-semibold text-bleu"
               >

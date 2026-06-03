@@ -214,6 +214,24 @@ model DiagnosticRequest {
   @@index([createdAt])
 }
 
+// Ouverture d'un email, captée par un pixel de tracking (image 1x1 hébergée
+// sur boostervo.fr) inséré dans l'email. campaign = libellé de l'emailing
+// (choisi par Max), recipient = email du destinataire si fourni via merge tag.
+// 1 ligne = 1 chargement du pixel (donc potentiellement plusieurs par
+// destinataire). NB: fiabilité limitée (Apple MPP gonfle, blocage images
+// sous-estime) — cf. doc.
+model EmailOpen {
+  id        String   @id @default(cuid())
+  campaign  String   // libellé de l'emailing, ex "relance-mars-2026"
+  recipient String?  // email du destinataire (via merge tag), si fourni
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([campaign])
+  @@index([createdAt])
+}
+
 // Visite d'une page publique de boostervo.fr (hors app). Enregistre chaque
 // arrivée pour mesurer la fréquentation : visites totales, visiteurs uniques
 // (dédup sur visitorId stable côté client = localStorage bvo_vid), et source
