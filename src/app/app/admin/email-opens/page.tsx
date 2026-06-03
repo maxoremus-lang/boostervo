@@ -7,6 +7,8 @@ type Campaign = {
   campaign: string;
   opens: number;
   uniqueRecipients: number;
+  recipients: string[];
+  anonOpens: number;
   firstAt: string;
   lastAt: string;
 };
@@ -42,6 +44,7 @@ export default function AdminEmailOpensPage() {
   const [campaignName, setCampaignName] = useState("");
   const [mergeTag, setMergeTag] = useState("$[EMAIL]$");
   const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -166,27 +169,69 @@ export default function AdminEmailOpensPage() {
                   Aucune ouverture enregistrée pour le moment.
                 </p>
               ) : (
-                stats.campaigns.map((c) => (
-                  <div key={c.campaign} className="p-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="text-sm font-bold text-bleu truncate">{c.campaign}</p>
-                        <p className="text-[11px] text-gray-500 mt-0.5">
-                          dernière : {formatDate(c.lastAt)}
-                        </p>
+                stats.campaigns.map((c) => {
+                  const isOpen = expanded === c.campaign;
+                  // Détecte un merge tag non substitué (ex: "$[email]$") parmi
+                  // les destinataires : signale un problème de personnalisation.
+                  const tagNotMerged = c.recipients.some((r) => /\$\[|\]\$|\{\{|\}\}/.test(r));
+                  return (
+                    <div key={c.campaign} className="p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-bleu truncate">{c.campaign}</p>
+                          <p className="text-[11px] text-gray-500 mt-0.5">
+                            dernière : {formatDate(c.lastAt)}
+                          </p>
+                          {tagNotMerged && (
+                            <p className="text-[11px] text-red-600 font-semibold mt-1">
+                              ⚠️ Tag email non remplacé par l&apos;outil d&apos;envoi
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-lg font-nunito font-extrabold text-bleu leading-none">
+                            {c.uniqueRecipients}
+                          </p>
+                          <p className="text-[10px] text-gray-400 uppercase font-bold">ouvreurs</p>
+                          <p className="text-[11px] text-gray-500 mt-1">{c.opens} ouvertures</p>
+                        </div>
                       </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-lg font-nunito font-extrabold text-bleu leading-none">
-                          {c.uniqueRecipients}
-                        </p>
-                        <p className="text-[10px] text-gray-400 uppercase font-bold">
-                          ouvreurs
-                        </p>
-                        <p className="text-[11px] text-gray-500 mt-1">{c.opens} ouvertures</p>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setExpanded(isOpen ? null : c.campaign)}
+                        className="text-[11px] text-orange font-semibold mt-2 hover:underline"
+                      >
+                        {isOpen ? "Masquer les destinataires" : "Voir les destinataires"}
+                      </button>
+                      {isOpen && (
+                        <div className="mt-2 bg-gray-50 rounded-lg p-3">
+                          {c.recipients.length === 0 ? (
+                            <p className="text-[11px] text-gray-500">
+                              Aucun email de destinataire enregistré (tag <code>r=</code> absent ou
+                              vide à l&apos;envoi).
+                            </p>
+                          ) : (
+                            <ul className="text-[11px] text-gray-700 space-y-0.5 max-h-48 overflow-auto break-all">
+                              {c.recipients.map((r) => (
+                                <li key={r} className={/\$\[|\]\$|\{\{|\}\}/.test(r) ? "text-red-600 font-mono" : ""}>
+                                  {r}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          {c.recipients.length >= 100 && (
+                            <p className="text-[10px] text-gray-400 mt-2">(100 premiers affichés)</p>
+                          )}
+                          {c.anonOpens > 0 && (
+                            <p className="text-[10px] text-gray-400 mt-2">
+                              + {c.anonOpens} ouverture(s) sans email de destinataire.
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
 

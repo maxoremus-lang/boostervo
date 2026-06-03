@@ -65,6 +65,11 @@ export async function GET() {
       campaign: a.campaign,
       opens: a.opens,
       uniqueRecipients: a.recipients.size + a.anon,
+      // Diagnostic : échantillon des destinataires réellement enregistrés
+      // (jusqu'à 100). Si on voit "$[email]$" répété → le merge tag n'a pas été
+      // substitué par l'outil d'envoi.
+      recipients: Array.from(a.recipients).sort().slice(0, 100),
+      anonOpens: a.anon,
       firstAt: a.firstAt,
       lastAt: a.lastAt,
     }))
