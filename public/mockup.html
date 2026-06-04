@@ -3267,6 +3267,18 @@
     });
 
     window.openDiagModal = open;
+
+    // ===== AUTO-OUVERTURE depuis URL =====
+    // Permet aux liens externes (emails, SMS) d'ouvrir directement la popup
+    // diagnostic via boostervo.fr/?diag=1 ou boostervo.fr/#diag.
+    try {
+      var qs = new URLSearchParams(location.search);
+      var hash = (location.hash || '').toLowerCase();
+      if (qs.get('diag') === '1' || hash === '#diag' || hash === '#diag-open') {
+        // léger délai pour laisser la page se mettre en place
+        setTimeout(open, 300);
+      }
+    } catch(e) { /* best-effort */ }
   })();
 </script>
 
