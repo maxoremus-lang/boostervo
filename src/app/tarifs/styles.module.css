@@ -493,6 +493,17 @@
   flex-shrink: 0;
 }
 
+.featureLink {
+  color: var(--bvo-orange);
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.featureLink:hover {
+  color: var(--bvo-blue);
+}
+
 .featureExcluded {
   color: var(--muted);
   text-decoration: line-through;

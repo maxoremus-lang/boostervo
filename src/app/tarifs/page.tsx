@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Trois offres BoosterVO pour récupérer la marge perdue sur vos ventes VO : Pack Diagnostic, Call Agent Croissance, Call Agent Performance.",
 };
 
-type Feature = { label: string; bold?: boolean };
+type Feature = { label: string; bold?: boolean; href?: string };
 type Section = { heading: string; features: Feature[] };
 
 type Plan = {
@@ -64,8 +64,9 @@ const plans: Plan[] = [
         features: [
           { label: "Comparatif des taux de conversion rappels vs décrochés immédiats" },
           { label: "Estimation de la marge récupérable / mois" },
-          { label: "Recommandation offre zéro appel manqué" },
+          { label: "Recommandation offre Call Agent" },
           { label: "Rapport PDF personnalisé + échange de 30 min" },
+          { label: "Cliquez ici pour télécharger un exemplaire de rapport", href: "/exemple-rapport.pdf" },
         ],
       },
     ],
@@ -252,7 +253,18 @@ export default function TarifsPage() {
                         className={`${styles.feature} ${feature.bold ? styles.featureBold : ""}`}
                       >
                         <span className={styles.featureDash}>—</span>
-                        <span>{feature.label}</span>
+                        {feature.href ? (
+                          <a
+                            href={feature.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.featureLink}
+                          >
+                            {feature.label}
+                          </a>
+                        ) : (
+                          <span>{feature.label}</span>
+                        )}
                       </li>
                     ))}
                   </ul>
