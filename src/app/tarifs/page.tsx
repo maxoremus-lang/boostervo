@@ -69,7 +69,6 @@ const plans: Plan[] = [
         ],
       },
     ],
-    excluded: ["Service récurrent", "Automatisation admin", "CRM"],
     footer: "La preuve chiffrée avant de vous engager.",
   },
   {
