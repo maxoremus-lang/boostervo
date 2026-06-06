@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 type Props = {
   open: boolean;
@@ -48,7 +49,13 @@ export default function DiagnosticModal({
     }
   }, [open]);
 
-  if (!open) return null;
+  // Évite les soucis SSR : on ne rend rien tant qu'on n'est pas côté client.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!open || !mounted) return null;
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,9 +95,9 @@ export default function DiagnosticModal({
     }
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm text-left"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 text-left"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -98,6 +105,7 @@ export default function DiagnosticModal({
       <div
         className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
         onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between p-6 pb-2">
           <div>
@@ -208,6 +216,7 @@ export default function DiagnosticModal({
           </form>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

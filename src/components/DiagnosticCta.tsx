@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import DiagnosticModal from "./DiagnosticModal";
 
 type Props = {
@@ -12,6 +12,9 @@ type Props = {
 // demande (prénom + email). Utilisé sur les pages VSL (fond bleu foncé).
 export default function DiagnosticCta({ source, className }: Props) {
   const [open, setOpen] = useState(false);
+  // onClose stable : évite que la useEffect du modal se recharge à chaque render
+  // (et que le keydown listener / overflow lock soient remontés en boucle).
+  const handleClose = useCallback(() => setOpen(false), []);
 
   return (
     <div className={className}>
@@ -25,7 +28,7 @@ export default function DiagnosticCta({ source, className }: Props) {
       <p className="text-white/60 text-xs mt-2">
         Présentation gratuite et sans engagement en 20 minutes
       </p>
-      <DiagnosticModal open={open} onClose={() => setOpen(false)} source={source} />
+      <DiagnosticModal open={open} onClose={handleClose} source={source} />
     </div>
   );
 }
