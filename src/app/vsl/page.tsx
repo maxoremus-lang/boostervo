@@ -10,7 +10,15 @@ export const metadata: Metadata = {
     "Découvrez en vidéo comment BoosterVO récupère la marge perdue sur vos ventes VO grâce au call tracking et à l'exploitation des appels manqués.",
 };
 
-export default function VslPage() {
+type VslPageProps = {
+  searchParams?: { autoplay?: string };
+};
+
+export default function VslPage({ searchParams }: VslPageProps) {
+  // Auto-lecture (muet) lorsqu'on arrive depuis un email avec ?autoplay=1.
+  // Les navigateurs imposent muted pour autoriser l'autoplay sans geste utilisateur.
+  const wantsAutoplay = searchParams?.autoplay === "1";
+
   return (
     <div className="min-h-screen bg-bleu text-white flex flex-col">
       {/* En-tête / navigation boostervo.fr */}
@@ -31,10 +39,18 @@ export default function VslPage() {
               src="/videos/vsl-page.mp4"
               controls
               playsInline
-              preload="metadata"
+              preload={wantsAutoplay ? "auto" : "metadata"}
+              autoPlay={wantsAutoplay}
+              muted={wantsAutoplay}
               className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
+
+          {wantsAutoplay && (
+            <p className="mt-3 text-sm text-white/70">
+              🔊 Cliquez sur l&apos;icône son du lecteur pour activer l&apos;audio
+            </p>
+          )}
 
           {/* CTA — ouvre la modale de demande de diagnostic */}
           <DiagnosticCta source="vsl" className="mt-10" />
