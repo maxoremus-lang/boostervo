@@ -28,8 +28,8 @@ export default function VslPage({ searchParams }: VslPageProps) {
       <main className="flex-1 flex flex-col items-center justify-center px-4 pb-16">
         <div className="w-full max-w-3xl text-center">
           <h1 className="font-nunito text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight mb-8 max-w-2xl mx-auto">
-            Découvrez comment faire{" "}
-            <span className="text-orange">plus de ventes</span> avec vos annonces VO
+            <span className="text-orange">Combien de ventes</span> vos annonces VO vous font-elles{" "}
+            <span className="text-orange">perdre</span> ?
           </h1>
 
           {/* Lecteur vidéo */}
