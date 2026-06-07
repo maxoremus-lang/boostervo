@@ -208,13 +208,11 @@ export default function TarifsPage() {
             {plan.highlight && <div className={styles.ribbon}>Recommandé</div>}
 
             {plan.guarantee && (
-              <div className={styles.guaranteeBadge} aria-label="Garantie satisfait ou remboursé">
-                <div className={styles.guaranteeInner}>
-                  <span className={styles.guaranteePct}>100%</span>
-                  <span className={styles.guaranteeTitle}>Satisfait</span>
-                  <span className={styles.guaranteeSub}>ou Remboursé</span>
-                </div>
-              </div>
+              <img
+                src="/satisfait-rembourse.png"
+                alt="Garantie satisfait ou remboursé"
+                className={styles.guaranteeBadge}
+              />
             )}
 
             <header className={styles.cardHeader}>

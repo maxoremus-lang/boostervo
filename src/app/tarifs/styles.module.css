@@ -493,87 +493,26 @@
   flex-shrink: 0;
 }
 
-/* --- Badge "Satisfait ou Remboursé" --- */
+/* --- Badge "Satisfait ou Remboursé" (image PNG) --- */
 
 .guaranteeBadge {
   position: absolute;
-  top: -16px;
-  right: -14px;
-  width: 120px;
-  height: 120px;
+  top: -22px;
+  right: -22px;
+  width: 130px;
+  height: 130px;
   z-index: 2;
-  border-radius: 50%;
-  background: var(--bvo-orange);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transform: rotate(8deg);
-  box-shadow: 0 8px 18px rgba(255, 102, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.15);
-  border: 4px solid #ffffff;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.18));
   pointer-events: none;
-}
-
-.guaranteeBadge::before {
-  /* anneau orange clair façon dentelure intérieure */
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  border: 2px dashed rgba(255, 255, 255, 0.7);
-}
-
-.guaranteeInner {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  text-align: center;
-  line-height: 1;
-  padding: 0 4px;
-}
-
-.guaranteePct {
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  margin-bottom: 4px;
-}
-
-.guaranteeTitle {
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.guaranteeSub {
-  font-size: 10.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 2px;
-  opacity: 0.95;
 }
 
 @media (max-width: 520px) {
   .guaranteeBadge {
-    width: 96px;
-    height: 96px;
-    top: -12px;
-    right: -10px;
-    border-width: 3px;
-  }
-  .guaranteePct {
-    font-size: 18px;
-    margin-bottom: 2px;
-  }
-  .guaranteeTitle {
-    font-size: 11px;
-  }
-  .guaranteeSub {
-    font-size: 9px;
+    width: 100px;
+    height: 100px;
+    top: -18px;
+    right: -16px;
   }
 }
 
