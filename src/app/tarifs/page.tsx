@@ -208,59 +208,12 @@ export default function TarifsPage() {
             {plan.highlight && <div className={styles.ribbon}>Recommandé</div>}
 
             {plan.guarantee && (
-              <div className={styles.guaranteeBadge} aria-hidden="true">
-                <svg viewBox="0 0 120 120" width="100%" height="100%">
-                  <defs>
-                    <path
-                      id={`top-arc-${plan.id}`}
-                      d="M 60,60 m -42,0 a 42,42 0 0 1 84,0"
-                    />
-                    <path
-                      id={`bot-arc-${plan.id}`}
-                      d="M 60,60 m -42,0 a 42,42 0 1 0 84,0"
-                    />
-                  </defs>
-                  {/* rayons décoratifs */}
-                  <g stroke="#FF6600" strokeWidth="2.5" strokeLinecap="round">
-                    <line x1="60" y1="4" x2="60" y2="12" />
-                    <line x1="60" y1="108" x2="60" y2="116" />
-                    <line x1="4" y1="60" x2="12" y2="60" />
-                    <line x1="108" y1="60" x2="116" y2="60" />
-                    <line x1="20" y1="20" x2="26" y2="26" />
-                    <line x1="100" y1="20" x2="94" y2="26" />
-                    <line x1="20" y1="100" x2="26" y2="94" />
-                    <line x1="100" y1="100" x2="94" y2="94" />
-                  </g>
-                  {/* disque crénelé orange */}
-                  <circle cx="60" cy="60" r="45" fill="#FF6600" />
-                  {/* anneau intérieur clair */}
-                  <circle cx="60" cy="60" r="38" fill="#FFF7F0" />
-                  {/* texte courbé */}
-                  <text fill="#FF6600" fontSize="9" fontWeight="800" letterSpacing="1.5">
-                    <textPath href={`#top-arc-${plan.id}`} startOffset="50%" textAnchor="middle">
-                      SATISFAIT
-                    </textPath>
-                  </text>
-                  <text fill="#FF6600" fontSize="9" fontWeight="800" letterSpacing="1.5">
-                    <textPath href={`#bot-arc-${plan.id}`} startOffset="50%" textAnchor="middle">
-                      OU REMBOURSÉ
-                    </textPath>
-                  </text>
-                  {/* bandeau central */}
-                  <rect x="14" y="51" width="92" height="18" fill="#0B2D6E" />
-                  <polygon points="14,51 8,57 14,63" fill="#06204D" />
-                  <polygon points="106,51 112,57 106,63" fill="#06204D" />
-                  <text
-                    x="60"
-                    y="64"
-                    fill="#ffffff"
-                    fontSize="13"
-                    fontWeight="900"
-                    textAnchor="middle"
-                  >
-                    100%
-                  </text>
-                </svg>
+              <div className={styles.guaranteeBadge} aria-label="Garantie satisfait ou remboursé">
+                <div className={styles.guaranteeInner}>
+                  <span className={styles.guaranteePct}>100%</span>
+                  <span className={styles.guaranteeTitle}>Satisfait</span>
+                  <span className={styles.guaranteeSub}>ou Remboursé</span>
+                </div>
               </div>
             )}
 
