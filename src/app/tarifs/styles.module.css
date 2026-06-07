@@ -493,6 +493,29 @@
   flex-shrink: 0;
 }
 
+/* --- Badge "Satisfait ou Remboursé" --- */
+
+.guaranteeBadge {
+  position: absolute;
+  top: -18px;
+  right: -12px;
+  width: 110px;
+  height: 110px;
+  z-index: 2;
+  transform: rotate(8deg);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
+  pointer-events: none;
+}
+
+@media (max-width: 520px) {
+  .guaranteeBadge {
+    width: 88px;
+    height: 88px;
+    top: -14px;
+    right: -8px;
+  }
+}
+
 .featureLink {
   color: var(--bvo-orange);
   text-decoration: underline;
