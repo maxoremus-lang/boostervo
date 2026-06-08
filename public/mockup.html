@@ -3473,7 +3473,7 @@
         type:'number', step:'Étape 6 / 6',
         label:"Quelle est votre marge moyenne par véhicule vendu ?",
         sub:"Marge nette moyenne réalisée sur un VO.",
-        placeholder:'ex : 1500', suffix:'€', next:'email'
+        placeholder:'ex : 1500', suffix:'€', next:'results'
       },
       B2: {
         type:'number', step:'Étape 2 / 4',
@@ -3497,13 +3497,7 @@
         type:'number', step:'Étape 4 / 4',
         label:"Quelle est votre marge moyenne par véhicule vendu ?",
         sub:"Marge nette moyenne réalisée sur un VO.",
-        placeholder:'ex : 1500', suffix:'€', next:'email'
-      },
-      email: {
-        type:'email', step:'Dernière étape',
-        label:"Recevez votre diagnostic complet",
-        sub:"Nous vous envoyons immédiatement votre rapport personnalisé par email.",
-        placeholder:'votre.email@pro.fr', next:'results'
+        placeholder:'ex : 1500', suffix:'€', next:'results'
       }
     };
 
@@ -3518,10 +3512,10 @@
     var $open = document.getElementById('open-quiz');
 
     function progressPct(){
-      // Branche A : q1 + 5 questions + email = 7 écrans
-      // Branche B : q1 + 3 questions + email = 5 écrans
-      var total = quiz.branch === 'A' ? 7 : 5;
-      if(!quiz.branch) total = 7;
+      // Branche A : q1 + 5 questions = 6 écrans
+      // Branche B : q1 + 3 questions = 4 écrans
+      var total = quiz.branch === 'A' ? 6 : 4;
+      if(!quiz.branch) total = 6;
       return Math.min(100, (quiz.history.length / total) * 100);
     }
 
