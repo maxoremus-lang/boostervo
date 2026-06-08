@@ -61,6 +61,38 @@
   nav.page-nav a{color:rgba(255,255,255,.85);text-decoration:none;transition:color .2s}
   nav.page-nav a:hover{color:var(--bvo-orange)}
   nav.page-nav a.is-active{color:var(--bvo-orange)}
+
+  /* === MENU HAMBURGER (mobile) === */
+  .menu-toggle{
+    display:none;background:transparent;border:1.5px solid rgba(255,255,255,.35);
+    color:#fff;width:42px;height:42px;border-radius:10px;cursor:pointer;
+    align-items:center;justify-content:center;padding:0;
+    transition:background .2s, border-color .2s;
+  }
+  .menu-toggle:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.55)}
+  .menu-toggle svg{width:22px;height:22px}
+  .mobile-menu{
+    display:none;position:fixed;top:0;right:0;bottom:0;
+    width:280px;max-width:85vw;background:var(--bvo-bleu-dark, #153d7a);
+    z-index:1100;box-shadow:-8px 0 30px rgba(0,0,0,.4);
+    transform:translateX(100%);transition:transform .25s ease;
+    padding:24px 22px;flex-direction:column;gap:6px;
+  }
+  .mobile-menu.is-open{transform:translateX(0)}
+  .mobile-menu-head{display:flex;justify-content:flex-end;margin-bottom:14px}
+  .mobile-menu-close{
+    background:transparent;border:none;color:#fff;cursor:pointer;
+    width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;
+  }
+  .mobile-menu-close:hover{background:rgba(255,255,255,.08)}
+  .mobile-menu-close svg{width:22px;height:22px}
+  .mobile-menu a{
+    color:rgba(255,255,255,.92);text-decoration:none;font-weight:600;font-size:16px;
+    padding:14px 16px;border-radius:10px;transition:background .2s, color .2s;
+  }
+  .mobile-menu a:hover, .mobile-menu a.is-active{background:rgba(255,255,255,.06);color:var(--bvo-orange)}
+  .mobile-menu-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1050}
+  .mobile-menu-backdrop.is-open{display:block}
   .top-btn{
     background:var(--bvo-orange);color:#fff;
     padding:13px 24px;border-radius:10px;
@@ -508,6 +540,9 @@
   @media(max-width:540px){
     .page-header-wrap{padding:12px 13px}
     nav.page-nav{display:none}
+    .menu-toggle{display:flex}
+    .mobile-menu{display:flex}
+    .logo-svg{height:24px}
     .pf-hero{padding:24px 13px 17px}
     .pf-title{font-size:22px;letter-spacing:-0.5px}
     .pf-subtitle,.pf-subtitle-2{font-size:10px}
@@ -553,8 +588,49 @@
       <a href="/tarifs">Tarifs</a>
       <a href="/programme-gold.html" class="is-active">Programme Gold</a>
     </nav>
+    <button type="button" class="menu-toggle" id="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
   </header>
 </div>
+
+<div class="mobile-menu-backdrop" id="mobile-menu-backdrop"></div>
+<nav class="mobile-menu" id="mobile-menu" aria-label="Menu mobile">
+  <div class="mobile-menu-head">
+    <button type="button" class="mobile-menu-close" id="mobile-menu-close" aria-label="Fermer le menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <a href="/">Accueil</a>
+  <a href="/#diagnostic">Le diagnostic BoosterVO</a>
+  <a href="/#faq">FAQ</a>
+  <a href="/tarifs">Tarifs</a>
+  <a href="/programme-gold.html" class="is-active">Programme Gold</a>
+</nav>
+
+<script>
+  (function(){
+    var $t = document.getElementById('menu-toggle');
+    var $m = document.getElementById('mobile-menu');
+    var $b = document.getElementById('mobile-menu-backdrop');
+    var $c = document.getElementById('mobile-menu-close');
+    if(!$t || !$m || !$b) return;
+    function open(){ $m.classList.add('is-open'); $b.classList.add('is-open'); $t.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+    function close(){ $m.classList.remove('is-open'); $b.classList.remove('is-open'); $t.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+    $t.addEventListener('click', open);
+    $b.addEventListener('click', close);
+    if($c) $c.addEventListener('click', close);
+    $m.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', close); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && $m.classList.contains('is-open')) close(); });
+  })();
+</script>
 
 <!-- HERO -->
 <section class="pf-hero">

@@ -601,7 +601,7 @@
 
   .cardHighlight {
     transform: none;
-    order: -1;
+    /* Sur mobile, on conserve l'ordre naturel : Pack Diagnostic d'abord */
   }
 
   .cardHighlight:hover {
