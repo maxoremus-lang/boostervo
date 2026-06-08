@@ -33,7 +33,7 @@ export default function SiteNav() {
   return (
     <>
       <div className="sticky top-0 z-50 bg-bleu shadow-[0_4px_20px_rgba(7,18,37,0.18)]">
-        <header className="max-w-[1100px] mx-auto flex items-center justify-between px-4 lg:px-10 py-2 lg:py-4">
+        <header className="max-w-[1100px] mx-auto flex items-center justify-between px-4 lg:px-10 h-[50px] lg:h-auto lg:py-4">
           <a href="/" aria-label="Accueil BoosterVO" className="flex items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

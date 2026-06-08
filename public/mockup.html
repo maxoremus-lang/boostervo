@@ -68,6 +68,7 @@
     align-items:center;
     max-width:1100px;
     margin:0 auto;
+    min-height:32px;
   }
   .logo-svg{height:28px;width:auto;display:block}
   nav{
@@ -2190,23 +2191,24 @@
   .diag-success p{font-size:14.5px;color:var(--muted);margin:0 0 18px}
 
   /* === RESPONSIVE === */
+  /* === NAVBAR MOBILE — HAUTEUR FIXE 50PX (alignée sur Tarifs) === */
   @media(max-width:1100px){
     header nav{display:none}
     .menu-toggle{display:flex;width:34px;height:34px;border-radius:8px}
     .menu-toggle .material-symbols-outlined{font-size:20px}
     .mobile-menu{display:flex}
-    /* Navbar mobile compacte (alignée sur le menu Tarifs) */
-    .site-header-wrap{padding:8px 18px}
+    .site-header-wrap{padding:0 18px;height:50px;display:flex;align-items:center}
+    .site-header-wrap > header{width:100%;min-height:0}
     .logo-svg{height:22px}
     .hero{grid-template-columns:1fr;gap:48px}
     h1{font-size:48px;letter-spacing:-1.2px}
     .proof-row{grid-template-columns:1fr 1fr}
   }
   @media(max-width:520px){
-    .site-header-wrap{padding:8px 16px}
+    .site-header-wrap{padding:0 16px}
   }
   @media(max-width:380px){
-    .site-header-wrap{padding:7px 14px}
+    .site-header-wrap{padding:0 14px;height:46px}
     .logo-svg{height:20px}
     .menu-toggle{width:32px;height:32px}
   }
