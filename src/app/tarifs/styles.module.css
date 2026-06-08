@@ -498,7 +498,7 @@
 .guaranteeBadge {
   position: absolute;
   top: -42px;
-  right: -42px;
+  right: -29px;
   width: 130px;
   height: 130px;
   z-index: 2;
@@ -512,7 +512,7 @@
     width: 100px;
     height: 100px;
     top: -33px;
-    right: -31px;
+    right: -21px;
   }
 }
 
