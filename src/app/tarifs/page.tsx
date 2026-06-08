@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import styles from "./styles.module.css";
 import DiagnosticCardCta from "./DiagnosticCardCta";
+import TrackedReportLink from "./TrackedReportLink";
 
 export const metadata: Metadata = {
   title: "BoosterVO — Nos tarifs",
@@ -251,14 +252,25 @@ export default function TarifsPage() {
                       >
                         <span className={styles.featureDash}>—</span>
                         {feature.href ? (
-                          <a
-                            href={feature.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.featureLink}
-                          >
-                            {feature.label}
-                          </a>
+                          // Le lien "exemple de rapport" du Pack Diagnostic est
+                          // tracké séparément (source="tarifs") via /api/report-example-click.
+                          feature.href === "/exemple-rapport.pdf" ? (
+                            <TrackedReportLink
+                              href={feature.href}
+                              className={styles.featureLink}
+                            >
+                              {feature.label}
+                            </TrackedReportLink>
+                          ) : (
+                            <a
+                              href={feature.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.featureLink}
+                            >
+                              {feature.label}
+                            </a>
+                          )
                         ) : (
                           <span>{feature.label}</span>
                         )}

@@ -3304,11 +3304,17 @@
     // Compteur en base : enregistre le clic sur le lien "exemple de rapport".
     window.trackReportExampleClick = function(){
       try {
+        var payload = JSON.stringify({ source: 'home' });
         if (navigator.sendBeacon) {
-          navigator.sendBeacon('/api/report-example-click');
-        } else {
-          fetch('/api/report-example-click', { method: 'POST', keepalive: true }).catch(function(){});
+          var blob = new Blob([payload], { type: 'application/json' });
+          if (navigator.sendBeacon('/api/report-example-click', blob)) return;
         }
+        fetch('/api/report-example-click', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          keepalive: true
+        }).catch(function(){});
       } catch (e) {}
     };
   })();

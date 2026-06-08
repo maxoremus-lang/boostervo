@@ -193,9 +193,11 @@ model ReportExampleClick {
   cookieId  String?
   ip        String?
   userAgent String?
+  source    String?  // "home" (lien dans le simulateur) ou "tarifs" (Pack Diagnostic)
   createdAt DateTime @default(now())
 
   @@index([createdAt])
+  @@index([source])
 }
 
 // Demande de diagnostic (CTA "Découvrir le diagnostic" sur les pages VSL) :
