@@ -41,7 +41,7 @@ const plans: Plan[] = [
     price: "97 €",
     priceUnit: "HT, paiement unique",
     priceNote: "Étude sur 2 × 15 jours",
-    ctaLabel: "Découvrir le pack diagnostic",
+    ctaLabel: "Plus d'infos sur le pack diagnostic",
     ctaSource: "tarifs-diagnostic",
     sections: [
       {
@@ -83,7 +83,7 @@ const plans: Plan[] = [
     price: "297 €",
     priceUnit: "HT / mois",
     priceNote: "Sans engagement",
-    ctaLabel: "Démarrer Croissance",
+    ctaLabel: "Plus d'infos sur Croissance",
     ctaSource: "tarifs-croissance",
     ctaModalTitle: "Démarrer Call Agent Croissance",
     ctaModalSubtitle: "Échange gratuit et sans engagement en 20 minutes.",
@@ -134,7 +134,7 @@ const plans: Plan[] = [
     price: "397 €",
     priceUnit: "HT / mois",
     priceNote: "Sans engagement",
-    ctaLabel: "Passer en Performance",
+    ctaLabel: "Plus d'infos sur Performance",
     ctaSource: "tarifs-performance",
     ctaModalTitle: "Passer en Call Agent Performance",
     ctaModalSubtitle: "Échange gratuit et sans engagement en 20 minutes.",
