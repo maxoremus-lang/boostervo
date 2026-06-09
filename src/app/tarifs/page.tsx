@@ -85,7 +85,7 @@ const plans: Plan[] = [
     priceNote: "Sans engagement",
     ctaLabel: "Plus d'infos sur Croissance",
     ctaSource: "tarifs-croissance",
-    ctaModalTitle: "Démarrer Call Agent Croissance",
+    ctaModalTitle: "En savoir plus sur Call Agent Croissance",
     ctaModalSubtitle: "Échange gratuit et sans engagement en 20 minutes.",
     highlight: true,
     sections: [
@@ -136,7 +136,7 @@ const plans: Plan[] = [
     priceNote: "Sans engagement",
     ctaLabel: "Plus d'infos sur Performance",
     ctaSource: "tarifs-performance",
-    ctaModalTitle: "Passer en Call Agent Performance",
+    ctaModalTitle: "En savoir plus sur Call Agent Performance",
     ctaModalSubtitle: "Échange gratuit et sans engagement en 20 minutes.",
     includes: "Tout Croissance inclus",
     sections: [
