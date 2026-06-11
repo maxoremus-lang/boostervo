@@ -3558,11 +3558,17 @@
 <script>
   // ===== QUIZ ESTIMATION =====
   (function(){
-    var quiz = { step:'q1', history:['q1'], answers:{}, branch:null };
+    var quiz = { step:'conv0', history:['conv0'], answers:{}, branch:null };
 
     var QUESTIONS = {
+      conv0: {
+        type:'number', step:'Étape 1',
+        label:"Quel est votre taux de conversion appels traités → ventes ?",
+        sub:"Sur 100 appels traités, combien aboutissent à une vente ? (ex : 10, 20...)",
+        placeholder:'ex : 20', suffix:'%', next:'q1'
+      },
       q1: {
-        type:'choice', step:'Étape 1',
+        type:'choice', step:'Étape 2',
         label:"Avez-vous les statistiques du nombre d'appels reçus et manqués Leboncoin ?",
         sub:"Disponibles dans votre espace pro Leboncoin (rapport mensuel).",
         cols:2,
@@ -3572,19 +3578,19 @@
         ]
       },
       A2: {
-        type:'number', step:'Étape 2 / 6',
+        type:'number', step:'Étape 3 / 7',
         label:"Combien d'appels avez-vous reçus le mois dernier ?",
         sub:"Reportez le chiffre exact affiché par Leboncoin.",
         placeholder:'ex : 187', suffix:'appels', next:'A3'
       },
       A3: {
-        type:'number', step:'Étape 3 / 6',
+        type:'number', step:'Étape 4 / 7',
         label:"Et combien d'appels manqués sur cette période ?",
         sub:"Le nombre d'appels manqués affiché par Leboncoin.",
         placeholder:'ex : 42', suffix:'manqués', next:'A4'
       },
       A4: {
-        type:'choice', step:'Étape 4 / 6',
+        type:'choice', step:'Étape 5 / 7',
         label:"Quel est votre délai moyen de rappel ?",
         sub:"Temps moyen écoulé entre l'appel manqué et votre rappel.",
         cols:4,
@@ -3596,7 +3602,7 @@
         ]
       },
       A5: {
-        type:'choice', step:'Étape 5 / 6',
+        type:'choice', step:'Étape 6 / 7',
         label:"Ce délai est-il mesuré ou un ressenti ?",
         sub:"Un ressenti étant souvent optimiste, nous corrigeons légèrement le calcul.",
         cols:2,
@@ -3606,19 +3612,19 @@
         ]
       },
       A6: {
-        type:'number', step:'Étape 6 / 6',
+        type:'number', step:'Étape 7 / 7',
         label:"Quelle est votre marge moyenne par véhicule vendu ?",
         sub:"Marge nette moyenne réalisée sur un VO.",
         placeholder:'ex : 1500', suffix:'€', next:'results'
       },
       B2: {
-        type:'number', step:'Étape 2 / 4',
+        type:'number', step:'Étape 3 / 5',
         label:"Combien d'appels traitez-vous par mois en moyenne ?",
         sub:"Estimation du nombre d'appels entrants liés à vos annonces Leboncoin.",
         placeholder:'ex : 100', suffix:'appels', next:'B3'
       },
       B3: {
-        type:'choice', step:'Étape 3 / 4',
+        type:'choice', step:'Étape 4 / 5',
         label:"Quel pourcentage de vos appels décrochez-vous immédiatement ?",
         sub:"Soyez honnête, c'est essentiel pour la fiabilité du calcul.",
         cols:4,
@@ -3630,7 +3636,7 @@
         ]
       },
       B5: {
-        type:'number', step:'Étape 4 / 4',
+        type:'number', step:'Étape 5 / 5',
         label:"Quelle est votre marge moyenne par véhicule vendu ?",
         sub:"Marge nette moyenne réalisée sur un VO.",
         placeholder:'ex : 1500', suffix:'€', next:'results'
@@ -3648,10 +3654,10 @@
     var $open = document.getElementById('open-quiz');
 
     function progressPct(){
-      // Branche A : q1 + 5 questions = 6 écrans
-      // Branche B : q1 + 3 questions = 4 écrans
-      var total = quiz.branch === 'A' ? 6 : 4;
-      if(!quiz.branch) total = 6;
+      // Branche A : conv0 + q1 + 5 questions = 7 écrans
+      // Branche B : conv0 + q1 + 3 questions = 5 écrans
+      var total = quiz.branch === 'A' ? 7 : 5;
+      if(!quiz.branch) total = 7;
       return Math.min(100, (quiz.history.length / total) * 100);
     }
 
@@ -3753,8 +3759,8 @@
 
     function compute(){
       var appels, manques, marge;
-      // Taux de conversion d'un appel décroché immédiatement (référence VO)
-      var convImmediate = 0.20; // 20 %
+      // Taux de conversion d'un appel décroché immédiatement (saisi par l'utilisateur)
+      var convImmediate = (parseFloat(quiz.answers.conv0) || 20) / 100;
 
       // Conservation de conversion selon le délai de rappel — calé sur benchmark
       //   ≤ 5 min  → 90 % retention → 18 % conv rappel
